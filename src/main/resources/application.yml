@@ -1,10 +1,13 @@
 spring:
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.yml
+    enabled: true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
   jpa:
     hibernate:
-      namming:
+      naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         implicity-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
       ddl-auto: none

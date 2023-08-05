@@ -1,0 +1,23 @@
+spring:
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.yml
+    enabled: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jpa:
+    #    properties:
+    #      hibernate:
+    #        dialect: org.firebirdsql.hibernate.FirebirdDialect
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicity-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+      ddl-auto: none
+    show-sql: true
+  datasource:
+    driver-class-name: org.firebirdsql.jdbc.FBDriver
+    url: jdbc:firebirdsql://localhost:3050/test?charSet=utf-8
+    username: test
+    password: test
+    platform: firebird

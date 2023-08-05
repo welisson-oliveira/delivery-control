@@ -1,0 +1,120 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: authorName
+      changes:
+        - sql:
+            sql: |
+              CREATE TABLE client
+              (
+                  id BIGINT NOT NULL,
+                  name VARCHAR(255),
+                  email VARCHAR(255),
+                  phone_number VARCHAR(255),
+                  address VARCHAR(255),
+                  PRIMARY KEY (id)
+              );
+              CREATE TABLE customer_order
+              (
+                  id BIGINT NOT NULL,
+                  description VARCHAR(255),
+                  status VARCHAR(255),
+                  order_date TIMESTAMP,
+                  client_id BIGINT,
+                  PRIMARY KEY (id),
+                  FOREIGN KEY (client_id) REFERENCES client(id)
+              );
+              CREATE TABLE delivery
+              (
+                  id BIGINT NOT NULL,
+                  address VARCHAR(255),
+                  status VARCHAR(255),
+                  client_id BIGINT,
+                  PRIMARY KEY (id),
+                  FOREIGN KEY (client_id) REFERENCES client(id)
+              );
+              CREATE TABLE delivery_order
+              (
+                  delivery_id BIGINT NOT NULL,
+                  order_id BIGINT NOT NULL,
+                  PRIMARY KEY (delivery_id, order_id),
+                  FOREIGN KEY (delivery_id) REFERENCES delivery(id),
+                  FOREIGN KEY (order_id) REFERENCES customer_order(id)
+              );
+
+  - changeSet:
+      id: 2
+      author: authorName
+      changes:
+        - sql:
+            sql: |
+              CREATE GENERATOR client_seq;
+              SET GENERATOR client_seq TO 0;
+
+  - changeSet:
+      id: 3
+      author: authorName
+      changes:
+        - sql:
+            endDelimiter: ;
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TRIGGER client_bir FOR client
+              ACTIVE BEFORE INSERT POSITION 0
+              AS
+              BEGIN
+                  IF (NEW.id is NULL) THEN BEGIN:
+                    NEW.id = gen_id(client_seq, 1);
+                  END
+              END
+  - changeSet:
+      id: 4
+      author: authorName
+      changes:
+        - sql:
+            sql: |
+              CREATE GENERATOR order_seq;
+              SET GENERATOR order_seq TO 0;
+  - changeSet:
+      id: 5
+      author: authorName
+      changes:
+        - sql:
+            endDelimiter: ;
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TRIGGER order_bir FOR customer_order
+              ACTIVE BEFORE INSERT POSITION 0
+              AS
+              BEGIN
+                  IF (NEW.id is NULL) THEN BEGIN:
+                    NEW.id = GEN_ID(order_seq, 1);
+                  END
+              END
+  - changeSet:
+      id: 6
+      author: authorName
+      changes:
+        - sql:
+            sql: |
+              CREATE GENERATOR delivery_seq;
+              SET GENERATOR delivery_seq TO 0;
+  - changeSet:
+      id: 7
+      author: authorName
+      changes:
+        - sql:
+            endDelimiter: ;
+            splitStatements: false
+            stripComments: true
+            sql: |
+              CREATE TRIGGER delivery_bir FOR delivery
+              ACTIVE BEFORE INSERT POSITION 0
+              AS
+              BEGIN
+                  IF (NEW.id is NULL) THEN BEGIN:
+                    NEW.id = GEN_ID(delivery_seq, 1);
+                  END
+              END
