@@ -9,14 +9,6 @@ spring:
         implicity-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
       ddl-auto: none
     show-sql: true
-    #    database: postgresql
-    database-platform: org.firebirdsql.hibernate.FirebirdDialect
-    open-in-view: false
-    generate-ddl: false
-    properties:
-      hibernate:
-        temp:
-          use_jdbc_metadata_defaults: false
   datasource:
     driver-class-name: org.firebirdsql.jdbc.FBDriver
     url: jdbc:firebirdsql://localhost:3050/delivery_control.fdb
