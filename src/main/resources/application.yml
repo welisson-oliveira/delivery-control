@@ -2,3 +2,24 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  jpa:
+    hibernate:
+      namming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicity-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+      ddl-auto: none
+    show-sql: true
+    #    database: postgresql
+    database-platform: org.firebirdsql.hibernate.FirebirdDialect
+    open-in-view: false
+    generate-ddl: false
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+  datasource:
+    driver-class-name: org.firebirdsql.jdbc.FBDriver
+    url: jdbc:firebirdsql://localhost:3050/delivery_control.fdb
+    username: delivery_control
+    password: delivery_control
+    platform: firebird

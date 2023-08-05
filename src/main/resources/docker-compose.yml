@@ -1,0 +1,11 @@
+version: "3.7"
+services:
+  firebase: &app
+    image: jacobalberty/firebird
+    container_name: firebase-delivery-control
+    ports:
+      - 3050:3050
+    environment:
+      FIREBIRD_DATABASE: delivery_control.fdb
+      FIREBIRD_USER: delivery_control
+      FIREBIRD_PASSWORD: delivery_control
