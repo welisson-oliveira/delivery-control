@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "address": "Address",
+    "status": "WAITING",
+    "clientId": 1,
+    "orders": [
+      {
+        "id": 1,
+        "description": "Client 1 Order",
+        "status": "CREATED"
+      },
+      {
+        "id": 2,
+        "description": "2 Client 1 Order",
+        "status": "CREATED"
+      }
+    ]
+  }
+]

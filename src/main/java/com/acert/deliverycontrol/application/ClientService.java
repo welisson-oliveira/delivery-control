@@ -46,5 +46,6 @@ public class ClientService {
             throw new DataNotFoundException("Client not found with ID: " + id);
         }
     }
+
 }
 

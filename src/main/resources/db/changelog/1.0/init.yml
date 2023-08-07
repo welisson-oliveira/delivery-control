@@ -1,59 +1,247 @@
 databaseChangeLog:
+
   - changeSet:
       id: 1
-      author: authorName
+      author: welisson (generated)
       changes:
-        - sql:
-            sql: |
-              CREATE TABLE client
-              (
-                  id BIGINT NOT NULL,
-                  name VARCHAR(255),
-                  email VARCHAR(255),
-                  phone_number VARCHAR(255),
-                  address VARCHAR(255),
-                  PRIMARY KEY (id)
-              );
-              CREATE TABLE customer_order
-              (
-                  id BIGINT NOT NULL,
-                  description VARCHAR(255),
-                  status VARCHAR(255),
-                  order_date TIMESTAMP,
-                  client_id BIGINT,
-                  PRIMARY KEY (id),
-                  FOREIGN KEY (client_id) REFERENCES client(id)
-              );
-              CREATE TABLE delivery
-              (
-                  id BIGINT NOT NULL,
-                  address VARCHAR(255),
-                  status VARCHAR(255),
-                  client_id BIGINT,
-                  PRIMARY KEY (id),
-                  FOREIGN KEY (client_id) REFERENCES client(id)
-              );
-              CREATE TABLE delivery_order
-              (
-                  delivery_id BIGINT NOT NULL,
-                  order_id BIGINT NOT NULL,
-                  PRIMARY KEY (delivery_id, order_id),
-                  FOREIGN KEY (delivery_id) REFERENCES delivery(id),
-                  FOREIGN KEY (order_id) REFERENCES customer_order(id)
-              );
-
+        - createTable:
+            tableName: CLIENT
+            columns:
+              - column:
+                  name: ID
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: NAME
+                  type: VARCHAR(255)
+              - column:
+                  name: EMAIL
+                  type: VARCHAR(255)
+              - column:
+                  name: PHONE_NUMBER
+                  type: VARCHAR(255)
+              - column:
+                  name: ADDRESS
+                  type: VARCHAR(255)
   - changeSet:
       id: 2
-      author: authorName
+      author: welisson (generated)
       changes:
-        - sql:
-            sql: |
-              CREATE GENERATOR client_seq;
-              SET GENERATOR client_seq TO 0;
-
+        - createTable:
+            tableName: CUSTOMER_ORDER
+            columns:
+              - column:
+                  name: ID
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: DESCRIPTION
+                  type: VARCHAR(255)
+              - column:
+                  name: STATUS
+                  type: VARCHAR(255)
+              - column:
+                  name: ORDER_DATE
+                  type: TIMESTAMP
+              - column:
+                  name: CLIENT_ID
+                  type: BIGINT
   - changeSet:
       id: 3
-      author: authorName
+      author: welisson (generated)
+      changes:
+        - createTable:
+            tableName: DELIVERY
+            columns:
+              - column:
+                  name: ID
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ADDRESS
+                  type: VARCHAR(255)
+              - column:
+                  name: STATUS
+                  type: VARCHAR(255)
+              - column:
+                  name: CLIENT_ID
+                  type: BIGINT
+  - changeSet:
+      id: 4
+      author: welisson (generated)
+      changes:
+        - createTable:
+            tableName: DELIVERY_ORDERS
+            columns:
+              - column:
+                  name: DELIVERY_ID
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ORDER_ID
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 5
+      author: welisson (generated)
+      changes:
+        - addPrimaryKey:
+            columnNames: ID
+            constraintName: INTEG_379
+            tableName: CLIENT
+  - changeSet:
+      id: 6
+      author: welisson (generated)
+      changes:
+        - addPrimaryKey:
+            columnNames: ID
+            constraintName: INTEG_381
+            tableName: CUSTOMER_ORDER
+  - changeSet:
+      id: 7
+      author: welisson (generated)
+      changes:
+        - addPrimaryKey:
+            columnNames: ID
+            constraintName: INTEG_384
+            tableName: DELIVERY
+  - changeSet:
+      id: 8
+      author: welisson (generated)
+      changes:
+        - addPrimaryKey:
+            columnNames: DELIVERY_ID, ORDER_ID
+            constraintName: INTEG_388
+            tableName: DELIVERY_ORDERS
+  - changeSet:
+      id: 9
+      author: welisson (generated)
+      changes:
+        - createIndex:
+            indexName: RDB$FOREIGN139
+            tableName: CUSTOMER_ORDER
+            unique: false
+            columns:
+              - column:
+                  name: CLIENT_ID
+  - changeSet:
+      id: 10
+      author: welisson (generated)
+      changes:
+        - createIndex:
+            indexName: RDB$FOREIGN141
+            tableName: DELIVERY
+            unique: true
+            columns:
+              - column:
+                  name: CLIENT_ID
+  - changeSet:
+      id: 101
+      author: welisson (generated)
+      changes:
+        - createIndex:
+            indexName: RDB$FOREIGN142
+            tableName: CUSTOMER_ORDER
+            unique: false
+            columns:
+              - column:
+                  name: CLIENT_ID
+  - changeSet:
+      id: 11
+      author: welisson (generated)
+      changes:
+        - createIndex:
+            indexName: RDB$FOREIGN143
+            tableName: DELIVERY_ORDERS
+            unique: false
+            columns:
+              - column:
+                  name: DELIVERY_ID
+  - changeSet:
+      id: 12
+      author: welisson (generated)
+      changes:
+        - createIndex:
+            indexName: RDB$FOREIGN144
+            tableName: DELIVERY_ORDERS
+            unique: true
+            columns:
+              - column:
+                  name: ORDER_ID
+  - changeSet:
+      id: 13
+      author: welisson (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: CLIENT_ID
+            baseTableName: CUSTOMER_ORDER
+            constraintName: INTEG_382
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: ID
+            referencedTableName: CLIENT
+  - changeSet:
+      id: 14
+      author: welisson (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: CLIENT_ID
+            baseTableName: DELIVERY
+            constraintName: INTEG_385
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: ID
+            referencedTableName: CLIENT
+  - changeSet:
+      id: 15
+      author: welisson (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: DELIVERY_ID
+            baseTableName: DELIVERY_ORDERS
+            constraintName: INTEG_389
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: ID
+            referencedTableName: DELIVERY
+  - changeSet:
+      id: 16
+      author: welisson (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: ORDER_ID
+            baseTableName: DELIVERY_ORDERS
+            constraintName: INTEG_390
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: ID
+            referencedTableName: CUSTOMER_ORDER
+
+        - changeSet:
+          id: 17
+          author: welisson (generated)
+          changes:
+            - sql:
+                sql: |
+                  CREATE GENERATOR client_seq;
+                  SET GENERATOR client_seq TO 0;
+
+  - changeSet:
+      id: 18
+      author: welisson (generated)
       changes:
         - sql:
             endDelimiter: ;
@@ -69,16 +257,16 @@ databaseChangeLog:
                   END
               END
   - changeSet:
-      id: 4
-      author: authorName
+      id: 19
+      author: welisson (generated)
       changes:
         - sql:
             sql: |
               CREATE GENERATOR order_seq;
               SET GENERATOR order_seq TO 0;
   - changeSet:
-      id: 5
-      author: authorName
+      id: 20
+      author: welisson (generated)
       changes:
         - sql:
             endDelimiter: ;
@@ -94,16 +282,16 @@ databaseChangeLog:
                   END
               END
   - changeSet:
-      id: 6
-      author: authorName
+      id: 21
+      author: welisson (generated)
       changes:
         - sql:
             sql: |
               CREATE GENERATOR delivery_seq;
               SET GENERATOR delivery_seq TO 0;
   - changeSet:
-      id: 7
-      author: authorName
+      id: 22
+      author: welisson (generated)
       changes:
         - sql:
             endDelimiter: ;
@@ -118,3 +306,4 @@ databaseChangeLog:
                     NEW.id = GEN_ID(delivery_seq, 1);
                   END
               END
+

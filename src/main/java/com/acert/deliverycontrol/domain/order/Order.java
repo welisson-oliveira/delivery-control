@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name = "order")
+@Table(name = "customer_order")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class Order {
@@ -25,23 +25,43 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
-
     @Column(name = "order_date")
     private LocalDateTime orderDate;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+
+//    @ManyToOne
+//    @JoinColumn(name = "delivery_id")
+//    private Delivery delivery;
 
     public Order(final String description, final Client client) {
         this.description = description;
         this.status = OrderStatus.CREATED;
-        this.client = client;
         this.orderDate = LocalDateTime.now();
+        this.client = client;
     }
 
-    public void updateOrder(final Order updatedOrder) {
-        this.description = updatedOrder.getDescription();
-        this.status = updatedOrder.getStatus();
+    public void updateOrder(final String description) {
+        this.description = description;
+    }
+
+    public void nextStatus(final OrderStatus orderStatus) {
+        if (this.status.nextStatus().stream().anyMatch(s -> s.equals(orderStatus))) {
+            this.status = orderStatus;
+        } else {
+            throw new InvalidStatusException("can't change from: " + this.status + " to: " + orderStatus);
+        }
+
+    }
+
+    public boolean isFinished() {
+        return OrderStatus.DONE.equals(this.status);
+    }
+
+    public boolean isCanceled() {
+        return OrderStatus.CANCELED.equals(this.status);
     }
 }
 

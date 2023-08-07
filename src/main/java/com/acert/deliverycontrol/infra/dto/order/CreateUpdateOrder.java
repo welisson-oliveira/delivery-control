@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CreateOrder {
+public class CreateUpdateOrder {
     private String description;
 }

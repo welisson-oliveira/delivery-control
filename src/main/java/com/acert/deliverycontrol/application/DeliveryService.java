@@ -4,7 +4,10 @@ import com.acert.deliverycontrol.application.exceptions.DataNotFoundException;
 import com.acert.deliverycontrol.domain.client.Client;
 import com.acert.deliverycontrol.domain.delivery.Delivery;
 import com.acert.deliverycontrol.domain.delivery.DeliveryStatus;
+import com.acert.deliverycontrol.infra.events.CanceledOrderEvent;
 import com.acert.deliverycontrol.infra.events.CreateOrderEvent;
+import com.acert.deliverycontrol.infra.events.DeleteOrderEvent;
+import com.acert.deliverycontrol.infra.events.FinishedOrderEvent;
 import com.acert.deliverycontrol.infra.repository.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,37 +32,52 @@ public class DeliveryService {
     }
 
     @Transactional
-    public Delivery createDelivery(final Delivery delivery) {
+    private Delivery createDelivery(final Delivery delivery) {
         return this.deliveryRepository.save(delivery);
     }
 
-    @Transactional
-    public Delivery updateDelivery(final Long id, final Delivery updatedDelivery) {
-        return this.deliveryRepository.findById(id)
-                .map(delivery -> {
-                    delivery.updateDelivery(updatedDelivery);
-                    return this.deliveryRepository.save(delivery);
-                })
-                .orElseThrow(() -> new DataNotFoundException("Delivery not found with ID: " + id));
-    }
+    @EventListener
+    public void createOrder(final CreateOrderEvent createOrderEvent) {
 
-    @Transactional
-    public void deleteDelivery(final Long id) {
-        if (this.deliveryRepository.existsById(id)) {
-            this.deliveryRepository.deleteById(id);
-        } else {
-            throw new DataNotFoundException("Delivery not found with ID: " + id);
-        }
+        final Client loggedClient = new Client(1L, "welisson", "welisson@email.com", "13123123123", "Address");
+
+        final Optional<Delivery> activeByClientId = this.deliveryRepository.findActiveByClientId(loggedClient.getId());
+
+        final Delivery delivery = activeByClientId.orElseGet(() -> new Delivery(null, loggedClient.getAddress(), DeliveryStatus.WAITING, loggedClient));
+        delivery.addOrder(createOrderEvent.getSource());
+        this.createDelivery(delivery);
     }
 
     @EventListener
-    public Delivery createOrder(final CreateOrderEvent createOrderEvent) {
-
-        final Client loggedClient = new Client(null, "welisson", "welisson@email.com", "13123123123", "Address");
-
-        final Delivery delivery = new Delivery(null, loggedClient.getAddress(), DeliveryStatus.WAITING, loggedClient);
-        delivery.addOrder(createOrderEvent.getSource());
-        return this.createDelivery(delivery);
+    public void startDelivery(final FinishedOrderEvent finishedOrderEvent) {
+        final Long orderId = finishedOrderEvent.getSource();
+        this.deliveryRepository.findDeliveryByOrderId(orderId).ifPresent(delivery -> {
+            delivery.start();
+            this.deliveryRepository.save(delivery);
+        });
     }
+
+    @EventListener
+    public void cancel(final CanceledOrderEvent canceledOrderEvent) {
+        final Long orderId = canceledOrderEvent.getSource();
+        this.deliveryRepository.findDeliveryByOrderId(orderId).ifPresent(delivery -> {
+            delivery.cancel();
+            this.deliveryRepository.save(delivery);
+        });
+    }
+
+    @EventListener
+    public void delete(final DeleteOrderEvent canceledOrderEvent) {
+        final Long orderId = canceledOrderEvent.getSource();
+        this.deliveryRepository.findDeliveryByOrderId(orderId).ifPresent(delivery -> {
+            delivery.removeOrderById(orderId);
+            if (delivery.canDelete()) {
+                this.deliveryRepository.delete(delivery);
+            } else {
+                this.deliveryRepository.save(delivery);
+            }
+        });
+    }
+
 }
 

@@ -78,32 +78,6 @@
 
     <build>
         <plugins>
-            <!--            <plugin>-->
-            <!--                <groupId>org.liquibase</groupId>-->
-            <!--                <artifactId>liquibase-maven-plugin</artifactId>-->
-            <!--                <version>3.5.3</version>-->
-            <!--                <configuration>-->
-            <!--                    <propertyFile>src/main/resources/application.yml</propertyFile>-->
-            <!--                </configuration>-->
-            <!--                <dependencies>-->
-            <!--                    <dependency>-->
-            <!--                        <groupId>org.liquibase.ext</groupId>-->
-            <!--                        <artifactId>liquibase-hibernate5</artifactId>-->
-            <!--                        <version>3.6</version>-->
-            <!--                    </dependency>-->
-            <!--                    <dependency>-->
-            <!--                        <groupId>org.hibernate</groupId>-->
-            <!--                        <artifactId>hibernate-validator</artifactId>-->
-            <!--                        <version>5.3.5.Final</version>-->
-            <!--                    </dependency>-->
-            <!--                    <dependency>-->
-            <!--                        <groupId>org.springframework.data</groupId>-->
-            <!--                        <artifactId>spring-data-jpa</artifactId>-->
-            <!--                        <version>1.11.7.RELEASE</version>-->
-            <!--                    </dependency>-->
-            <!--                </dependencies>-->
-            <!--            </plugin>-->
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

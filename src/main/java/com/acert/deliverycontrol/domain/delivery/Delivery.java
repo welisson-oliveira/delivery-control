@@ -1,6 +1,7 @@
 package com.acert.deliverycontrol.domain.delivery;
 
 import com.acert.deliverycontrol.domain.client.Client;
+import com.acert.deliverycontrol.domain.order.InvalidStatusException;
 import com.acert.deliverycontrol.domain.order.Order;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -32,15 +34,48 @@ public class Delivery {
     private Client client;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(
+            name = "delivery_orders",
+            joinColumns = @JoinColumn(name = "delivery_id"),
+            inverseJoinColumns = @JoinColumn(name = "order_id")
+    )
     private final List<Order> orders = new ArrayList<>();
-
-    public void updateDelivery(final Delivery updatedDelivery) {
-        this.address = updatedDelivery.getAddress();
-        this.status = updatedDelivery.getStatus();
-    }
 
     public void addOrder(final Order order) {
         this.orders.add(order);
+    }
+
+    public void start() {
+        if (this.status.nextStatus().stream().anyMatch(s -> s.equals(DeliveryStatus.IN_PROGRESS)) && this.canStart()) {
+            this.status = DeliveryStatus.IN_PROGRESS;
+        } else {
+            throw new InvalidStatusException("can't change from: " + this.status + " to: " + DeliveryStatus.IN_PROGRESS);
+        }
+    }
+
+    public void cancel() {
+        if (this.status.nextStatus().stream().anyMatch(s -> s.equals(DeliveryStatus.CANCELED)) && this.canCancel()) {
+            this.status = DeliveryStatus.CANCELED;
+        } else {
+            throw new InvalidStatusException("can't change from: " + this.status + " to: " + DeliveryStatus.CANCELED);
+        }
+    }
+
+    private boolean canStart() {
+        return this.orders.stream().allMatch(Order::isFinished);
+    }
+
+    private boolean canCancel() {
+        return this.orders.stream().allMatch(Order::isCanceled);
+    }
+
+    public void removeOrderById(final Long orderId) {
+        final Optional<Order> optionalOrder = this.orders.stream().filter(order -> order.getId().equals(orderId)).findFirst();
+        optionalOrder.ifPresent(this.orders::remove);
+    }
+
+    public boolean canDelete() {
+        return this.orders.isEmpty();
     }
 }
 

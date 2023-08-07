@@ -1,7 +1,6 @@
 package com.acert.deliverycontrol.domain.client;
 
 import com.acert.deliverycontrol.domain.delivery.Delivery;
-import com.acert.deliverycontrol.domain.order.Order;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,9 +27,6 @@ public class Client {
     @Column(name = "phone_number")
     private String phoneNumber;
     private String address;
-
-    @OneToMany(mappedBy = "client")
-    private final List<Order> orders = new ArrayList<>();
 
     @OneToMany(mappedBy = "client")
     private final List<Delivery> deliveries = new ArrayList<>();

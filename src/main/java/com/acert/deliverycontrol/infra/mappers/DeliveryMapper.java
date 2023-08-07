@@ -14,10 +14,11 @@ import java.util.stream.Collectors;
 public class DeliveryMapper {
 
     private final ClientRepository repository;
+    private final OrderMapper orderMapper;
 
     public DeliveryDTO toDTO(final Delivery delivery) {
         return new DeliveryDTO(delivery.getId(), delivery.getAddress(), delivery.getStatus(),
-                delivery.getClient().getId());
+                delivery.getClient().getId(), this.orderMapper.toDTOs(delivery.getOrders()));
     }
 
     public Delivery toEntity(final DeliveryDTO dto) {

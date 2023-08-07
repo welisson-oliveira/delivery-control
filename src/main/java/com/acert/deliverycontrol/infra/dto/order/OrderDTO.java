@@ -15,6 +15,6 @@ public class OrderDTO {
     private Long id;
     private String description;
     private OrderStatus status;
-    private Long clientId;
     private LocalDateTime orderDate;
+    private Long clientId;
 }
