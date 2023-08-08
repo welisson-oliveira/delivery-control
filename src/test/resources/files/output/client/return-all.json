@@ -1,9 +1,16 @@
 [
   {
     "id": 1,
-    "name": "welisson",
-    "email": "welisson@email.com",
-    "phoneNumber": "123412341234",
-    "address": "asdjfgkdfjbpiu"
+    "name": "ADMIN",
+    "email": "ADMIN@EMAIL.COM",
+    "phoneNumber": "12 123451234",
+    "address": "UM ENDEREÇO QUALQUER"
+  },
+  {
+    "id": 2,
+    "name": "CLIENT",
+    "email": "CLIENT@EMAIL.COM",
+    "phoneNumber": "12 123451234",
+    "address": "OUTRO ENDEREÇO QUALQUER"
   }
 ]

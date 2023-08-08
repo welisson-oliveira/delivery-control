@@ -19,11 +19,10 @@ spring:
     password: delivery_control
     platform: firebird
 
-#liquibase
-#url: jdbc:firebirdsql://localhost:3050/delivery_control.fdb
-#username: delivery_control
-#password: delivery_control
-#driver: org.firebirdsql.jdbc.FBDriver
-#referenceUrl: hibernate:spring:com.acert.deliverycontrol.domain?dialect=org.firebirdsql.jdbc.FBDriver
-#changeLogFile: src/main/resources/db/changelog/generated-changelog-master.xml
-#diffChangeLogFile: src/main/resources/db/changelog/liquibase-diff-changeLog.xml
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+jwt:
+  secret: usersecret

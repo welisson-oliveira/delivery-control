@@ -2,7 +2,7 @@ databaseChangeLog:
 
   - changeSet:
       id: 1
-      author: welisson (generated)
+      author: welisson
       changes:
         - createTable:
             tableName: CLIENT
@@ -26,7 +26,39 @@ databaseChangeLog:
                   type: VARCHAR(255)
   - changeSet:
       id: 2
-      author: welisson (generated)
+      author: welisson
+      changes:
+        - createTable:
+            tableName: ROLE
+            columns:
+              - column:
+                  name: ID
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: AUTHORITY
+                  type: VARCHAR(255)
+  - changeSet:
+      id: 3
+      author: welisson
+      changes:
+        - createTable:
+            tableName: CLIENT_ROLE
+            columns:
+              - column:
+                  name: CLIENT_ID
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ROLE_ID
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 4
+      author: welisson
       changes:
         - createTable:
             tableName: CUSTOMER_ORDER
@@ -49,8 +81,8 @@ databaseChangeLog:
                   name: CLIENT_ID
                   type: BIGINT
   - changeSet:
-      id: 3
-      author: welisson (generated)
+      id: 5
+      author: welisson
       changes:
         - createTable:
             tableName: DELIVERY
@@ -70,8 +102,8 @@ databaseChangeLog:
                   name: CLIENT_ID
                   type: BIGINT
   - changeSet:
-      id: 4
-      author: welisson (generated)
+      id: 6
+      author: welisson
       changes:
         - createTable:
             tableName: DELIVERY_ORDERS
@@ -87,40 +119,56 @@ databaseChangeLog:
                   constraints:
                     nullable: false
   - changeSet:
-      id: 5
-      author: welisson (generated)
+      id: 7
+      author: welisson
       changes:
         - addPrimaryKey:
             columnNames: ID
-            constraintName: INTEG_379
+            constraintName: INTEG_379333
             tableName: CLIENT
   - changeSet:
-      id: 6
-      author: welisson (generated)
+      id: 8
+      author: welisson
       changes:
         - addPrimaryKey:
             columnNames: ID
-            constraintName: INTEG_381
+            constraintName: INTEG_381333
             tableName: CUSTOMER_ORDER
   - changeSet:
-      id: 7
-      author: welisson (generated)
+      id: 81
+      author: welisson
       changes:
         - addPrimaryKey:
             columnNames: ID
-            constraintName: INTEG_384
+            constraintName: INTEG_396333
+            tableName: ROLE
+  - changeSet:
+      id: 9
+      author: welisson
+      changes:
+        - addPrimaryKey:
+            columnNames: ID
+            constraintName: INTEG_384333
             tableName: DELIVERY
   - changeSet:
-      id: 8
-      author: welisson (generated)
+      id: 10
+      author: welisson
       changes:
         - addPrimaryKey:
             columnNames: DELIVERY_ID, ORDER_ID
-            constraintName: INTEG_388
+            constraintName: INTEG_388333
             tableName: DELIVERY_ORDERS
   - changeSet:
-      id: 9
-      author: welisson (generated)
+      id: 11
+      author: welisson
+      changes:
+        - addPrimaryKey:
+            columnNames: CLIENT_ID, ROLE_ID
+            constraintName: INTEG_391333
+            tableName: CLIENT_ROLE
+  - changeSet:
+      id: 12
+      author: welisson
       changes:
         - createIndex:
             indexName: RDB$FOREIGN139
@@ -130,8 +178,8 @@ databaseChangeLog:
               - column:
                   name: CLIENT_ID
   - changeSet:
-      id: 10
-      author: welisson (generated)
+      id: 13
+      author: welisson
       changes:
         - createIndex:
             indexName: RDB$FOREIGN141
@@ -141,8 +189,8 @@ databaseChangeLog:
               - column:
                   name: CLIENT_ID
   - changeSet:
-      id: 101
-      author: welisson (generated)
+      id: 14
+      author: welisson
       changes:
         - createIndex:
             indexName: RDB$FOREIGN142
@@ -152,8 +200,8 @@ databaseChangeLog:
               - column:
                   name: CLIENT_ID
   - changeSet:
-      id: 11
-      author: welisson (generated)
+      id: 15
+      author: welisson
       changes:
         - createIndex:
             indexName: RDB$FOREIGN143
@@ -163,24 +211,46 @@ databaseChangeLog:
               - column:
                   name: DELIVERY_ID
   - changeSet:
-      id: 12
-      author: welisson (generated)
+      id: 16
+      author: welisson
       changes:
         - createIndex:
             indexName: RDB$FOREIGN144
             tableName: DELIVERY_ORDERS
-            unique: true
+            unique: false
             columns:
               - column:
                   name: ORDER_ID
   - changeSet:
-      id: 13
-      author: welisson (generated)
+      id: 17
+      author: welisson
+      changes:
+        - createIndex:
+            indexName: RDB$FOREIGN145
+            tableName: CLIENT_ROLE
+            unique: false
+            columns:
+              - column:
+                  name: CLIENT_ID
+  - changeSet:
+      id: 18
+      author: welisson
+      changes:
+        - createIndex:
+            indexName: RDB$FOREIGN146
+            tableName: CLIENT_ROLE
+            unique: false
+            columns:
+              - column:
+                  name: ROLE_ID
+  - changeSet:
+      id: 19
+      author: welisson
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: CLIENT_ID
             baseTableName: CUSTOMER_ORDER
-            constraintName: INTEG_382
+            constraintName: INTEG_382333
             deferrable: false
             initiallyDeferred: false
             onDelete: NO ACTION
@@ -188,13 +258,13 @@ databaseChangeLog:
             referencedColumnNames: ID
             referencedTableName: CLIENT
   - changeSet:
-      id: 14
-      author: welisson (generated)
+      id: 20
+      author: welisson
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: CLIENT_ID
             baseTableName: DELIVERY
-            constraintName: INTEG_385
+            constraintName: INTEG_385333
             deferrable: false
             initiallyDeferred: false
             onDelete: NO ACTION
@@ -202,13 +272,13 @@ databaseChangeLog:
             referencedColumnNames: ID
             referencedTableName: CLIENT
   - changeSet:
-      id: 15
-      author: welisson (generated)
+      id: 21
+      author: welisson
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: DELIVERY_ID
             baseTableName: DELIVERY_ORDERS
-            constraintName: INTEG_389
+            constraintName: INTEG_389333
             deferrable: false
             initiallyDeferred: false
             onDelete: NO ACTION
@@ -216,32 +286,58 @@ databaseChangeLog:
             referencedColumnNames: ID
             referencedTableName: DELIVERY
   - changeSet:
-      id: 16
-      author: welisson (generated)
+      id: 22
+      author: welisson
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: ORDER_ID
             baseTableName: DELIVERY_ORDERS
-            constraintName: INTEG_390
+            constraintName: INTEG_390333
             deferrable: false
             initiallyDeferred: false
             onDelete: NO ACTION
             onUpdate: NO ACTION
             referencedColumnNames: ID
             referencedTableName: CUSTOMER_ORDER
-
-        - changeSet:
-          id: 17
-          author: welisson (generated)
-          changes:
-            - sql:
-                sql: |
-                  CREATE GENERATOR client_seq;
-                  SET GENERATOR client_seq TO 0;
-
   - changeSet:
-      id: 18
-      author: welisson (generated)
+      id: 23
+      author: welisson
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: CLIENT_ID
+            baseTableName: CLIENT_ROLE
+            constraintName: INTEG_392333
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: ID
+            referencedTableName: CLIENT
+  - changeSet:
+      id: 24
+      author: welisson
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: ROLE_ID
+            baseTableName: CLIENT_ROLE
+            constraintName: INTEG_393333
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: ID
+            referencedTableName: ROLE
+  - changeSet:
+      id: 25
+      author: welisson
+      changes:
+        - sql:
+            sql: |
+              CREATE GENERATOR client_seq;
+              SET GENERATOR client_seq TO 0;
+  - changeSet:
+      id: 26
+      author: welisson
       changes:
         - sql:
             endDelimiter: ;
@@ -257,16 +353,16 @@ databaseChangeLog:
                   END
               END
   - changeSet:
-      id: 19
-      author: welisson (generated)
+      id: 27
+      author: welisson
       changes:
         - sql:
             sql: |
               CREATE GENERATOR order_seq;
               SET GENERATOR order_seq TO 0;
   - changeSet:
-      id: 20
-      author: welisson (generated)
+      id: 28
+      author: welisson
       changes:
         - sql:
             endDelimiter: ;
@@ -282,16 +378,16 @@ databaseChangeLog:
                   END
               END
   - changeSet:
-      id: 21
-      author: welisson (generated)
+      id: 29
+      author: welisson
       changes:
         - sql:
             sql: |
               CREATE GENERATOR delivery_seq;
               SET GENERATOR delivery_seq TO 0;
   - changeSet:
-      id: 22
-      author: welisson (generated)
+      id: 30
+      author: welisson
       changes:
         - sql:
             endDelimiter: ;
@@ -306,4 +402,99 @@ databaseChangeLog:
                     NEW.id = GEN_ID(delivery_seq, 1);
                   END
               END
-
+  - changeSet:
+      id: 31
+      author: welisson
+      changes:
+        - insert:
+            tableName: CLIENT
+            columns:
+              - column:
+                  name: ID
+                  value: 1
+              - column:
+                  name: NAME
+                  value: ADMIN
+              - column:
+                  name: EMAIL
+                  value: ADMIN@EMAIL.COM
+              - column:
+                  name: PHONE_NUMBER
+                  value: 12 123451234
+              - column:
+                  name: ADDRESS
+                  value: UM ENDEREÇO QUALQUER
+        - insert:
+            tableName: ROLE
+            columns:
+              - column:
+                  name: ID
+                  value: 1
+              - column:
+                  name: AUTHORITY
+                  value: ADMIN
+        - insert:
+            tableName: ROLE
+            columns:
+              - column:
+                  name: ID
+                  value: 2
+              - column:
+                  name: AUTHORITY
+                  value: CLIENT
+        - insert:
+            tableName: CLIENT_ROLE
+            columns:
+              - column:
+                  name: CLIENT_ID
+                  value: 1
+              - column:
+                  name: ROLE_ID
+                  value: 1
+        - insert:
+            tableName: CLIENT_ROLE
+            columns:
+              - column:
+                  name: CLIENT_ID
+                  value: 1
+              - column:
+                  name: ROLE_ID
+                  value: 2
+  - changeSet:
+      id: 32
+      author: welisson
+      changes:
+        - insert:
+            tableName: CLIENT
+            columns:
+              - column:
+                  name: ID
+                  value: 2
+              - column:
+                  name: NAME
+                  value: CLIENT
+              - column:
+                  name: EMAIL
+                  value: CLIENT@EMAIL.COM
+              - column:
+                  name: PHONE_NUMBER
+                  value: 12 123451234
+              - column:
+                  name: ADDRESS
+                  value: OUTRO ENDEREÇO QUALQUER
+        - insert:
+            tableName: CLIENT_ROLE
+            columns:
+              - column:
+                  name: CLIENT_ID
+                  value: 2
+              - column:
+                  name: ROLE_ID
+                  value: 2
+  - changeSet:
+      id: 33
+      author: welisson
+      changes:
+        - sql:
+            sql: |
+              SET GENERATOR client_seq TO 2;

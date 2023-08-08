@@ -1,6 +1,8 @@
 package com.acert.deliverycontrol.infra.controllers;
 
 import com.acert.deliverycontrol.config.AbstractTestsConfig;
+import com.acert.deliverycontrol.config.ClearContext;
+import com.acert.deliverycontrol.config.mockauth.WithUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -10,10 +12,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WithUser
+@ClearContext
 public class OrderControllerTests extends AbstractTestsConfig {
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-order.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-order.sql"})
     public void shouldReturnAllOrders() throws Exception {
         this.mockMvc.perform(get("/orders")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -22,7 +26,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-all-states-orders.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
     public void shouldReturnAllActivatedOrders() throws Exception {
         this.mockMvc.perform(get("/orders/activated")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -31,7 +35,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-all-states-orders.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
     public void shouldReturnAllDoneOrders() throws Exception {
         this.mockMvc.perform(get("/orders/finished")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -41,7 +45,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-all-states-orders.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
     public void shouldReturnAllCanceledOrders() throws Exception {
         this.mockMvc.perform(get("/orders/canceled")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -51,7 +55,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-order.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-order.sql"})
     public void shouldReturnOrderById() throws Exception {
         this.mockMvc.perform(get("/orders/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -60,7 +64,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-all-states-orders.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
     public void shouldReturnActivatedOrdersById() throws Exception {
         this.mockMvc.perform(get("/orders/clients/1/activated")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -70,7 +74,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-all-states-orders.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
     public void shouldReturnDoneOrdersById() throws Exception {
         this.mockMvc.perform(get("/orders/clients/1/finished")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -80,7 +84,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-all-states-orders.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
     public void shouldReturnCanceledOrdersById() throws Exception {
         this.mockMvc.perform(get("/orders/clients/1/canceled")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -90,7 +94,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql"})
     public void shouldCreateOrderAndDelivery() throws Exception {
         final String update = this.readFileAsString("files/input/order/insert-order.json");
 
@@ -109,7 +112,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql"})
     public void shouldCreateMoreThanOneOrderToADelivery() throws Exception {
         final String insert = this.readFileAsString("files/input/order/insert-order.json");
 
@@ -137,7 +139,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-order.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-order.sql"})
     public void shouldUpdateOrderById() throws Exception {
         final String update = this.readFileAsString("files/input/order/update-order.json");
 
@@ -150,7 +152,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     }
 
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-order.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-order.sql"})
     @Test
     public void shouldChangeStatusToInProgress() throws Exception {
 
@@ -159,7 +161,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
                 .andExpect(status().isOk());
     }
 
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-order.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-order.sql"})
     @Test
     public void shouldChangeStatusToCanceled() throws Exception {
 
@@ -168,7 +170,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
                 .andExpect(status().isOk());
     }
 
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-order.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-order.sql"})
     @Test
     public void shouldNotChangeStatusToFinished() throws Exception {
 
@@ -177,7 +179,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
                 .andExpect(status().isBadRequest());
     }
 
-    @Sql(scripts = {"classpath:db/client/insert-client.sql"})
     @Test
     public void shouldFinalizeTheOrderAndStartTheDelivery() throws Exception {
         this.shouldCreateOrderAndDelivery();
@@ -197,7 +198,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql", "classpath:db/order/insert-order.sql"})
+    @Sql(scripts = {"classpath:db/order/insert-order.sql"})
     public void shouldRemoveOrderWithOneDelivery() throws Exception {
         this.mockMvc.perform(delete("/orders/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -205,7 +206,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql"})
     public void shouldRemoveOrderAndKeepDelivery() throws Exception {
 
         final String insert = this.readFileAsString("files/input/order/insert-order.json");
@@ -232,7 +232,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    @Sql(scripts = {"classpath:db/client/insert-client.sql"})
     public void shouldRemoveOrdersAndDelivery() throws Exception {
 
         final String insert = this.readFileAsString("files/input/order/insert-order.json");

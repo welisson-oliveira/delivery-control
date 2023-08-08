@@ -77,6 +77,7 @@ public class OrderService {
     }
 
     public List<Order> getActivatedOrdersByClientId(final Long clientId) {
+        // TODO - client logado
         return this.orderRepository.getAllByClientIdWithStatusCreatedOrInProgress(clientId);
     }
 

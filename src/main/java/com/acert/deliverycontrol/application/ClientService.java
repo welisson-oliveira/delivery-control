@@ -4,6 +4,7 @@ import com.acert.deliverycontrol.application.exceptions.DataNotFoundException;
 import com.acert.deliverycontrol.domain.client.Client;
 import com.acert.deliverycontrol.infra.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class ClientService {
 
     @Transactional
     public Client updateClient(final Long id, final Client updatedClient) {
+        // TODO - VERIFICAR SE O CLIENT É O MESMO LOGADO
         return this.clientRepository.findById(id)
                 .map(client -> {
                     client.updateClient(updatedClient);
@@ -47,5 +49,8 @@ public class ClientService {
         }
     }
 
+    public UserDetails getByEmail(final String email) {
+        return this.clientRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("Client not found with Email: " + email));
+    }
 }
 

@@ -32,10 +32,6 @@ public class Order {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-//    @ManyToOne
-//    @JoinColumn(name = "delivery_id")
-//    private Delivery delivery;
-
     public Order(final String description, final Client client) {
         this.description = description;
         this.status = OrderStatus.CREATED;

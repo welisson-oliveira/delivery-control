@@ -21,3 +21,10 @@ spring:
     username: test
     password: test
     platform: firebird
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+jwt:
+  secret: usersecret

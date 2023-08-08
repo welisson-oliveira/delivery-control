@@ -14,7 +14,6 @@ import java.io.IOException;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@ClearContext
 public abstract class AbstractTestsConfig extends TestContainerConfig {
 
     protected MockMvc mockMvc;

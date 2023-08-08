@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  firebase: &app
+  firebase:
     image: jacobalberty/firebird
     container_name: firebase-delivery-control
     ports:
@@ -9,3 +9,8 @@ services:
       FIREBIRD_DATABASE: delivery_control.fdb
       FIREBIRD_USER: delivery_control
       FIREBIRD_PASSWORD: delivery_control
+  redis:
+    image: redis:5.0-rc
+    container_name: redis-delivery-control
+    ports:
+      - 6379:6379
