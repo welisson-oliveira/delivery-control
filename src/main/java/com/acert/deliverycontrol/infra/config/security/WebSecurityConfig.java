@@ -83,9 +83,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(final WebSecurity web) {
         final String[] AUTH_WHITELIST = {
+                "/swagger-ui/**",
                 "/swagger-resources/**",
                 "/swagger-ui.html",
-                "/v3/api-docs",
+                "/v3/api-docs/**",
                 "/webjars/**"
         };
 

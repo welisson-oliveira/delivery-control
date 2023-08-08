@@ -1,7 +1,7 @@
 package com.acert.deliverycontrol.infra.mappers;
 
 import com.acert.deliverycontrol.domain.client.Client;
-import com.acert.deliverycontrol.infra.dto.ClientDTO;
+import com.acert.deliverycontrol.infra.dto.client.ClientDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.acert.deliverycontrol.infra.dto;
+package com.acert.deliverycontrol.infra.dto.client;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

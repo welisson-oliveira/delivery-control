@@ -1,4 +1,4 @@
-package com.acert.deliverycontrol.infra.dto;
+package com.acert.deliverycontrol.infra.dto.delivery;
 
 import com.acert.deliverycontrol.domain.delivery.DeliveryStatus;
 import com.acert.deliverycontrol.infra.dto.order.OrderDTO;
