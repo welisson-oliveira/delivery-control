@@ -11,7 +11,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.util.NestedServletException;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,7 +41,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
     public void shouldReturnAllDoneOrders() throws Exception {
         this.mockMvc.perform(get("/orders/finished")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-done-order.json"), true))
                 .andExpect(status().isOk());
     }
@@ -52,7 +50,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
     public void shouldReturnAllCanceledOrders() throws Exception {
         this.mockMvc.perform(get("/orders/canceled")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-canceled-order.json"), true))
                 .andExpect(status().isOk());
     }
@@ -71,7 +68,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
     public void shouldReturnActivatedOrdersById() throws Exception {
         this.mockMvc.perform(get("/orders/clients/1/activated")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-all-activated-orders.json"), true))
                 .andExpect(status().isOk());
     }
@@ -94,7 +90,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
         this.mockMvc.perform(get("/orders/clients/2/activated")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().isOk());
 
     }
@@ -104,7 +99,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
     public void shouldReturnDoneOrdersById() throws Exception {
         this.mockMvc.perform(get("/orders/clients/1/finished")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-done-order.json"), true))
                 .andExpect(status().isOk());
     }
@@ -114,7 +108,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
     public void shouldReturnCanceledOrdersById() throws Exception {
         this.mockMvc.perform(get("/orders/clients/1/canceled")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-canceled-order.json"), true))
                 .andExpect(status().isOk());
     }
@@ -126,13 +119,11 @@ public class OrderControllerTests extends AbstractTestsConfig {
         this.mockMvc.perform(post("/orders")
                         .content(update)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-order.json")))
                 .andExpect(status().isCreated());
 
         this.mockMvc.perform(get("/deliveries")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/delivery/return-delivery.json")))
                 .andExpect(status().isOk());
     }
@@ -144,7 +135,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
         this.mockMvc.perform(post("/orders")
                         .content(insert)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-order.json")))
                 .andExpect(status().isCreated());
 
@@ -153,13 +143,11 @@ public class OrderControllerTests extends AbstractTestsConfig {
         this.mockMvc.perform(post("/orders")
                         .content(insert2)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-order-2.json")))
                 .andExpect(status().isCreated());
 
         this.mockMvc.perform(get("/deliveries")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/delivery/return-delivery-2.json")))
                 .andExpect(status().isOk());
     }
@@ -172,7 +160,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
         this.mockMvc.perform(put("/orders/1")
                         .content(update)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-updated-order.json"), true))
                 .andExpect(status().isOk());
 
@@ -218,7 +205,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
         this.mockMvc.perform(get("/deliveries")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/delivery/return-delivery-in-progress.json")))
                 .andExpect(status().isOk());
     }
@@ -239,7 +225,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
         this.mockMvc.perform(post("/orders")
                         .content(insert)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-order.json")))
                 .andExpect(status().isCreated());
 
@@ -248,7 +233,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
         this.mockMvc.perform(post("/orders")
                         .content(insert2)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-order-2.json")))
                 .andExpect(status().isCreated());
 
@@ -265,7 +249,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
         this.mockMvc.perform(post("/orders")
                         .content(insert)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-order.json")))
                 .andExpect(status().isCreated());
 
@@ -274,7 +257,6 @@ public class OrderControllerTests extends AbstractTestsConfig {
         this.mockMvc.perform(post("/orders")
                         .content(insert2)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-order-2.json")))
                 .andExpect(status().isCreated());
 

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -19,7 +18,6 @@ public class ClientControllerTests extends AbstractTestsConfig {
     public void shouldReturnAllClients() throws Exception {
         this.mockMvc.perform(get("/clients")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/client/return-all.json")))
                 .andExpect(status().isOk());
     }
@@ -31,7 +29,6 @@ public class ClientControllerTests extends AbstractTestsConfig {
         this.mockMvc.perform(get("/clients/1")
                         .content(update)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/client/return-client.json")))
                 .andExpect(status().isOk());
     }
@@ -43,7 +40,6 @@ public class ClientControllerTests extends AbstractTestsConfig {
         this.mockMvc.perform(post("/clients")
                         .content(insert)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(content().json(this.readFileAsString("files/output/client/return-created-client.json")))
                 .andExpect(status().isCreated());
     }
