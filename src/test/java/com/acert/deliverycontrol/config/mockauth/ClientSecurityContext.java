@@ -17,7 +17,7 @@ public class ClientSecurityContext extends DeliveryControlContextFactory<WithUse
 
         final SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 
-        final PreAuthenticatedAuthenticationToken token = new ClientAuthenticatedToken(client, null, Arrays.stream(annotation.getRoles()).map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+        final PreAuthenticatedAuthenticationToken token = new ClientAuthenticatedToken(client, null, Arrays.stream(annotation.authorities()).map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
         securityContext.setAuthentication(token);
         return securityContext;
     }

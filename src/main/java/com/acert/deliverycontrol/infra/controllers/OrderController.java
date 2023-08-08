@@ -117,7 +117,7 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/clients/{clientId}/activated")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("@security.sameUserOrAdmin(#clientId)")
     public List<OrderDTO> getActivatedOrdersByClientId(@Parameter(description = "ID do cliente para buscar os pedidos ativos")
                                                        @PathVariable final Long clientId) {
         return this.mapper.toDTOs(this.orderService.getActivatedOrdersByClientId(clientId));
@@ -134,7 +134,7 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/clients/{clientId}/finished")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("@security.sameUserOrAdmin(#clientId)")
     public List<OrderDTO> getDoneOrdersByClientId(@Parameter(description = "ID do cliente para buscar os pedidos concluídos")
                                                   @PathVariable final Long clientId) {
         return this.mapper.toDTOs(this.orderService.getDoneOrdersByClientId(clientId));
@@ -151,7 +151,7 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/clients/{clientId}/canceled")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("@security.sameUserOrAdmin(#clientId)")
     public List<OrderDTO> getCanceledOrdersByClientId(
             @Parameter(description = "ID do cliente para buscar os pedidos cancelados")
             @PathVariable final Long clientId) {
@@ -189,7 +189,7 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public OrderDTO updateOrder(
             @Parameter(description = "ID do pedido a ser atualizado")
             @PathVariable final Long id,
@@ -229,7 +229,7 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PatchMapping("/{id}/canceled")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public OrderDTO cancel(
             @Parameter(description = "ID do pedido cujo status deve ser atualizado para 'Cancelado'")
             @PathVariable final Long id) {

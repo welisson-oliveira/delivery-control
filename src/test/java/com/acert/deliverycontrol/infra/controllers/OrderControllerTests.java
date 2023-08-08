@@ -3,9 +3,12 @@ package com.acert.deliverycontrol.infra.controllers;
 import com.acert.deliverycontrol.config.AbstractTestsConfig;
 import com.acert.deliverycontrol.config.ClearContext;
 import com.acert.deliverycontrol.config.mockauth.WithUser;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.web.util.NestedServletException;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -74,6 +77,29 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
+    @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
+    @DisplayName("o acesso deve ser negado pois o id que foi passado não é o mesmo do client que esta no contexto ")
+    @WithUser(authorities = {"CLIENT"})
+    public void shouldNotReturnActivatedOrdersById() {
+
+        Assertions.assertThrows(NestedServletException.class, () -> this.mockMvc.perform(get("/orders/clients/2/activated")
+                .contentType(MediaType.APPLICATION_JSON)).andReturn());
+
+    }
+
+    @Test
+    @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
+    @DisplayName("acesso permitido pois apesar de os id passado nao ser o mesmo do cliente no contexto o usuario tem autoridade de admin ")
+    public void shouldReturnActivatedOrdersById2() throws Exception {
+
+        this.mockMvc.perform(get("/orders/clients/2/activated")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+    }
+
+    @Test()
     @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
     public void shouldReturnDoneOrdersById() throws Exception {
         this.mockMvc.perform(get("/orders/clients/1/finished")

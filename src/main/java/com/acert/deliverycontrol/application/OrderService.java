@@ -11,6 +11,7 @@ import com.acert.deliverycontrol.infra.events.FinishedOrderEvent;
 import com.acert.deliverycontrol.infra.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +34,7 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(final String description) {
-
-        final Client loggedClient = new Client(1L, "welisson", "welisson@email.com", "13123123123", "Address");
+        final Client loggedClient = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         final Order order = new Order(description, loggedClient);
 
@@ -77,7 +77,6 @@ public class OrderService {
     }
 
     public List<Order> getActivatedOrdersByClientId(final Long clientId) {
-        // TODO - client logado
         return this.orderRepository.getAllByClientIdWithStatusCreatedOrInProgress(clientId);
     }
 

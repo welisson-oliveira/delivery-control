@@ -21,5 +21,5 @@ public @interface WithUser {
 
     String address() default "UM ENDEREÇO QUALQUER";
 
-    String[] getRoles() default {"ADMIN", "CLIENT"};
+    String[] authorities() default {"ADMIN", "CLIENT"};
 }

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,7 @@ public class DeliveryController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<DeliveryDTO> getAllDeliveries() {
         return this.mapper.toDTOs(this.deliveryService.getAllDeliveries());
     }
@@ -53,6 +55,7 @@ public class DeliveryController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public DeliveryDTO getDeliveryById(
             @Parameter(description = "ID da entrega a ser obtida")
             @PathVariable final Long id) {

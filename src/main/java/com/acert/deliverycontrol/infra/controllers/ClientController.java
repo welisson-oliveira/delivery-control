@@ -98,7 +98,7 @@ public class ClientController {
             @ApiResponse(responseCode = "500", description = "Ocorreu um erro interno")
     })
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("@security.sameUserOrAdmin(#clientId)")
     public ClientDTO updateClient(@Parameter(description = "id do cliente a ser atualizado") @PathVariable final Long id,
                                   @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Dados do cliente a serem atualizados", required = true) @RequestBody final ClientDTO client) {
         return this.mapper.toDTO(this.clientService.updateClient(id, this.mapper.toEntity(client)));
