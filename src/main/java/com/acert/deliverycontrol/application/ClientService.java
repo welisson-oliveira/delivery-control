@@ -26,6 +26,7 @@ public class ClientService {
 
     @Transactional
     public Client createClient(final Client client) {
+
         return this.clientRepository.save(client);
     }
 

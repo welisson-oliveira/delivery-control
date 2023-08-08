@@ -30,6 +30,7 @@ public class Client implements UserDetails {
     @Column(name = "phone_number")
     private String phoneNumber;
     private String address;
+    private String password;
 
     @OneToMany(mappedBy = "client")
     private final List<Delivery> deliveries = new ArrayList<>();
@@ -46,7 +47,6 @@ public class Client implements UserDetails {
         this.email = updatedClient.getEmail();
         this.phoneNumber = updatedClient.getPhoneNumber();
         this.address = updatedClient.getAddress();
-
     }
 
     @Override
@@ -62,10 +62,11 @@ public class Client implements UserDetails {
         return authorities;
     }
 
-    @Override
-    public String getPassword() {
-        return "$2a$12$BmKxxm1EKWD.4Zx7t2PZHu4NLTlPQU/gsrvKxK.5to9Gu6s1vjL7O";
-    }
+//    @Override
+//    public String getPassword() {
+//        return "$2a$12$BmKxxm1EKWD.4Zx7t2PZHu4NLTlPQU/gsrvKxK.5to9Gu6s1vjL7O";
+//    }
+
 
     @Override
     public String getUsername() {

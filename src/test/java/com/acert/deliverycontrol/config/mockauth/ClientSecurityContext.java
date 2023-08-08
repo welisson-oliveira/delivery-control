@@ -13,7 +13,7 @@ public class ClientSecurityContext extends DeliveryControlContextFactory<WithUse
 
     @Override
     public SecurityContext createSecurityContext(final WithUser annotation) {
-        final Client client = new Client(annotation.id(), annotation.name(), annotation.username(), annotation.phoneNumber(), annotation.address());
+        final Client client = new Client(annotation.id(), annotation.name(), annotation.username(), annotation.phoneNumber(), annotation.address(), null);
 
         final SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 

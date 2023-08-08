@@ -11,6 +11,7 @@ import com.acert.deliverycontrol.infra.events.FinishedOrderEvent;
 import com.acert.deliverycontrol.infra.repository.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +40,7 @@ public class DeliveryService {
     @EventListener
     public void createOrder(final CreateOrderEvent createOrderEvent) {
 
-        final Client loggedClient = new Client(1L, "welisson", "welisson@email.com", "13123123123", "Address");
+        final Client loggedClient = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         final Optional<Delivery> activeByClientId = this.deliveryRepository.findActiveByClientId(loggedClient.getId());
 

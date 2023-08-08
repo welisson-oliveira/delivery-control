@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -14,4 +17,10 @@ public class ClientDTO {
     private String email;
     private String phoneNumber;
     private String address;
+    private String password;
+    private final List<String> authorities = new ArrayList<>();
+
+    public void addAuthorities(final List<String> authorities) {
+
+    }
 }

@@ -24,6 +24,9 @@ databaseChangeLog:
               - column:
                   name: ADDRESS
                   type: VARCHAR(255)
+              - column:
+                  name: PASSWORD
+                  type: VARCHAR(255)
   - changeSet:
       id: 2
       author: welisson
@@ -424,6 +427,9 @@ databaseChangeLog:
               - column:
                   name: ADDRESS
                   value: UM ENDEREÇO QUALQUER
+              - column:
+                  name: PASSWORD
+                  value: $2a$12$I.NpM0WRYHmCH0EVwaajaekWX0EU9yIT2j7.9PIN1IjXPn4aS3uXe
         - insert:
             tableName: ROLE
             columns:
@@ -482,6 +488,9 @@ databaseChangeLog:
               - column:
                   name: ADDRESS
                   value: OUTRO ENDEREÇO QUALQUER
+              - column:
+                  name: PASSWORD
+                  value: $2a$12$I.NpM0WRYHmCH0EVwaajaekWX0EU9yIT2j7.9PIN1IjXPn4aS3uXe
         - insert:
             tableName: CLIENT_ROLE
             columns:
