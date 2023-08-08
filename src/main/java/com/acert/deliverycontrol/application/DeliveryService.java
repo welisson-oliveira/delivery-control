@@ -80,5 +80,10 @@ public class DeliveryService {
         });
     }
 
+    public Delivery finalize(final Long id) {
+        final Delivery deliveryById = this.getDeliveryById(id);
+        deliveryById.finish();
+        return this.deliveryRepository.save(deliveryById);
+    }
 }
 

@@ -13,10 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -60,6 +57,23 @@ public class DeliveryController {
             @Parameter(description = "ID da entrega a ser obtida")
             @PathVariable final Long id) {
         return this.mapper.toDTO(this.deliveryService.getDeliveryById(id));
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Entrega finalizada com sucesso",
+                    content = @Content(schema = @Schema(implementation = DeliveryDTO.class))),
+            @ApiResponse(responseCode = "400", description = "ID da entrega inválido"),
+            @ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @ApiResponse(responseCode = "403", description = "Proibido"),
+            @ApiResponse(responseCode = "404", description = "Entrega não encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    @PatchMapping("/{id}/finished")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public DeliveryDTO finalize(
+            @Parameter(description = "ID da entrega a ser finalizada")
+            @PathVariable final Long id) {
+        return this.mapper.toDTO(this.deliveryService.finalize(id));
     }
 
     // TODO - pesquisas personalizadas

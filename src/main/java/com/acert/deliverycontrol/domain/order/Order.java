@@ -59,5 +59,6 @@ public class Order {
     public boolean isCanceled() {
         return OrderStatus.CANCELED.equals(this.status);
     }
+
 }
 

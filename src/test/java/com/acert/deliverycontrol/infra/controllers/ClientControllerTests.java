@@ -24,10 +24,8 @@ public class ClientControllerTests extends AbstractTestsConfig {
 
     @Test
     public void shouldReturnClientById() throws Exception {
-        final String update = this.readFileAsString("files/input/client/update-client.json");
 
         this.mockMvc.perform(get("/clients/1")
-                        .content(update)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(this.readFileAsString("files/output/client/return-client.json")))
                 .andExpect(status().isOk());

@@ -490,7 +490,7 @@ databaseChangeLog:
                   value: OUTRO ENDEREÇO QUALQUER
               - column:
                   name: PASSWORD
-                  value: $2a$12$I.NpM0WRYHmCH0EVwaajaekWX0EU9yIT2j7.9PIN1IjXPn4aS3uXe
+                  value: $2a$12$4/fnjz1LHAk.ODvDC9LF2ubTKR0Ui8AcwOY6.fODVdbZPZPUqjL12
         - insert:
             tableName: CLIENT_ROLE
             columns:

@@ -61,12 +61,28 @@ public class Delivery {
         }
     }
 
-    private boolean canStart() {
+    public void finish() {
+        if (this.status.nextStatus().stream().anyMatch(s -> s.equals(DeliveryStatus.DELIVERED)) && this.canFinalize()) {
+            this.status = DeliveryStatus.DELIVERED;
+        } else {
+            throw new InvalidStatusException("can't change from: " + this.status + " to: " + DeliveryStatus.DELIVERED);
+        }
+    }
+
+    private boolean allDone() {
         return this.orders.stream().allMatch(Order::isFinished);
+    }
+
+    private boolean canStart() {
+        return this.allDone();
     }
 
     private boolean canCancel() {
         return this.orders.stream().allMatch(Order::isCanceled);
+    }
+
+    private boolean canFinalize() {
+        return this.allDone();
     }
 
     public void removeOrderById(final Long orderId) {

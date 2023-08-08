@@ -1,0 +1,14 @@
+{
+  "id": 1,
+  "address": "UM ENDEREÇO QUALQUER",
+  "status": "DELIVERED",
+  "clientId": 1,
+  "orders": [
+    {
+      "id": 1,
+      "description": "Client 1 Order",
+      "status": "DONE",
+      "clientId": 1
+    }
+  ]
+}
