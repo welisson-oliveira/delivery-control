@@ -14,6 +14,10 @@ Necessario docker instalado
    ```bash
    mvn spring-boot:run
 
+## Swagger
+
+http://localhost:8080/swagger-ui/index.html#/
+
 ## A aplicação possui dois usuarios
 
 * ADMIN - POSSUI AS CREDENCIAIS DE ADMIN E CLIENT
@@ -46,6 +50,7 @@ Necessario docker instalado
 ---
 
 * Melhorias **(não implementadas por falta de tempo)**
+    - validações
     - gerenciamento de roles
     - retornar roles no client
     - paginação nos getters
