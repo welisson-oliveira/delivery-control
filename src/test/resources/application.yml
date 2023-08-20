@@ -1,30 +1,48 @@
 spring:
   liquibase:
-    change-log: classpath:db/changelog/changelog-master.yml
+    change-log: classpath:/db/changelog/changelog-master.yaml
     enabled: true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/delivery_control
+    username: delivery_control
+    password: delivery_control
+    platform: postgres
   jpa:
-    #    properties:
-    #      hibernate:
-    #        dialect: org.firebirdsql.hibernate.FirebirdDialect
     hibernate:
+      physical-naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-        implicity-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
       ddl-auto: none
     show-sql: true
-  datasource:
-    driver-class-name: org.firebirdsql.jdbc.FBDriver
-    url: jdbc:firebirdsql://localhost:3050/test?charSet=utf-8
-    username: test
-    password: test
-    platform: firebird
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    generate-ddl: false
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+
   cache:
     type: redis
   redis:
     host: localhost
     port: 6379
+    uri: localhost:6379
 jwt:
   secret: usersecret
+
+# liquibase
+url: jdbc:postgresql://localhost:5432/delivery_control
+username: delivery_control
+password: delivery_control
+driver: org.postgresql.Driver
+referenceUrl: hibernate:spring:br.com.acert.deliverycontrol.domain?dialect=org.hibernate.dialect.PostgreSQLDialect
+#changeLogFile: src/main/resources/db/changelog/changelog-master.yaml
+outputChangeLogFile: src/main/resources/db/changelog/new-changelog-master.yaml
+diffChangeLogFile: src/main/resources/db/changelog/liquibase-diff-changeLog.yaml

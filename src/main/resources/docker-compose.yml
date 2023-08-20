@@ -1,14 +1,14 @@
 version: "3.7"
 services:
-  firebase:
-    image: jacobalberty/firebird
-    container_name: firebase-delivery-control
+  postgres-delivery-control:
+    image: postgres
+    container_name: postgres-delivery-control
     ports:
-      - 3050:3050
+      - "5432:5432"
     environment:
-      FIREBIRD_DATABASE: delivery_control.fdb
-      FIREBIRD_USER: delivery_control
-      FIREBIRD_PASSWORD: delivery_control
+      POSTGRES_USER: delivery_control
+      POSTGRES_PASSWORD: delivery_control
+      POSTGRES_DB: delivery_control
   redis:
     image: redis:5.0-rc
     container_name: redis-delivery-control

@@ -1,0 +1,316 @@
+databaseChangeLog:
+- changeSet:
+    id: 1692552535694-1
+    author: welisson (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: id
+            type: BIGINT
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: email
+            type: VARCHAR(255)
+        - column:
+            name: phone_number
+            type: VARCHAR(255)
+        - column:
+            name: address
+            type: VARCHAR(255)
+        - column:
+            name: password
+            type: VARCHAR(255)
+        tableName: client
+- changeSet:
+    id: 1692552535694-2
+    author: welisson (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: client_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: role_id
+            type: BIGINT
+        tableName: client_role
+- changeSet:
+    id: 1692552535694-3
+    author: welisson (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: id
+            type: BIGINT
+        - column:
+            name: description
+            type: VARCHAR(255)
+        - column:
+            name: status
+            type: VARCHAR(255)
+        - column:
+            name: order_date
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: client_id
+            type: BIGINT
+        tableName: customer_order
+- changeSet:
+    id: 1692552535694-4
+    author: welisson (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: id
+            type: BIGINT
+        - column:
+            name: address
+            type: VARCHAR(255)
+        - column:
+            name: status
+            type: VARCHAR(255)
+        - column:
+            name: client_id
+            type: BIGINT
+        tableName: delivery
+- changeSet:
+    id: 1692552535694-5
+    author: welisson (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: delivery_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: order_id
+            type: BIGINT
+        tableName: delivery_orders
+- changeSet:
+    id: 1692552535694-6
+    author: welisson (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: id
+            type: BIGINT
+        - column:
+            name: authority
+            type: VARCHAR(255)
+        tableName: role
+- changeSet:
+    id: 1692552535694-7
+    author: welisson (generated)
+    changes:
+    - addPrimaryKey:
+        columnNames: id
+        constraintName: integ_379333
+        tableName: client
+- changeSet:
+    id: 1692552535694-8
+    author: welisson (generated)
+    changes:
+    - addPrimaryKey:
+        columnNames: id
+        constraintName: integ_381333
+        tableName: customer_order
+- changeSet:
+    id: 1692552535694-9
+    author: welisson (generated)
+    changes:
+    - addPrimaryKey:
+        columnNames: id
+        constraintName: integ_384333
+        tableName: delivery
+- changeSet:
+    id: 1692552535694-10
+    author: welisson (generated)
+    changes:
+    - addPrimaryKey:
+        columnNames: delivery_id, order_id
+        constraintName: integ_388333
+        tableName: delivery_orders
+- changeSet:
+    id: 1692552535694-11
+    author: welisson (generated)
+    changes:
+    - addPrimaryKey:
+        columnNames: client_id, role_id
+        constraintName: integ_391333
+        tableName: client_role
+- changeSet:
+    id: 1692552535694-12
+    author: welisson (generated)
+    changes:
+    - addPrimaryKey:
+        columnNames: id
+        constraintName: integ_396333
+        tableName: role
+- changeSet:
+    id: 1692552535694-13
+    author: welisson (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: client_id
+        indexName: RDB$FOREIGN141
+        tableName: delivery
+        unique: true
+- changeSet:
+    id: 1692552535694-14
+    author: welisson (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: client_id
+        indexName: RDB$FOREIGN142
+        tableName: customer_order
+- changeSet:
+    id: 1692552535694-15
+    author: welisson (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: delivery_id
+        indexName: RDB$FOREIGN143
+        tableName: delivery_orders
+- changeSet:
+    id: 1692552535694-16
+    author: welisson (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: order_id
+        indexName: RDB$FOREIGN144
+        tableName: delivery_orders
+- changeSet:
+    id: 1692552535694-17
+    author: welisson (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: client_id
+        indexName: RDB$FOREIGN145
+        tableName: client_role
+- changeSet:
+    id: 1692552535694-18
+    author: welisson (generated)
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: role_id
+        indexName: RDB$FOREIGN146
+        tableName: client_role
+- changeSet:
+    id: 1692552535694-19
+    author: welisson (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: client_id
+        baseTableName: customer_order
+        constraintName: integ_382333
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: client
+- changeSet:
+    id: 1692552535694-20
+    author: welisson (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: client_id
+        baseTableName: delivery
+        constraintName: integ_385333
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: client
+- changeSet:
+    id: 1692552535694-21
+    author: welisson (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: delivery_id
+        baseTableName: delivery_orders
+        constraintName: integ_389333
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: delivery
+- changeSet:
+    id: 1692552535694-22
+    author: welisson (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: order_id
+        baseTableName: delivery_orders
+        constraintName: integ_390333
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: customer_order
+- changeSet:
+    id: 1692552535694-23
+    author: welisson (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: client_id
+        baseTableName: client_role
+        constraintName: integ_392333
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: client
+- changeSet:
+    id: 1692552535694-24
+    author: welisson (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: role_id
+        baseTableName: client_role
+        constraintName: integ_393333
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: role
+

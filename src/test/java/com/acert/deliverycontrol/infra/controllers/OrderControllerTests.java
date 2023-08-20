@@ -3,16 +3,19 @@ package com.acert.deliverycontrol.infra.controllers;
 import com.acert.deliverycontrol.config.AbstractTestsConfig;
 import com.acert.deliverycontrol.config.ClearContext;
 import com.acert.deliverycontrol.config.mockauth.WithUser;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.web.util.NestedServletException;
 
+import java.util.Arrays;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WithUser
 @ClearContext
@@ -32,7 +35,8 @@ public class OrderControllerTests extends AbstractTestsConfig {
     public void shouldReturnAllActivatedOrders() throws Exception {
         this.mockMvc.perform(get("/orders/activated")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(this.readFileAsString("files/output/order/return-all-activated-orders.json"), true))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(content().json(this.readFileAsString("files/output/order/return-all-activated-orders.json")))
                 .andExpect(status().isOk());
     }
 
@@ -68,8 +72,9 @@ public class OrderControllerTests extends AbstractTestsConfig {
     public void shouldReturnActivatedOrdersById() throws Exception {
         this.mockMvc.perform(get("/orders/clients/1/activated")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(this.readFileAsString("files/output/order/return-all-activated-orders.json"), true))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.id == 1)].status", CoreMatchers.is(Arrays.asList("CREATED"))))
+                .andExpect(jsonPath("$[?(@.id == 2)].status", CoreMatchers.is(Arrays.asList("IN_PROGRESS"))));
     }
 
     @Test

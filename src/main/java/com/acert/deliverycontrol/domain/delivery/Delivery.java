@@ -9,9 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -33,13 +33,13 @@ public class Delivery {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinTable(
             name = "delivery_orders",
             joinColumns = @JoinColumn(name = "delivery_id"),
             inverseJoinColumns = @JoinColumn(name = "order_id")
     )
-    private final List<Order> orders = new ArrayList<>();
+    private final Set<Order> orders = new HashSet<>();
 
     public void addOrder(final Order order) {
         this.orders.add(order);

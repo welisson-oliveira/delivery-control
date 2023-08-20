@@ -15,7 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +25,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ApplicationEventPublisher publisher;
 
-    public List<Order> getAllOrders() {
-        return this.orderRepository.findAll();
+    public Set<Order> getAllOrders() {
+        return new HashSet<>(this.orderRepository.findAll());
     }
 
     public Order getOrderById(final Long id) {
@@ -76,27 +77,27 @@ public class OrderService {
         return orderToSave;
     }
 
-    public List<Order> getActivatedOrdersByClientId(final Long clientId) {
+    public Set<Order> getActivatedOrdersByClientId(final Long clientId) {
         return this.orderRepository.getAllByClientIdWithStatusCreatedOrInProgress(clientId);
     }
 
-    public List<Order> getDoneOrdersByClientId(final Long clientId) {
+    public Set<Order> getDoneOrdersByClientId(final Long clientId) {
         return this.orderRepository.getAllByClientIdWithStatusDone(clientId);
     }
 
-    public List<Order> getCanceledOrdersByClientId(final Long clientId) {
+    public Set<Order> getCanceledOrdersByClientId(final Long clientId) {
         return this.orderRepository.getAllByClientIdWithStatusCanceled(clientId);
     }
 
-    public List<Order> getAllActivatedOrders() {
+    public Set<Order> getAllActivatedOrders() {
         return this.orderRepository.getActiveOrders();
     }
 
-    public List<Order> getAllFinishedOrders() {
+    public Set<Order> getAllFinishedOrders() {
         return this.orderRepository.getOrderByStatus(OrderStatus.DONE);
     }
 
-    public List<Order> getAllCanceledOrders() {
+    public Set<Order> getAllCanceledOrders() {
         return this.orderRepository.getOrderByStatus(OrderStatus.CANCELED);
     }
 }

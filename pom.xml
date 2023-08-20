@@ -52,12 +52,16 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.firebirdsql.jdbc</groupId>
-            <artifactId>jaybird-jdk18</artifactId>
-            <version>3.0.9</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.firebirdsql.jdbc</groupId>-->
+        <!--            <artifactId>jaybird-jdk18</artifactId>-->
+        <!--            <version>3.0.9</version>-->
+        <!--        </dependency>-->
 
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -94,14 +98,32 @@
             <version>1.6.9</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.16.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.5.3</version>
+                <configuration>
+                    <propertyFile>src/main/resources/application.yml</propertyFile>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <jvmArguments>
+                        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005
+                    </jvmArguments>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

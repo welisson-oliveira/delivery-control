@@ -2,7 +2,6 @@ package com.acert.deliverycontrol.infra.mappers;
 
 import com.acert.deliverycontrol.domain.delivery.Delivery;
 import com.acert.deliverycontrol.infra.dto.delivery.DeliveryDTO;
-import com.acert.deliverycontrol.infra.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DeliveryMapper {
 
-    private final ClientRepository repository;
     private final OrderMapper orderMapper;
 
     public DeliveryDTO toDTO(final Delivery delivery) {

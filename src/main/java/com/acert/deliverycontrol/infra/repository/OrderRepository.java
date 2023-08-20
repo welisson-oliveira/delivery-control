@@ -5,23 +5,23 @@ import com.acert.deliverycontrol.domain.order.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
+import java.util.Set;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT o FROM Order o WHERE o.client.id = :clientId AND (o.status = 'CREATED' OR o.status = 'IN_PROGRESS')")
-    List<Order> getAllByClientIdWithStatusCreatedOrInProgress(Long clientId);
+    Set<Order> getAllByClientIdWithStatusCreatedOrInProgress(Long clientId);
 
     @Query("SELECT o FROM Order o WHERE o.client.id = :clientId AND o.status = 'DONE'")
-    List<Order> getAllByClientIdWithStatusDone(Long clientId);
+    Set<Order> getAllByClientIdWithStatusDone(Long clientId);
 
     @Query("SELECT o FROM Order o WHERE o.client.id = :clientId AND o.status = 'CANCELED'")
-    List<Order> getAllByClientIdWithStatusCanceled(Long clientId);
+    Set<Order> getAllByClientIdWithStatusCanceled(Long clientId);
 
     @Query("SELECT o FROM Order o WHERE o.status = 'CREATED' OR o.status = 'IN_PROGRESS'")
-    List<Order> getActiveOrders();
+    Set<Order> getActiveOrders();
 
-    List<Order> getOrderByStatus(OrderStatus orderStatus);
+    Set<Order> getOrderByStatus(OrderStatus orderStatus);
 
 }
 

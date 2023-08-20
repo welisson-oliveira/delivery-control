@@ -2,7 +2,7 @@ package com.acert.deliverycontrol.config;
 
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
@@ -13,24 +13,20 @@ import java.util.Objects;
 )
 @Testcontainers
 public abstract class TestContainerConfig {
-    public static GenericContainer<?> firebirdSQLContainer;
+    public static PostgreSQLContainer<?> postgresDBContainer;
     public static GenericContainer<?> redisContainer;
 
     public TestContainerConfig() {
-        if (Objects.isNull(TestContainerConfig.firebirdSQLContainer)) {
-            TestContainerConfig.firebirdSQLContainer = new GenericContainer("jacobalberty/firebird")
-                    .withExposedPorts(3050)
-                    .withEnv("FIREBIRD_DATABASE", "test")
-                    .withEnv("FIREBIRD_USER", "test")
-                    .withEnv("FIREBIRD_PASSWORD", "test")
-                    .waitingFor(Wait.forListeningPort());
-            TestContainerConfig.firebirdSQLContainer.start();
+        if (Objects.isNull(TestContainerConfig.postgresDBContainer)) {
+            TestContainerConfig.postgresDBContainer = new PostgreSQLContainer<>("postgres:9.5");
+            TestContainerConfig.postgresDBContainer.start();
 
-            final String jdbcUrl = String.format("jdbc:firebirdsql://localhost:%s/test?charSet=utf-8",
-                    AbstractTestsConfig.firebirdSQLContainer.getMappedPort(3050));
-            System.setProperty("spring.datasource.url", jdbcUrl);
-            System.setProperty("spring.datasource.username", "test");
-            System.setProperty("spring.datasource.password", "test");
+            final String jdbcUrl = String.format("jdbc:postgresql://localhost:%s/mapping",
+                    TestContainerConfig.postgresDBContainer.getMappedPort(5432).toString());
+
+            System.setProperty("spring.datasource.url", TestContainerConfig.postgresDBContainer.getJdbcUrl());
+            System.setProperty("spring.datasource.username", TestContainerConfig.postgresDBContainer.getUsername());
+            System.setProperty("spring.datasource.password", TestContainerConfig.postgresDBContainer.getPassword());
 
         }
 

@@ -1,410 +1,318 @@
 databaseChangeLog:
-
   - changeSet:
-      id: 1
-      author: welisson
+      id: 1692552535694-1
+      author: welisson (generated)
       changes:
         - createTable:
-            tableName: CLIENT
             columns:
               - column:
-                  name: ID
-                  type: BIGINT
                   constraints:
                     nullable: false
+                  name: id
+                  type: BIGINT
               - column:
-                  name: NAME
+                  name: name
                   type: VARCHAR(255)
               - column:
-                  name: EMAIL
+                  name: email
                   type: VARCHAR(255)
               - column:
-                  name: PHONE_NUMBER
+                  name: phone_number
                   type: VARCHAR(255)
               - column:
-                  name: ADDRESS
+                  name: address
                   type: VARCHAR(255)
               - column:
-                  name: PASSWORD
+                  name: password
                   type: VARCHAR(255)
+            tableName: client
   - changeSet:
-      id: 2
-      author: welisson
+      id: 1692552535694-2
+      author: welisson (generated)
       changes:
         - createTable:
-            tableName: ROLE
             columns:
               - column:
-                  name: ID
-                  type: BIGINT
                   constraints:
                     nullable: false
+                  name: client_id
+                  type: BIGINT
               - column:
-                  name: AUTHORITY
-                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                  name: role_id
+                  type: BIGINT
+            tableName: client_role
   - changeSet:
-      id: 3
-      author: welisson
+      id: 1692552535694-3
+      author: welisson (generated)
       changes:
         - createTable:
-            tableName: CLIENT_ROLE
             columns:
               - column:
-                  name: CLIENT_ID
-                  type: BIGINT
                   constraints:
                     nullable: false
+                  name: id
+                  type: BIGINT
               - column:
-                  name: ROLE_ID
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  name: order_date
+                  type: TIMESTAMP(6) WITHOUT TIME ZONE
+              - column:
+                  name: client_id
                   type: BIGINT
-                  constraints:
-                    nullable: false
+            tableName: customer_order
   - changeSet:
-      id: 4
-      author: welisson
+      id: 1692552535694-4
+      author: welisson (generated)
       changes:
         - createTable:
-            tableName: CUSTOMER_ORDER
             columns:
               - column:
-                  name: ID
-                  type: BIGINT
                   constraints:
                     nullable: false
-              - column:
-                  name: DESCRIPTION
-                  type: VARCHAR(255)
-              - column:
-                  name: STATUS
-                  type: VARCHAR(255)
-              - column:
-                  name: ORDER_DATE
-                  type: TIMESTAMP
-              - column:
-                  name: CLIENT_ID
+                  name: id
                   type: BIGINT
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  name: client_id
+                  type: BIGINT
+            tableName: delivery
   - changeSet:
-      id: 5
-      author: welisson
+      id: 1692552535694-5
+      author: welisson (generated)
       changes:
         - createTable:
-            tableName: DELIVERY
             columns:
               - column:
-                  name: ID
-                  type: BIGINT
                   constraints:
                     nullable: false
-              - column:
-                  name: ADDRESS
-                  type: VARCHAR(255)
-              - column:
-                  name: STATUS
-                  type: VARCHAR(255)
-              - column:
-                  name: CLIENT_ID
+                  name: delivery_id
                   type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: order_id
+                  type: BIGINT
+            tableName: delivery_orders
   - changeSet:
-      id: 6
-      author: welisson
+      id: 1692552535694-6
+      author: welisson (generated)
       changes:
         - createTable:
-            tableName: DELIVERY_ORDERS
             columns:
               - column:
-                  name: DELIVERY_ID
-                  type: BIGINT
                   constraints:
                     nullable: false
+                  name: id
+                  type: BIGINT
               - column:
-                  name: ORDER_ID
-                  type: BIGINT
-                  constraints:
-                    nullable: false
+                  name: authority
+                  type: VARCHAR(255)
+            tableName: role
   - changeSet:
-      id: 7
-      author: welisson
+      id: 1692552535694-7
+      author: welisson (generated)
       changes:
         - addPrimaryKey:
-            columnNames: ID
-            constraintName: INTEG_379333
-            tableName: CLIENT
+            columnNames: id
+            constraintName: integ_379333
+            tableName: client
   - changeSet:
-      id: 8
-      author: welisson
+      id: 1692552535694-8
+      author: welisson (generated)
       changes:
         - addPrimaryKey:
-            columnNames: ID
-            constraintName: INTEG_381333
-            tableName: CUSTOMER_ORDER
+            columnNames: id
+            constraintName: integ_381333
+            tableName: customer_order
   - changeSet:
-      id: 81
-      author: welisson
+      id: 1692552535694-9
+      author: welisson (generated)
       changes:
         - addPrimaryKey:
-            columnNames: ID
-            constraintName: INTEG_396333
-            tableName: ROLE
+            columnNames: id
+            constraintName: integ_384333
+            tableName: delivery
   - changeSet:
-      id: 9
-      author: welisson
+      id: 1692552535694-10
+      author: welisson (generated)
       changes:
         - addPrimaryKey:
-            columnNames: ID
-            constraintName: INTEG_384333
-            tableName: DELIVERY
+            columnNames: delivery_id, order_id
+            constraintName: integ_388333
+            tableName: delivery_orders
   - changeSet:
-      id: 10
-      author: welisson
+      id: 1692552535694-11
+      author: welisson (generated)
       changes:
         - addPrimaryKey:
-            columnNames: DELIVERY_ID, ORDER_ID
-            constraintName: INTEG_388333
-            tableName: DELIVERY_ORDERS
+            columnNames: client_id, role_id
+            constraintName: integ_391333
+            tableName: client_role
   - changeSet:
-      id: 11
-      author: welisson
+      id: 1692552535694-12
+      author: welisson (generated)
       changes:
         - addPrimaryKey:
-            columnNames: CLIENT_ID, ROLE_ID
-            constraintName: INTEG_391333
-            tableName: CLIENT_ROLE
+            columnNames: id
+            constraintName: integ_396333
+            tableName: role
   - changeSet:
-      id: 12
-      author: welisson
+      id: 1692552535694-13
+      author: welisson (generated)
       changes:
         - createIndex:
-            indexName: RDB$FOREIGN139
-            tableName: CUSTOMER_ORDER
-            unique: false
             columns:
               - column:
-                  name: CLIENT_ID
-  - changeSet:
-      id: 13
-      author: welisson
-      changes:
-        - createIndex:
+                  name: client_id
             indexName: RDB$FOREIGN141
-            tableName: DELIVERY
+            tableName: delivery
             unique: true
-            columns:
-              - column:
-                  name: CLIENT_ID
   - changeSet:
-      id: 14
-      author: welisson
+      id: 1692552535694-14
+      author: welisson (generated)
       changes:
         - createIndex:
+            columns:
+              - column:
+                  name: client_id
             indexName: RDB$FOREIGN142
-            tableName: CUSTOMER_ORDER
-            unique: false
-            columns:
-              - column:
-                  name: CLIENT_ID
+            tableName: customer_order
   - changeSet:
-      id: 15
-      author: welisson
+      id: 1692552535694-15
+      author: welisson (generated)
       changes:
         - createIndex:
+            columns:
+              - column:
+                  name: delivery_id
             indexName: RDB$FOREIGN143
-            tableName: DELIVERY_ORDERS
-            unique: false
-            columns:
-              - column:
-                  name: DELIVERY_ID
+            tableName: delivery_orders
   - changeSet:
-      id: 16
-      author: welisson
+      id: 1692552535694-16
+      author: welisson (generated)
       changes:
         - createIndex:
+            columns:
+              - column:
+                  name: order_id
             indexName: RDB$FOREIGN144
-            tableName: DELIVERY_ORDERS
-            unique: false
-            columns:
-              - column:
-                  name: ORDER_ID
+            tableName: delivery_orders
   - changeSet:
-      id: 17
-      author: welisson
+      id: 1692552535694-17
+      author: welisson (generated)
       changes:
         - createIndex:
+            columns:
+              - column:
+                  name: client_id
             indexName: RDB$FOREIGN145
-            tableName: CLIENT_ROLE
-            unique: false
-            columns:
-              - column:
-                  name: CLIENT_ID
+            tableName: client_role
   - changeSet:
-      id: 18
-      author: welisson
+      id: 1692552535694-18
+      author: welisson (generated)
       changes:
         - createIndex:
-            indexName: RDB$FOREIGN146
-            tableName: CLIENT_ROLE
-            unique: false
             columns:
               - column:
-                  name: ROLE_ID
+                  name: role_id
+            indexName: RDB$FOREIGN146
+            tableName: client_role
   - changeSet:
-      id: 19
-      author: welisson
+      id: 1692552535694-19
+      author: welisson (generated)
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: CLIENT_ID
-            baseTableName: CUSTOMER_ORDER
-            constraintName: INTEG_382333
+            baseColumnNames: client_id
+            baseTableName: customer_order
+            constraintName: integ_382333
             deferrable: false
             initiallyDeferred: false
             onDelete: NO ACTION
             onUpdate: NO ACTION
-            referencedColumnNames: ID
-            referencedTableName: CLIENT
+            referencedColumnNames: id
+            referencedTableName: client
   - changeSet:
-      id: 20
-      author: welisson
+      id: 1692552535694-20
+      author: welisson (generated)
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: CLIENT_ID
-            baseTableName: DELIVERY
-            constraintName: INTEG_385333
+            baseColumnNames: client_id
+            baseTableName: delivery
+            constraintName: integ_385333
             deferrable: false
             initiallyDeferred: false
             onDelete: NO ACTION
             onUpdate: NO ACTION
-            referencedColumnNames: ID
-            referencedTableName: CLIENT
+            referencedColumnNames: id
+            referencedTableName: client
   - changeSet:
-      id: 21
-      author: welisson
+      id: 1692552535694-21
+      author: welisson (generated)
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: DELIVERY_ID
-            baseTableName: DELIVERY_ORDERS
-            constraintName: INTEG_389333
+            baseColumnNames: delivery_id
+            baseTableName: delivery_orders
+            constraintName: integ_389333
             deferrable: false
             initiallyDeferred: false
             onDelete: NO ACTION
             onUpdate: NO ACTION
-            referencedColumnNames: ID
-            referencedTableName: DELIVERY
+            referencedColumnNames: id
+            referencedTableName: delivery
   - changeSet:
-      id: 22
-      author: welisson
+      id: 1692552535694-22
+      author: welisson (generated)
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: ORDER_ID
-            baseTableName: DELIVERY_ORDERS
-            constraintName: INTEG_390333
+            baseColumnNames: order_id
+            baseTableName: delivery_orders
+            constraintName: integ_390333
             deferrable: false
             initiallyDeferred: false
             onDelete: NO ACTION
             onUpdate: NO ACTION
-            referencedColumnNames: ID
-            referencedTableName: CUSTOMER_ORDER
+            referencedColumnNames: id
+            referencedTableName: customer_order
   - changeSet:
-      id: 23
-      author: welisson
+      id: 1692552535694-23
+      author: welisson (generated)
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: CLIENT_ID
-            baseTableName: CLIENT_ROLE
-            constraintName: INTEG_392333
+            baseColumnNames: client_id
+            baseTableName: client_role
+            constraintName: integ_392333
             deferrable: false
             initiallyDeferred: false
             onDelete: NO ACTION
             onUpdate: NO ACTION
-            referencedColumnNames: ID
-            referencedTableName: CLIENT
+            referencedColumnNames: id
+            referencedTableName: client
   - changeSet:
-      id: 24
-      author: welisson
+      id: 1692552535694-24
+      author: welisson (generated)
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: ROLE_ID
-            baseTableName: CLIENT_ROLE
-            constraintName: INTEG_393333
+            baseColumnNames: role_id
+            baseTableName: client_role
+            constraintName: integ_393333
             deferrable: false
             initiallyDeferred: false
             onDelete: NO ACTION
             onUpdate: NO ACTION
-            referencedColumnNames: ID
-            referencedTableName: ROLE
-  - changeSet:
-      id: 25
-      author: welisson
-      changes:
-        - sql:
-            sql: |
-              CREATE GENERATOR client_seq;
-              SET GENERATOR client_seq TO 0;
-  - changeSet:
-      id: 26
-      author: welisson
-      changes:
-        - sql:
-            endDelimiter: ;
-            splitStatements: false
-            stripComments: true
-            sql: |
-              CREATE TRIGGER client_bir FOR client
-              ACTIVE BEFORE INSERT POSITION 0
-              AS
-              BEGIN
-                  IF (NEW.id is NULL) THEN BEGIN:
-                    NEW.id = gen_id(client_seq, 1);
-                  END
-              END
-  - changeSet:
-      id: 27
-      author: welisson
-      changes:
-        - sql:
-            sql: |
-              CREATE GENERATOR order_seq;
-              SET GENERATOR order_seq TO 0;
-  - changeSet:
-      id: 28
-      author: welisson
-      changes:
-        - sql:
-            endDelimiter: ;
-            splitStatements: false
-            stripComments: true
-            sql: |
-              CREATE TRIGGER order_bir FOR customer_order
-              ACTIVE BEFORE INSERT POSITION 0
-              AS
-              BEGIN
-                  IF (NEW.id is NULL) THEN BEGIN:
-                    NEW.id = GEN_ID(order_seq, 1);
-                  END
-              END
-  - changeSet:
-      id: 29
-      author: welisson
-      changes:
-        - sql:
-            sql: |
-              CREATE GENERATOR delivery_seq;
-              SET GENERATOR delivery_seq TO 0;
-  - changeSet:
-      id: 30
-      author: welisson
-      changes:
-        - sql:
-            endDelimiter: ;
-            splitStatements: false
-            stripComments: true
-            sql: |
-              CREATE TRIGGER delivery_bir FOR delivery
-              ACTIVE BEFORE INSERT POSITION 0
-              AS
-              BEGIN
-                  IF (NEW.id is NULL) THEN BEGIN:
-                    NEW.id = GEN_ID(delivery_seq, 1);
-                  END
-              END
+            referencedColumnNames: id
+            referencedTableName: role
   - changeSet:
       id: 31
       author: welisson
@@ -504,6 +412,19 @@ databaseChangeLog:
       id: 33
       author: welisson
       changes:
-        - sql:
-            sql: |
-              SET GENERATOR client_seq TO 2;
+        - createSequence:
+            sequenceName: order_seq
+  - changeSet:
+      id: 34
+      author: welisson
+      changes:
+        - createSequence:
+            sequenceName: delivery_seq
+  - changeSet:
+      id: 35
+      author: welisson
+      changes:
+        - createSequence:
+            sequenceName: client_seq
+            startValue: 3
+

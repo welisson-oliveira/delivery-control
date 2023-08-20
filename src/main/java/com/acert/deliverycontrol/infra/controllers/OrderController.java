@@ -18,7 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Set;
 
 import static com.acert.deliverycontrol.infra.config.redis.OpenApiConfig.SECURITY_CONFIG_NAME;
 
@@ -41,7 +41,7 @@ public class OrderController {
     })
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public List<OrderDTO> getAllOrders() {
+    public Set<OrderDTO> getAllOrders() {
         return this.mapper.toDTOs(this.orderService.getAllOrders());
     }
 
@@ -72,7 +72,7 @@ public class OrderController {
     })
     @GetMapping("/activated")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public List<OrderDTO> getAllActivatedOrder() {
+    public Set<OrderDTO> getAllActivatedOrder() {
         return this.mapper.toDTOs(this.orderService.getAllActivatedOrders());
     }
 
@@ -87,7 +87,7 @@ public class OrderController {
     })
     @GetMapping("/finished")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public List<OrderDTO> getAllFinishedOrder() {
+    public Set<OrderDTO> getAllFinishedOrder() {
         return this.mapper.toDTOs(this.orderService.getAllFinishedOrders());
     }
 
@@ -102,7 +102,7 @@ public class OrderController {
     })
     @GetMapping("/canceled")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public List<OrderDTO> getAllCanceledOrder() {
+    public Set<OrderDTO> getAllCanceledOrder() {
         return this.mapper.toDTOs(this.orderService.getAllCanceledOrders());
     }
 
@@ -118,8 +118,8 @@ public class OrderController {
     })
     @GetMapping("/clients/{clientId}/activated")
     @PreAuthorize("@security.sameUserOrAdmin(#clientId)")
-    public List<OrderDTO> getActivatedOrdersByClientId(@Parameter(description = "ID do cliente para buscar os pedidos ativos")
-                                                       @PathVariable final Long clientId) {
+    public Set<OrderDTO> getActivatedOrdersByClientId(@Parameter(description = "ID do cliente para buscar os pedidos ativos")
+                                                      @PathVariable final Long clientId) {
         return this.mapper.toDTOs(this.orderService.getActivatedOrdersByClientId(clientId));
     }
 
@@ -135,8 +135,8 @@ public class OrderController {
     })
     @GetMapping("/clients/{clientId}/finished")
     @PreAuthorize("@security.sameUserOrAdmin(#clientId)")
-    public List<OrderDTO> getDoneOrdersByClientId(@Parameter(description = "ID do cliente para buscar os pedidos concluídos")
-                                                  @PathVariable final Long clientId) {
+    public Set<OrderDTO> getDoneOrdersByClientId(@Parameter(description = "ID do cliente para buscar os pedidos concluídos")
+                                                 @PathVariable final Long clientId) {
         return this.mapper.toDTOs(this.orderService.getDoneOrdersByClientId(clientId));
     }
 
@@ -152,7 +152,7 @@ public class OrderController {
     })
     @GetMapping("/clients/{clientId}/canceled")
     @PreAuthorize("@security.sameUserOrAdmin(#clientId)")
-    public List<OrderDTO> getCanceledOrdersByClientId(
+    public Set<OrderDTO> getCanceledOrdersByClientId(
             @Parameter(description = "ID do cliente para buscar os pedidos cancelados")
             @PathVariable final Long clientId) {
         return this.mapper.toDTOs(this.orderService.getCanceledOrdersByClientId(clientId));

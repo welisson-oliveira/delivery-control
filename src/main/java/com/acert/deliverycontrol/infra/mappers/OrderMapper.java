@@ -5,7 +5,7 @@ import com.acert.deliverycontrol.infra.dto.order.OrderDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -17,8 +17,8 @@ public class OrderMapper {
                 order.getOrderDate(), order.getClient().getId());
     }
 
-    public List<OrderDTO> toDTOs(final List<Order> allOrders) {
-        return allOrders.stream().map(this::toDTO).collect(Collectors.toList());
+    public Set<OrderDTO> toDTOs(final Set<Order> allOrders) {
+        return allOrders.stream().map(this::toDTO).collect(Collectors.toSet());
     }
 }
 

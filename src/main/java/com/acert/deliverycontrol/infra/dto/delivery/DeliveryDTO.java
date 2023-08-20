@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @AllArgsConstructor
@@ -17,5 +17,5 @@ public class DeliveryDTO {
     private String address;
     private DeliveryStatus status;
     private Long clientId;
-    private final List<OrderDTO> orders;
+    private final Set<OrderDTO> orders;
 }
