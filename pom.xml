@@ -52,12 +52,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>org.firebirdsql.jdbc</groupId>-->
-        <!--            <artifactId>jaybird-jdk18</artifactId>-->
-        <!--            <version>3.0.9</version>-->
-        <!--        </dependency>-->
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
