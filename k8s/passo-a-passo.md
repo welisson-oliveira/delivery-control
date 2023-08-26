@@ -95,7 +95,30 @@
       ``` 
       6.4. Aplique o manifesto ``` kubectl apply -f metrics-server.yml ```
 
-7. Criar os manifestos para o postgres: ```kubectl apply -f postgres/```
+7. Criar o LimitRange ``` kubectl apply -f ./container-limitrange.yml ```
+    ```yml
+    apiVersion: v1
+    kind: LimitRange
+    metadata:
+      name: container-limit-range
+    spec:
+      limits:
+        - max:
+            cpu: "800m"
+            memory: 900Mi
+          min:
+            cpu: "150m"
+            memory: 100Mi
+          default:
+            cpu: "250m"
+            memory: "128Mi"
+          defaultRequest:
+            cpu: "150m"
+            memory: "110Mi"
+          type: Container
+    ```
+
+8. Criar os manifestos para o postgres: ```kubectl apply -f postgres/```
     #### postgres-secret.yml 
     ```yml
     apiVersion: v1
@@ -156,7 +179,7 @@
         - ``` kubectl run -i --tty --image postgres psql-test --restart=Never --rm -- /bin/bash ```
         - ``` psql -h postgres-clusterip -p 5432 -U delivery_control -d delivery_control ```
 
-8. Criar os manifestos para o postgres: ``` kubectl apply -f redis/ ```
+9. Criar os manifestos para o postgres: ``` kubectl apply -f redis/ ```
     
     #### redis-configmap.yml
     ```yml
@@ -218,7 +241,7 @@
       - ``` kubectl run -i --tty --image redis:5.0-rc redis-cli-test --restart=Never --rm -- /bin/bash ```
       - ``` redis-cli -h redis-clusterip -p 6379 ```
 
-9. Criar os manifestos para a api: ``` kubectl apply -f api/ ```
+10. Criar os manifestos para a api: ``` kubectl apply -f api/ ```
     #### default-namespace-resourcequota.yml
     ```yml
     apiVersion: v1
@@ -329,6 +352,24 @@
     ```
     #### delivery-control-hpa.yml
     ```yml
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    metadata:
+      name: delivery-control-hpa
+    spec:
+      scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: delivery-control-deployment
+      minReplicas: 1
+      maxReplicas: 3
+      metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 50
 
     ```
 
