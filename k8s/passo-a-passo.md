@@ -67,6 +67,7 @@
 
 5. Criar cluster kubernetes ``` kind create cluster --name k8s --config=./cluster-config.yml ```
 
+    #### cluster-config.yml
     ```yml
     kind: Cluster
     apiVersion: kind.x-k8s.io/v1alpha4
@@ -85,7 +86,8 @@
     6.2. Remomeie o manifesto ``` mv components.yaml metrics-server.yml ``` 
 
     6.3. Altere o manifesto metrics-server.yml. Adicione ao field Deployment no container.args a linha:
-        
+      
+      #### metrics-server.yml
       ```yml
       ...
       containers:
