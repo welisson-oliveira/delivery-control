@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-configmap
+data:
+  REDIS_HOST: locahost
+  REDIS_PORT: "6379"
+  REDIS_URI: locahost:6379

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: delivery-control-configmap
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-clusterip:5432/delivery_control
+  REDIS_HOST: redis-clusterip
+  REDIS_URI: redis-clusterip:6379
