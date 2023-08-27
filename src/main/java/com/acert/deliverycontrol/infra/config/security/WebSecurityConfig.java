@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests().antMatchers("/clients/login").permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/health-check", "/readiness-check", "/startup-check").permitAll()
+                .authorizeRequests().antMatchers("/health-check", "/readiness-check", "/startup-check", "/post-start", "/pre-stop").permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/v3/*").permitAll()
                 .and()

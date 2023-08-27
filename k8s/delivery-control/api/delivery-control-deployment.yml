@@ -11,13 +11,20 @@ spec:
       labels:
         app: delivery-control-deployment
     spec:
+      initContainers:
+        - name: init-pod-postgres
+          image: busybox:1.28
+          command: ["sh", "-c", "until nslookup postgres-clusterip.default.svc.cluster.local; do echo Aguardando o Postgres; sleep 2; done"]
+        - name: init-pod-redis
+          image: busybox:1.28
+          command: ["sh", "-c", "until nslookup redis-clusterip.default.svc.cluster.local; do echo Aguardando o Redis; sleep 2; done"]
       containers:
       - name: delivery-control-deployment
         image: welissonoliveira/delivery-control:latest
         resources:
           requests:
             memory: "700Mi"
-            cpu: "10m"
+            cpu: "150m"
           limits:
             memory: "2100Mi"
             cpu: "1000m"
@@ -64,3 +71,18 @@ spec:
           failureThreshold: 1
         # Self Healing end
         imagePullPolicy: Always
+        # lifecycle:
+        #   postStart:
+        #     exec:
+        #       command:
+        #         - "curl"
+        #         - "-X"
+        #         - "POST"
+        #         - "http://pruu.herokuapp.com/dump/lifecyclestart"
+        #   preStop:
+        #     exec:
+        #       command:
+        #         - "curl"
+        #         - "-X"
+        #         - "POST"
+        #         - "http://pruu.herokuapp.com/dump/lifecyclestop"
