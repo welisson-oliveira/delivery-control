@@ -72,11 +72,18 @@
     kind: Cluster
     apiVersion: kind.x-k8s.io/v1alpha4
     nodes:
-    - role: control-plane
-      extraPortMappings:
-      - containerPort: 30000
-        hostPort: 30000
-        protocol: TCP
+      - role: control-plane
+        extraPortMappings:
+        - containerPort: 30000
+          hostPort: 30000
+          protocol: TCP
+        - containerPort: 30001
+          hostPort: 30001
+          protocol: TCP
+      - role: worker
+      - role: worker
+      - role: worker
+      - role: worker
     ```
 
 6. Configurar o Metrics-server
@@ -95,19 +102,19 @@
           - --kubelet-insecure-tls ao container.args
       ...
       ``` 
-      6.4. Aplique o manifesto ``` kubectl apply -f metrics-server.yml ```
+      6.4. Aplique o manifesto ``` kubectl apply -f ./delivery-control/metrics-server/metrics-server.yml ```
 
-7. Criar o LimitRange ``` kubectl apply -f ./container-limitrange.yml ```
+7. Criar o LimitRange ``` kubectl apply -f ./delivery-control/default-namespace-limitrange.yml ```
     ```yml
     apiVersion: v1
     kind: LimitRange
     metadata:
-      name: container-limit-range
+      name: default-namespace-limit-range
     spec:
       limits:
         - max:
-            cpu: "800m"
-            memory: 900Mi
+            cpu: "1000m"
+            memory: 2100Mi
           min:
             cpu: "150m"
             memory: 100Mi
@@ -120,131 +127,7 @@
           type: Container
     ```
 
-8. Criar os manifestos para o postgres: ```kubectl apply -f postgres/```
-    #### postgres-secret.yml 
-    ```yml
-    apiVersion: v1
-    kind: Secret
-    metadata:
-      name: postgres-secret
-    type: Opaque
-    data:
-      POSTGRES_USER: ZGVsaXZlcnlfY29udHJvbA==
-      POSTGRES_PASSWORD: ZGVsaXZlcnlfY29udHJvbA==
-      POSTGRES_DB: ZGVsaXZlcnlfY29udHJvbA==
-    ```
-    
-    #### postgres-deployment.yml
-    ```yml
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-    name: postgres-deployment
-    spec:
-    selector:
-        matchLabels:
-        app: postgres-deployment
-    template:
-        metadata:
-        labels:
-            app: postgres-deployment
-        spec:
-        containers:
-        - name: postgres-deployment
-            image: postgres
-            resources:
-            limits:
-                memory: "128Mi"
-                cpu: "500m"
-            ports:
-            - containerPort: 5432
-            envFrom:
-            - secretRef:
-                name: postgres-secret
-    ```
-
-    #### postgres-clusterip.yml
-    ```yml
-    apiVersion: v1
-    kind: Service
-    metadata:
-    name: postgres-clusterip
-    spec:
-    selector:
-        app: postgres-deployment
-    ports:
-    - port: 5432
-        targetPort: 5432
-    ```
-
-    - verifique a conexão com o banco:
-        - ``` kubectl run -i --tty --image postgres psql-test --restart=Never --rm -- /bin/bash ```
-        - ``` psql -h postgres-clusterip -p 5432 -U delivery_control -d delivery_control ```
-
-9. Criar os manifestos para o postgres: ``` kubectl apply -f redis/ ```
-    
-    #### redis-configmap.yml
-    ```yml
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: redis-configmap
-    data:
-      REDIS_HOST: localhost
-      REDIS_PORT: "6379"
-      REDIS_URI: localhost:6379
-
-    ```
-
-    #### redis-clusterip.yml
-    ```yml
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: redis-clusterip
-    spec:
-      selector:
-        app: redis-deployment
-      ports:
-      - port: 6379
-        targetPort: 6379
-    ```
-
-    #### redis-deployment.yml
-    ```yml
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: redis-deployment
-    spec:
-      selector:
-        matchLabels:
-          app: redis-deployment
-      template:
-        metadata:
-          labels:
-            app: redis-deployment
-        spec:
-          containers:
-          - name: redis-deployment
-            image: redis:5.0-rc
-            resources:
-              limits:
-                memory: "128Mi"
-                cpu: "500m"
-            ports:
-            - containerPort: 6379
-            envFrom:
-              - configMapRef:
-                  name: redis-configmap
-    ```
-
-    - verifique a conexão com o banco:
-      - ``` kubectl run -i --tty --image redis:5.0-rc redis-cli-test --restart=Never --rm -- /bin/bash ```
-      - ``` redis-cli -h redis-clusterip -p 6379 ```
-
-10. Criar os manifestos para a api: ``` kubectl apply -f api/ ```
-    #### default-namespace-resourcequota.yml
+8. Criar o Resource quota para limitar os recursos totais do namespace default: ``` kubectl apply -f ./delivery-control/default-namespace-resourcequota.yml ```
     ```yml
     apiVersion: v1
     kind: ResourceQuota
@@ -257,6 +140,16 @@
         limits.cpu: "3"
         limits.memory: "6Gi"
     ```
+
+9. Crie os labels para os nodes do redis
+    ```kubectl
+    kubectl label node k8s-worker database=redis
+    kubectl label node k8s-worker2 database=redis
+    ```
+
+10. Adicione um Taint no node k8s-worker3: ``` kubectl taint nodes k8s-worker3 motivo=manutencao:NoExecute ```
+
+11. Criar os manifestos para a api: ``` kubectl apply -f api/ ```
     #### delivery-control-configmap.yml
     ```yml
     apiVersion: v1
@@ -283,15 +176,22 @@
           labels:
             app: delivery-control-deployment
         spec:
+          initContainers:
+            - name: init-pod-postgres
+              image: busybox:1.28
+              command: ["sh", "-c", "until nslookup postgres-clusterip.default.svc.cluster.local; do echo Aguardando o Postgres; sleep 2; done"]
+            - name: init-pod-redis
+              image: busybox:1.28
+              command: ["sh", "-c", "until nslookup redis-clusterip.default.svc.cluster.local; do echo Aguardando o Redis; sleep 2; done"]
           containers:
           - name: delivery-control-deployment
             image: welissonoliveira/delivery-control:latest
             resources:
               requests:
-                memory: "500Mi"
-                cpu: "10m"
+                memory: "700Mi"
+                cpu: "150m"
               limits:
-                memory: "1500Mi"
+                memory: "2100Mi"
                 cpu: "1000m"
             ports:
             - containerPort: 8080
@@ -336,6 +236,42 @@
               failureThreshold: 1
             # Self Healing end
             imagePullPolicy: Always
+            # lifecycle:
+            #   postStart:
+            #     exec:
+            #       command:
+            #         - "curl"
+            #         - "-X"
+            #         - "GET"
+            #         - "https://jsonplaceholder.typicode.com/comments"
+            #   preStop:
+            #     exec:
+            #       command:
+            #         - "curl"
+            #         - "-X"
+            #         - "GET"
+            #         - "https://jsonplaceholder.typicode.com/photos"
+          affinity:
+            podAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  podAffinityTerm:
+                    topologyKey: "kubernetes.io/hostname"
+                    labelSelector:
+                      matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                            - "redis-deployment"
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app
+                        operator: In
+                        values:
+                          - delivery-control-deployment
+                  topologyKey: "kubernetes.io/hostname"
     ```
     #### delivery-control-loadbalancer.yml
     ```yml
@@ -364,16 +300,266 @@
         kind: Deployment
         name: delivery-control-deployment
       minReplicas: 1
-      maxReplicas: 3
+      maxReplicas: 10
       metrics:
       - type: Resource
         resource:
           name: cpu
           target:
             type: Utilization
-            averageUtilization: 50
+            averageUtilization: 75
+    ```
+
+12. Criar os manifestos para o redis: ``` kubectl apply -f ./delivery-control/redis/ ```
+    
+    #### redis-configmap.yml
+    ```yml
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: redis-configmap
+    data:
+      REDIS_HOST: localhost
+      REDIS_PORT: "6379"
+      REDIS_URI: localhost:6379
+    ```
+
+    #### redis-pvc.yml
+    ```yml
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: redis-pvc
+    spec:
+      resources:
+        requests:
+          storage: 1Gi
+      volumeMode: Filesystem
+      storageClassName: redis
+      accessModes:
+        - ReadWriteOnce
+    ```
+
+    #### redis-pv.yml
+    ```yml
+    apiVersion: v1
+    kind: PersistentVolume
+    metadata:
+      name: redis-pv
+    spec:
+      capacity:
+        storage: 1Gi
+      volumeMode: Filesystem
+      accessModes:
+        - ReadWriteOnce
+      persistentVolumeReclaimPolicy: Retain
+      storageClassName: redis
+      hostPath:
+        path: /volumes/redis
+    ```
+
+    #### redis-deployment.yml
+    ```yml
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: redis-deployment
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app: redis-deployment
+      template:
+        metadata:
+          labels:
+            app: redis-deployment
+        spec:
+          nodeSelector:
+            database: redis
+          containers:
+          - name: redis-deployment
+            image: redis:5.0-rc
+            resources:
+              limits:
+                memory: "128Mi"
+                cpu: "250m"
+            ports:
+            - containerPort: 6379
+            envFrom:
+              - configMapRef:
+                  name: redis-configmap
+            volumeMounts:
+                - mountPath: /data/redis
+                  name: redis-data
+          volumes:
+            - name: redis-data
+              persistentVolumeClaim:
+                claimName: redis-pvc
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app
+                        operator: In
+                        values:
+                          - redis-deployment
+                          - postgres-deployment
+                  topologyKey: "kubernetes.io/hostname"
+            podAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  podAffinityTerm:
+                    topologyKey: "kubernetes.io/hostname"
+                    labelSelector:
+                      matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                            - delivery-control-deployment
 
     ```
+
+    #### redis-clusterip.yml
+    ```yml
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: redis-clusterip
+    spec:
+      selector:
+        app: redis-deployment
+      ports:
+      - port: 6379
+        targetPort: 6379
+    ```
+
+    - verifique a conexão com o redis:
+      - ``` kubectl run -i --tty --image redis:5.0-rc redis-cli-test --restart=Never --rm -- /bin/bash ```
+      - ``` redis-cli -h redis-clusterip -p 6379 ```
+
+11. Criar os manifestos para o postgres: ```kubectl apply -f ./delivery-control/postgres/```
+    #### postgres-secret.yml 
+    ```yml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: postgres-secret
+    type: Opaque
+    data:
+      POSTGRES_USER: ZGVsaXZlcnlfY29udHJvbA==
+      POSTGRES_PASSWORD: ZGVsaXZlcnlfY29udHJvbA==
+      POSTGRES_DB: ZGVsaXZlcnlfY29udHJvbA==
+    ```
+    
+    #### postgres-pvc.yml
+    ```yml
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: postgres-pvc
+    spec:
+      resources:
+        requests:
+          storage: 1Gi
+      volumeMode: Filesystem
+      storageClassName: postgres
+      accessModes:
+        - ReadWriteOnce
+    ```
+
+    #### postgres-pv.yml
+    ```yml
+    apiVersion: v1
+    kind: PersistentVolume
+    metadata:
+      name: postgres-pv
+    spec:
+      capacity:
+        storage: 1Gi
+      volumeMode: Filesystem
+      accessModes:
+        - ReadWriteOnce
+      persistentVolumeReclaimPolicy: Retain
+      storageClassName: postgres
+      hostPath:
+        path: /var/lib/postgresql/data
+    ```
+
+    #### postgres-deployment.yml
+    ```yml
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: postgres-deployment
+    spec:
+      replicas: 5
+      selector:
+        matchLabels:
+          app: postgres-deployment
+      template:
+        metadata:
+          labels:
+            app: postgres-deployment
+        spec:
+          containers:
+            - name: postgres-deployment
+              image: postgres
+              resources:
+                limits:
+                  memory: "128Mi"
+                  cpu: "250m"
+              ports:
+                - containerPort: 5432
+              envFrom:
+                - secretRef:
+                    name: postgres-secret
+              volumeMounts:
+                - mountPath: /data/postgresql
+                  name: postgres-data
+          volumes:
+            - name: postgres-data
+              persistentVolumeClaim:
+                claimName: postgres-pvc
+          affinity:
+            podAntiAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  podAffinityTerm:
+                    labelSelector:
+                      matchExpressions:
+                      - key: app
+                        operator: In
+                        values:
+                          - postgres-deployment
+                    topologyKey: "kubernetes.io/hostname"
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app
+                        operator: In
+                        values:
+                          - redis-deployment
+                  topologyKey: "kubernetes.io/hostname"
+    ```
+
+    #### postgres-clusterip.yml
+    ```yml
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: postgres-clusterip
+    spec:
+      selector:
+        app: postgres-deployment
+      ports:
+        - port: 5432
+          targetPort: 5432
+    ```
+
+    - verifique a conexão com o banco:
+        - ``` kubectl run -i --tty --image postgres psql-test --restart=Never --rm -- /bin/bash ```
+        - ``` psql -h postgres-clusterip -p 5432 -U delivery_control -d delivery_control ```
 
 ---
 

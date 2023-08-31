@@ -4,7 +4,7 @@ metadata:
   name: default-namespace-quota
 spec:
   hard:
-    requests.cpu: "2"
+    requests.cpu: "3"
     requests.memory: "4Gi"
-    limits.cpu: "3"
+    limits.cpu: "5"
     limits.memory: "6Gi"

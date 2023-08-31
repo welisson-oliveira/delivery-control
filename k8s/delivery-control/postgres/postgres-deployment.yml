@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: postgres-deployment
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: postgres-deployment
@@ -12,14 +13,41 @@ spec:
         app: postgres-deployment
     spec:
       containers:
-      - name: postgres-deployment
-        image: postgres
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
-        ports:
-        - containerPort: 5432
-        envFrom:
-          - secretRef:
-              name: postgres-secret
+        - name: postgres-deployment
+          image: postgres
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          volumeMounts:
+            - mountPath: /data/postgresql
+              name: postgres-data
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - postgres-deployment
+                topologyKey: "kubernetes.io/hostname"
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - redis-deployment
+              topologyKey: "kubernetes.io/hostname"

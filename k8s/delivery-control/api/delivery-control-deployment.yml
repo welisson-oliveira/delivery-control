@@ -77,12 +77,33 @@ spec:
         #       command:
         #         - "curl"
         #         - "-X"
-        #         - "POST"
-        #         - "http://pruu.herokuapp.com/dump/lifecyclestart"
+        #         - "GET"
+        #         - "https://jsonplaceholder.typicode.com/comments"
         #   preStop:
         #     exec:
         #       command:
         #         - "curl"
         #         - "-X"
-        #         - "POST"
-        #         - "http://pruu.herokuapp.com/dump/lifecyclestop"
+        #         - "GET"
+        #         - "https://jsonplaceholder.typicode.com/photos"
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - "redis-deployment"
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - delivery-control-deployment
+              topologyKey: "kubernetes.io/hostname"

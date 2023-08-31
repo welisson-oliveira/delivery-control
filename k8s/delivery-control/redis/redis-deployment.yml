@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: redis-deployment
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: redis-deployment
@@ -11,15 +12,46 @@ spec:
       labels:
         app: redis-deployment
     spec:
+      nodeSelector:
+        database: redis
       containers:
       - name: redis-deployment
         image: redis:5.0-rc
         resources:
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "250m"
         ports:
         - containerPort: 6379
         envFrom:
           - configMapRef:
               name: redis-configmap
+        volumeMounts:
+            - mountPath: /data/redis
+              name: redis-data
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: redis-pvc
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - redis-deployment
+                      - postgres-deployment
+              topologyKey: "kubernetes.io/hostname"
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - delivery-control-deployment
