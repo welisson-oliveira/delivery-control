@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: delivery-control-ingress
+  labels:
+    name: delivery-control-ingress
+spec:
+  ingressClassName: nginx # verificar o ingressclass disponivel - kubectl get ingressclass
+  defaultBackend:
+    service: 
+      name: delivery-control-clusterip
+      port: 
+        number: 8080
+  rules:
+  - host: 127.0.0.1.nip.io
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: delivery-control-clusterip
+            port: 
+              number: 8080

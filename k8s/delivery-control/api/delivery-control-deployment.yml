@@ -11,6 +11,7 @@ spec:
       labels:
         app: delivery-control-deployment
     spec:
+      serviceAccountName: delivery-control-user
       initContainers:
         - name: init-pod-postgres
           image: busybox:1.28
@@ -107,3 +108,4 @@ spec:
                     values:
                       - delivery-control-deployment
               topologyKey: "kubernetes.io/hostname"
+      

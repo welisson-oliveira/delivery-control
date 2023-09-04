@@ -403,6 +403,49 @@
         - ``` kubectl run -i --tty --image postgres psql-test --restart=Never --rm -- /bin/bash ```
         - ``` psql -h postgres-clusterip -p 5432 -U delivery_control -d delivery_control ```
 
+17. Criar um Service Account e role para a api:
+
+    #### service-account.yml
+    ```yml
+    apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: delivery-control-user
+    ```
+
+    #### role.yml
+    ```yml
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: Role
+    metadata:
+      name: delivery-control-role
+    rules:
+      - apiGroups:
+          - ""
+          - "apps"
+        resources:
+          - services
+        verbs:
+          - get
+          - list
+          - watch
+    ```
+
+    #### role-binding.yml
+    ```yml
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: delivery-control-bind
+    subjects:
+    - kind: ServiceAccount
+      name: delivery-control-user
+      namespace: default
+    roleRef:
+      kind: Role
+      name: delivery-control-role
+      apiGroup: rbac.authorization.k8s.io
+    ```
 
 14. Criar os manifestos para a api: ``` kubectl apply -f api/ ```
     #### delivery-control-configmap.yml
@@ -431,6 +474,7 @@
           labels:
             app: delivery-control-deployment
         spec:
+          serviceAccountName: delivery-control-user
           initContainers:
             - name: init-pod-postgres
               image: busybox:1.28
@@ -528,20 +572,18 @@
                           - delivery-control-deployment
                   topologyKey: "kubernetes.io/hostname"
     ```
-    #### delivery-control-loadbalancer.yml
+    #### delivery-control-clusterip.yml
     ```yml
     apiVersion: v1
     kind: Service
     metadata:
-      name: delivery-control-loadbalancer
+      name: delivery-control-clusterip
     spec:
       selector:
         app: delivery-control-deployment
       ports:
       - port: 8080
         targetPort: 8080
-        nodePort: 30000
-      type: LoadBalancer
     ```
     #### delivery-control-hpa.yml
     ```yml
@@ -564,8 +606,35 @@
             type: Utilization
             averageUtilization: 75
     ```
+    #### delivery-control-ingress.yml
+    ```yml
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      name: delivery-control-ingress
+      labels:
+        name: delivery-control-ingress
+    spec:
+      ingressClassName: nginx # verificar o ingressclass disponivel - kubectl get ingressclass
+      defaultBackend:
+        service: 
+          name: delivery-control-clusterip
+          port: 
+            number: 8080
+      rules:
+      - host: 127.0.0.1.nip.io
+        http:
+          paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: delivery-control-clusterip
+                port: 
+                  number: 8080
+    ```
 
-15. Criar a policy para o postgres:
+15. Criar a policy para o postgres: ```kubectl apply -f ./delivery-control/postgres/postgres-policy.yml```
     #### postgres-policy.yml
     ```yml
     apiVersion: networking.k8s.io/v1
@@ -597,7 +666,7 @@
     ```
 
 
-16. Criar a policy para o redis:
+16. Criar a policy para o redis: ```kubectl apply -f ./delivery-control/redis/redis-policy.yml```
     #### redis-policy.yml
     ```yml
     apiVersion: networking.k8s.io/v1
