@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-api-configmap
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://{{ .Release.Name }}-postgres-clusterip:5432/delivery_control
+  REDIS_HOST: {{ .Release.Name }}-redis-clusterip
+  REDIS_URI: {{ .Release.Name }}-redis-clusterip:6379

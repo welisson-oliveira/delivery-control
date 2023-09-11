@@ -1,7 +1,7 @@
-# Deploy Kubernetes 
+# Deploy Kubernetes
 
 1. Criar o dockerfile e executar: ``` docker build welissonoliveira/delivery-control:v1 . ```
-    #### Dockerfile
+   #### Dockerfile
     ```docker
     FROM openjdk:8-jdk-alpine
     MAINTAINER welisson
@@ -19,7 +19,7 @@
     ```
 
 4. Criar docker-compose.yml e executar: ``` docker compose --env-file .env up -d --build ```
-    #### docker-compose.yml
+   #### docker-compose.yml
     ```yml 
     services:
       delivery-control:
@@ -67,7 +67,7 @@
 
 5. Criar cluster kubernetes ``` kind create cluster --name k8s --config=./cluster-config.yml ```
 
-    #### cluster-config.yml
+   #### cluster-config.yml
     ```yml
     kind: Cluster
     apiVersion: kind.x-k8s.io/v1alpha4
@@ -87,27 +87,37 @@
       - role: worker
     ```
 
-6. Configurar weavenet: ```kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml```
+6. Configurar o Ingress: ```kubectl apply -f ./ingress```
 
-7. Configurar o Metrics-server
-    
-    6.1. Baixar o manifesto: ``` wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml ```
-    
-    6.2. Remomeie o manifesto ``` mv components.yaml metrics-server.yml ``` 
+   6.1 baixe o arquivo de configração do ingress
+   ```wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.1/deploy/static/provider/baremetal/deploy.yaml ```
 
-    6.3. Altere o manifesto metrics-server.yml. Adicione ao field Deployment no container.args a linha:
-      
-      #### metrics-server.yml
+   6.2 adicione o nodePort:30000 no Service ingress-nginx-controller no arquivo deploy.yaml
+
+7. Configurar weavenet para fornecer a rede entre os
+   pods: ```kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml```
+
+8. Configurar o Metrics-server
+
+   8.1. Baixar o
+   manifesto: ``` wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml ```
+
+   8.2. Remomeie o manifesto ``` mv components.yaml metrics-server.yml ```
+
+   8.3. Altere o manifesto metrics-server.yml. Adicione ao field Deployment no container.args a linha:
+
+   #### metrics-server.yml
       ```yml
       ...
       containers:
         - args:
-          - --kubelet-insecure-tls ao container.args
+          - --kubelet-insecure-tls
       ...
       ``` 
-      6.4. Aplique o manifesto ``` kubectl apply -f ./delivery-control/metrics-server/metrics-server.yml ```
+   8.4. Aplique o manifesto ``` kubectl apply -f ./delivery-control/metrics-server/metrics-server.yml ```
 
-8. Criar o LimitRange ``` kubectl apply -f ./delivery-control/default-namespace-limitrange.yml ```
+9. Criar o LimitRange para limitar os recursos por container no namespace
+   default: ``` kubectl apply -f ./delivery-control/default-namespace-limitrange.yml ```
     ```yml
     apiVersion: v1
     kind: LimitRange
@@ -130,7 +140,8 @@
           type: Container
     ```
 
-9. Criar o Resource quota para limitar os recursos totais do namespace default: ``` kubectl apply -f ./delivery-control/default-namespace-resourcequota.yml ```
+10. Criar o Resource quota para limitar os recursos totais do namespace
+    default: ``` kubectl apply -f ./delivery-control/default-namespace-resourcequota.yml ```
     ```yml
     apiVersion: v1
     kind: ResourceQuota
@@ -144,16 +155,16 @@
         limits.memory: "6Gi"
     ```
 
-10. Crie os labels para os nodes do redis
+11. Crie os labels para os nodes do redis
     ```kubectl
     kubectl label node k8s-worker database=redis
     kubectl label node k8s-worker2 database=redis
     ```
 
-11. Adicione um Taint no node k8s-worker3: ``` kubectl taint nodes k8s-worker3 motivo=manutencao:NoExecute ```
+12. Adicione um Taint no node k8s-worker3: ``` kubectl taint nodes k8s-worker3 motivo=manutencao:NoExecute ```
 
-12. Criar os manifestos para o redis: ``` kubectl apply -f ./delivery-control/redis/ ```
-    
+13. Criar os manifestos para o redis: ``` kubectl apply -f ./delivery-control/redis/ ```
+
     #### redis-configmap.yml
     ```yml
     apiVersion: v1
@@ -277,11 +288,11 @@
     ```
 
     - verifique a conexão com o redis:
-      - ``` kubectl run -i --tty --image redis:5.0-rc redis-cli-test --restart=Never --rm -- /bin/bash ```
-      - ``` redis-cli -h redis-clusterip -p 6379 ```
+        - ``` kubectl run -i --tty --image redis:5.0-rc redis-cli-test --restart=Never --rm -- /bin/bash ```
+        - ``` redis-cli -h redis-clusterip -p 6379 ```
 
-13. Criar os manifestos para o postgres: ```kubectl apply -f ./delivery-control/postgres/```
-    #### postgres-secret.yml 
+14. Criar os manifestos para o postgres: ```kubectl apply -f ./delivery-control/postgres/```
+    #### postgres-secret.yml
     ```yml
     apiVersion: v1
     kind: Secret
@@ -293,7 +304,7 @@
       POSTGRES_PASSWORD: ZGVsaXZlcnlfY29udHJvbA==
       POSTGRES_DB: ZGVsaXZlcnlfY29udHJvbA==
     ```
-    
+
     #### postgres-pvc.yml
     ```yml
     apiVersion: v1
@@ -403,7 +414,7 @@
         - ``` kubectl run -i --tty --image postgres psql-test --restart=Never --rm -- /bin/bash ```
         - ``` psql -h postgres-clusterip -p 5432 -U delivery_control -d delivery_control ```
 
-17. Criar um Service Account e role para a api:
+15. Criar um Service Account e role para a api: ```kubectl apply -f ./delivery-control/api/service-account```
 
     #### service-account.yml
     ```yml
@@ -447,7 +458,7 @@
       apiGroup: rbac.authorization.k8s.io
     ```
 
-14. Criar os manifestos para a api: ``` kubectl apply -f api/ ```
+16. Criar os manifestos para a api: ``` kubectl apply -f ./delivery-control/api/ ```
     #### delivery-control-configmap.yml
     ```yml
     apiVersion: v1
@@ -634,7 +645,7 @@
                   number: 8080
     ```
 
-15. Criar a policy para o postgres: ```kubectl apply -f ./delivery-control/postgres/postgres-policy.yml```
+17. Criar a policy para o postgres: ```kubectl apply -f ./delivery-control/postgres/postgres-policy.yml```
     #### postgres-policy.yml
     ```yml
     apiVersion: networking.k8s.io/v1
@@ -666,7 +677,7 @@
     ```
 
 
-16. Criar a policy para o redis: ```kubectl apply -f ./delivery-control/redis/redis-policy.yml```
+18. Criar a policy para o redis: ```kubectl apply -f ./delivery-control/redis/redis-policy.yml```
     #### redis-policy.yml
     ```yml
     apiVersion: networking.k8s.io/v1

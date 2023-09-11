@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-redis-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-redis-deployment
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-redis-deployment
+    spec:
+      nodeSelector:
+        database: {{ .Release.Name }}-redis
+      containers:
+      - name: redis-deployment
+        image: redis:5.0-rc
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 6379
+        envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-redis-configmap
+        volumeMounts:
+            - mountPath: /data/redis
+              name: redis-data
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-redis-pvc
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ .Release.Name }}-redis-deployment
+                      - {{ .Release.Name }}-postgres-deployment
+              topologyKey: "kubernetes.io/hostname"
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - {{ .Release.Name }}-api-deployment

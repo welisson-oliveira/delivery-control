@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-api-deployment
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-api-deployment
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-api-deployment
+    spec:
+      serviceAccountName: {{ .Release.Name }}-api-user
+      initContainers:
+        - name: init-pod-postgres
+          image: busybox:1.28
+          command: ["sh", "-c", "until nslookup {{ .Release.Name }}-postgres-clusterip.default.svc.cluster.local; do echo Aguardando o Postgres; sleep 2; done"]
+        - name: init-pod-redis
+          image: busybox:1.28
+          command: ["sh", "-c", "until nslookup {{ .Release.Name }}-redis-clusterip.default.svc.cluster.local; do echo Aguardando o Redis; sleep 2; done"]
+      containers:
+      - name: {{ .Release.Name }}-api-deployment
+        image: welissonoliveira/delivery-control:latest
+        resources:
+          requests:
+            memory: "700Mi"
+            cpu: "150m"
+          limits:
+            memory: "2100Mi"
+            cpu: "1000m"
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-api-configmap
+          - secretRef:
+              name: {{ .Release.Name }}-postgres-secret
+        env:
+          - name: REDIS_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Release.Name }}-redis-configmap
+                key: REDIS_PORT
+        # Self Healing
+        startupProbe:
+          httpGet:
+            path: /startup-check
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          timeoutSeconds: 1
+          failureThreshold: 30
+        readinessProbe:
+          httpGet:
+            path: /readiness-check
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          timeoutSeconds: 1
+          failureThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /health-check
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          timeoutSeconds: 1
+          failureThreshold: 1
+        # Self Healing end
+        imagePullPolicy: Always
+        # lifecycle:
+        #   postStart:
+        #     exec:
+        #       command:
+        #         - "curl"
+        #         - "-X"
+        #         - "GET"
+        #         - "https://jsonplaceholder.typicode.com/comments"
+        #   preStop:
+        #     exec:
+        #       command:
+        #         - "curl"
+        #         - "-X"
+        #         - "GET"
+        #         - "https://jsonplaceholder.typicode.com/photos"
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - "{{ .Release.Name }}-redis-deployment"
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ .Release.Name }}-api-deployment
+              topologyKey: "kubernetes.io/hostname"
+      
