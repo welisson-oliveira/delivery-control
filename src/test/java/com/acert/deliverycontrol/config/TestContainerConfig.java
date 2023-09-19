@@ -1,5 +1,6 @@
 package com.acert.deliverycontrol.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -13,6 +14,13 @@ import java.util.Objects;
 )
 @Testcontainers
 public abstract class TestContainerConfig {
+
+    @Value("${spring.redis.host}")
+    private String host;
+
+    @Value("${spring.redis.port}")
+    private Integer port;
+
     public static PostgreSQLContainer<?> postgresDBContainer;
     public static GenericContainer<?> redisContainer;
 
@@ -20,9 +28,6 @@ public abstract class TestContainerConfig {
         if (Objects.isNull(TestContainerConfig.postgresDBContainer)) {
             TestContainerConfig.postgresDBContainer = new PostgreSQLContainer<>("postgres:9.5");
             TestContainerConfig.postgresDBContainer.start();
-
-            final String jdbcUrl = String.format("jdbc:postgresql://localhost:%s/mapping",
-                    TestContainerConfig.postgresDBContainer.getMappedPort(5432).toString());
 
             System.setProperty("spring.datasource.url", TestContainerConfig.postgresDBContainer.getJdbcUrl());
             System.setProperty("spring.datasource.username", TestContainerConfig.postgresDBContainer.getUsername());
@@ -35,8 +40,8 @@ public abstract class TestContainerConfig {
                     .withReuse(true);
             TestContainerConfig.redisContainer.start();
 
-            System.setProperty("spring.redis.host", "localhost");
-            System.setProperty("spring.redis.port", AbstractTestsConfig.redisContainer.getMappedPort(6379).toString());
+            System.setProperty("spring.redis.host", TestContainerConfig.redisContainer.getContainerIpAddress());
+            System.setProperty("spring.redis.port", TestContainerConfig.redisContainer.getMappedPort(6379).toString());
         }
 
     }
