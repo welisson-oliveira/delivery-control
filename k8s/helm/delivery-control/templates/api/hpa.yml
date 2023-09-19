@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: delivery-control-hpa
+  name: {{ .Release.Name }}-api-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: delivery-control-deployment
+    name: {{ .Release.Name }}-api-deployment
   minReplicas: 3
   maxReplicas: 10
   metrics:

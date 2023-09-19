@@ -104,7 +104,7 @@
 
    8.2. Remomeie o manifesto ``` mv components.yaml metrics-server.yml ```
 
-   8.3. Altere o manifesto metrics-server.yml. Adicione ao field Deployment no container.args a linha:
+   8.3. Altere o manifesto metrics-server.yml. Adicione ao manifesto do Deployment no container.args a linha:
 
    #### metrics-server.yml
       ```yml
