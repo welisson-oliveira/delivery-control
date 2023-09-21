@@ -8,17 +8,17 @@ public class ProbesController {
 
     @GetMapping("/health-check")
     public String healthCheck() {
-        return "is healthy";
+        return "Is hHealthy!";
     }
 
     @GetMapping("/readiness-check")
     public String readinessCheck() {
-        return "is ready";
+        return "Is Ready!";
     }
 
     @GetMapping("/startup-check")
     public String startupCheck() {
-        return "initialization completed";
+        return "Initialization Completed!";
     }
 
 }
