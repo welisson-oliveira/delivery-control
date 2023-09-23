@@ -10,6 +10,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
+                    sh 'mvn clean package -DskipTests'
                     dockerapp = docker.build("welissonoliveira/delivery-control:${env.BUILD_ID}", '.')
                 }
             }
