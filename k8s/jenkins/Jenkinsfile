@@ -10,7 +10,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
-                    dockerapp = docker.build("welissonoliveira/delivery-control:${env.BUILD_ID}", '-f . .')
+                    dockerapp = docker.build("welissonoliveira/delivery-control:${env.BUILD_ID}", '.')
                 }
             }
         }
