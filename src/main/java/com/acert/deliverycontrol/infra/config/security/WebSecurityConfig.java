@@ -1,7 +1,6 @@
 package com.acert.deliverycontrol.infra.config.security;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,8 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import javax.sql.DataSource;
-
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(
@@ -30,15 +27,12 @@ import javax.sql.DataSource;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthEntryPoint jwtAuthenticationEntryPoint;
+    private final ClientDetailService detailService;
     private final JwtTokenFilter jwtTokenFilter;
 
-    @Autowired
-    protected void configureGlobal(final AuthenticationManagerBuilder auth, final DataSource dataSource) throws Exception {
-        auth
-                .jdbcAuthentication()
-                .dataSource(dataSource)
-                .usersByUsernameQuery("SELECT * FROM client WHERE email = ?")
-                .passwordEncoder(new BCryptPasswordEncoder());
+    @Override
+    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(this.detailService);
     }
 
     @Override
