@@ -37,7 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth
                 .jdbcAuthentication()
                 .dataSource(dataSource)
-                .usersByUsernameQuery("SELECT * FROM client WHERE email = ?");
+                .usersByUsernameQuery("SELECT * FROM client WHERE email = ?")
+                .passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Override
