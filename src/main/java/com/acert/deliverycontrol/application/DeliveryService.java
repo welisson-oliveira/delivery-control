@@ -32,12 +32,13 @@ public class DeliveryService {
         return this.deliveryRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Delivery not found with ID: " + id));
     }
 
-    @Transactional
+
     private Delivery createDelivery(final Delivery delivery) {
         return this.deliveryRepository.save(delivery);
     }
 
     @EventListener
+    @Transactional
     public void createOrder(final CreateOrderEvent createOrderEvent) {
 
         final Client loggedClient = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -80,7 +81,7 @@ public class DeliveryService {
         });
     }
 
-    public Delivery finalize(final Long id) {
+    public Delivery finalizeDelivery(final Long id) {
         final Delivery deliveryById = this.getDeliveryById(id);
         deliveryById.finish();
         return this.deliveryRepository.save(deliveryById);

@@ -49,7 +49,7 @@ public class Delivery {
         if (this.status.nextStatus().stream().anyMatch(s -> s.equals(DeliveryStatus.IN_PROGRESS)) && this.canStart()) {
             this.status = DeliveryStatus.IN_PROGRESS;
         } else {
-            throw new InvalidStatusException("can't change from: " + this.status + " to: " + DeliveryStatus.IN_PROGRESS);
+            throw new InvalidStatusException(this.status.name(), DeliveryStatus.IN_PROGRESS.name());
         }
     }
 
@@ -57,7 +57,7 @@ public class Delivery {
         if (this.status.nextStatus().stream().anyMatch(s -> s.equals(DeliveryStatus.CANCELED)) && this.canCancel()) {
             this.status = DeliveryStatus.CANCELED;
         } else {
-            throw new InvalidStatusException("can't change from: " + this.status + " to: " + DeliveryStatus.CANCELED);
+            throw new InvalidStatusException(this.status.name(), DeliveryStatus.CANCELED.name());
         }
     }
 
@@ -65,7 +65,7 @@ public class Delivery {
         if (this.status.nextStatus().stream().anyMatch(s -> s.equals(DeliveryStatus.DELIVERED)) && this.canFinalize()) {
             this.status = DeliveryStatus.DELIVERED;
         } else {
-            throw new InvalidStatusException("can't change from: " + this.status + " to: " + DeliveryStatus.DELIVERED);
+            throw new InvalidStatusException(this.status.name(), DeliveryStatus.DELIVERED.name());
         }
     }
 

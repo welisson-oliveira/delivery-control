@@ -47,7 +47,7 @@ public class Order {
         if (this.status.nextStatus().stream().anyMatch(s -> s.equals(orderStatus))) {
             this.status = orderStatus;
         } else {
-            throw new InvalidStatusException("can't change from: " + this.status + " to: " + orderStatus);
+            throw new InvalidStatusException(this.status.name(), orderStatus.name());
         }
 
     }

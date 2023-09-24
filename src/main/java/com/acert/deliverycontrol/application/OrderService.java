@@ -22,6 +22,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class OrderService {
 
+    public static final String ORDER_NOT_FOUND_WITH_ID = "Order not found with ID:";
     private final OrderRepository orderRepository;
     private final ApplicationEventPublisher publisher;
 
@@ -30,7 +31,7 @@ public class OrderService {
     }
 
     public Order getOrderById(final Long id) {
-        return this.orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Order not found with ID: " + id));
+        return this.orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException(OrderService.ORDER_NOT_FOUND_WITH_ID + " " + id));
     }
 
     @Transactional
@@ -52,7 +53,7 @@ public class OrderService {
                     order.updateOrder(description);
                     return this.orderRepository.save(order);
                 })
-                .orElseThrow(() -> new DataNotFoundException("Order not found with ID: " + id));
+                .orElseThrow(() -> new DataNotFoundException(OrderService.ORDER_NOT_FOUND_WITH_ID + " " + id));
     }
 
     @Transactional
@@ -60,7 +61,7 @@ public class OrderService {
         if (this.orderRepository.existsById(id)) {
             this.publisher.publishEvent(new DeleteOrderEvent(id));
         } else {
-            throw new DataNotFoundException("Order not found with ID: " + id);
+            throw new DataNotFoundException(OrderService.ORDER_NOT_FOUND_WITH_ID + " " + id);
         }
     }
 

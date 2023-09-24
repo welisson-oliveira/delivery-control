@@ -73,7 +73,7 @@ public class DeliveryController {
     public DeliveryDTO finalize(
             @Parameter(description = "ID da entrega a ser finalizada")
             @PathVariable final Long id) {
-        return this.mapper.toDTO(this.deliveryService.finalize(id));
+        return this.mapper.toDTO(this.deliveryService.finalizeDelivery(id));
     }
 
     // TODO - pesquisas personalizadas

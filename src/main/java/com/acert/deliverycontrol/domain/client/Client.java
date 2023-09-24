@@ -62,12 +62,6 @@ public class Client implements UserDetails {
         return authorities;
     }
 
-//    @Override
-//    public String getPassword() {
-//        return "$2a$12$BmKxxm1EKWD.4Zx7t2PZHu4NLTlPQU/gsrvKxK.5to9Gu6s1vjL7O";
-//    }
-
-
     @Override
     public String getUsername() {
         return this.email;
