@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientService {
 
+    private static final String CLIENT_NOT_FOUND_WITH_ID = "Client not found with ID:";
     private final ClientRepository clientRepository;
 
     public List<Client> getAllClients() {
@@ -21,7 +22,7 @@ public class ClientService {
     }
 
     public Client getClientById(final Long id) {
-        return this.clientRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Client not found with ID: " + id));
+        return this.clientRepository.findById(id).orElseThrow(() -> new DataNotFoundException(ClientService.CLIENT_NOT_FOUND_WITH_ID + " " + id));
     }
 
     @Transactional
@@ -38,7 +39,7 @@ public class ClientService {
                     client.updateClient(updatedClient);
                     return this.clientRepository.save(client);
                 })
-                .orElseThrow(() -> new DataNotFoundException("Client not found with ID: " + id));
+                .orElseThrow(() -> new DataNotFoundException(ClientService.CLIENT_NOT_FOUND_WITH_ID + " " + id));
     }
 
     @Transactional
@@ -46,7 +47,7 @@ public class ClientService {
         if (this.clientRepository.existsById(id)) {
             this.clientRepository.deleteById(id);
         } else {
-            throw new DataNotFoundException("Client not found with ID: " + id);
+            throw new DataNotFoundException(ClientService.CLIENT_NOT_FOUND_WITH_ID + " " + id);
         }
     }
 
