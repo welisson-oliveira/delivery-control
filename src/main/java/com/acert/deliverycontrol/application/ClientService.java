@@ -4,6 +4,7 @@ import com.acert.deliverycontrol.application.exceptions.DataNotFoundException;
 import com.acert.deliverycontrol.domain.client.Client;
 import com.acert.deliverycontrol.infra.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +34,13 @@ public class ClientService {
 
     @Transactional
     public Client updateClient(final Long id, final Client updatedClient) {
-        // TODO - VERIFICAR SE O CLIENT É O MESMO LOGADO
+        final Client loggedClient = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         return this.clientRepository.findById(id)
                 .map(client -> {
-                    client.updateClient(updatedClient);
+                    if (client.getId().equals(loggedClient.getId())) {
+                        client.updateClient(updatedClient);
+                    }
                     return this.clientRepository.save(client);
                 })
                 .orElseThrow(() -> new DataNotFoundException(ClientService.CLIENT_NOT_FOUND_WITH_ID + " " + id));
