@@ -9,8 +9,6 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
-
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Service
@@ -28,10 +26,10 @@ public class RedisService {
     }
 
     public void setValue(final String key, final Object value) {
-        this.setValue(key, value, TimeUnit.HOURS, 5, false);
+        this.setValue(key, value, false);
     }
 
-    public void setValue(final String key, final Object value, final TimeUnit unit, final long timeout, final boolean marshal) {
+    public void setValue(final String key, final Object value, final boolean marshal) {
         if (marshal) {
             this.template.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
             this.template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));

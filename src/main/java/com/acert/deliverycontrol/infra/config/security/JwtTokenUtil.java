@@ -90,7 +90,7 @@ public class JwtTokenUtil {
      * @param token
      * @return
      */
-    public Boolean validateToken(final String token) {
+    public boolean validateToken(final String token) {
         return token.equals(this.getCachedToken());
     }
 
