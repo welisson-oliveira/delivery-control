@@ -17,8 +17,7 @@ public class ClientMapper {
     private final PasswordEncoder encoder;
 
     public ClientDTO toDTO(final Client client) {
-        final ClientDTO clientDTO = new ClientDTO(client.getId(), client.getName(), client.getEmail(), client.getPhoneNumber(), client.getAddress(), null);
-        return clientDTO;
+        return new ClientDTO(client.getId(), client.getName(), client.getEmail(), client.getPhoneNumber(), client.getAddress(), null);
     }
 
     public Client toEntity(final ClientDTO dto) {
