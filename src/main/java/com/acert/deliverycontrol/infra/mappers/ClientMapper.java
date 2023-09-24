@@ -18,7 +18,6 @@ public class ClientMapper {
 
     public ClientDTO toDTO(final Client client) {
         final ClientDTO clientDTO = new ClientDTO(client.getId(), client.getName(), client.getEmail(), client.getPhoneNumber(), client.getAddress(), null);
-        clientDTO.addAuthorities(client.getRoles());
         return clientDTO;
     }
 

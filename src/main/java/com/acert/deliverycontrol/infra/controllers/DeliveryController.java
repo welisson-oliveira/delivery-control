@@ -70,13 +70,11 @@ public class DeliveryController {
     })
     @PatchMapping("/{id}/finished")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public DeliveryDTO finalize(
+    public DeliveryDTO finalizeDelivery(
             @Parameter(description = "ID da entrega a ser finalizada")
             @PathVariable final Long id) {
         return this.mapper.toDTO(this.deliveryService.finalizeDelivery(id));
     }
-
-    // TODO - pesquisas personalizadas
 
 }
 

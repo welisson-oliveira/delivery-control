@@ -12,11 +12,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ClearContext
 @WithUser
-public class DeliveryControllerTest extends AbstractTestsConfig {
+class DeliveryControllerTest extends AbstractTestsConfig {
 
 
     @Test
-    public void shouldReturnAllDeliveries() throws Exception {
+    void shouldReturnAllDeliveries() throws Exception {
         this.shouldCreateOrderAndDelivery2();
         this.mockMvc.perform(get("/deliveries")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -25,7 +25,7 @@ public class DeliveryControllerTest extends AbstractTestsConfig {
     }
 
     @Test
-    public void shouldReturnClientById() throws Exception {
+    void shouldReturnClientById() throws Exception {
         this.shouldCreateOrderAndDelivery2();
 
         this.mockMvc.perform(get("/deliveries/1"))
@@ -34,7 +34,7 @@ public class DeliveryControllerTest extends AbstractTestsConfig {
     }
 
     @Test
-    public void shouldFinalizeDelivery() throws Exception {
+    void shouldFinalizeDelivery() throws Exception {
         this.shouldCreateOrderAndDelivery();
         this.mockMvc.perform(patch("/deliveries/1/finished")
                         .contentType(MediaType.APPLICATION_JSON))

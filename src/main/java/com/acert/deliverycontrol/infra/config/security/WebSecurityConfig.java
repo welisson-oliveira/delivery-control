@@ -84,7 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(final WebSecurity web) {
-        final String[] AUTH_WHITELIST = {
+        final String[] authWhiteList = {
                 "/swagger-ui/**",
                 "/swagger-resources/**",
                 "/swagger-ui.html",
@@ -92,7 +92,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/webjars/**"
         };
 
-        web.ignoring().antMatchers(AUTH_WHITELIST);
+        web.ignoring().antMatchers(authWhiteList);
     }
 
 }

@@ -19,11 +19,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WithUser
 @ClearContext
-public class OrderControllerTests extends AbstractTestsConfig {
+class OrderControllerTests extends AbstractTestsConfig {
 
     @Test
     @Sql(scripts = {"classpath:db/order/insert-order.sql"})
-    public void shouldReturnAllOrders() throws Exception {
+    void shouldReturnAllOrders() throws Exception {
         this.mockMvc.perform(get("/orders")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-all.json"), true))
@@ -32,7 +32,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     @Test
     @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
-    public void shouldReturnAllActivatedOrders() throws Exception {
+    void shouldReturnAllActivatedOrders() throws Exception {
         this.mockMvc.perform(get("/orders/activated")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
@@ -42,7 +42,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     @Test
     @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
-    public void shouldReturnAllDoneOrders() throws Exception {
+    void shouldReturnAllDoneOrders() throws Exception {
         this.mockMvc.perform(get("/orders/finished")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-done-order.json"), true))
@@ -51,7 +51,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     @Test
     @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
-    public void shouldReturnAllCanceledOrders() throws Exception {
+    void shouldReturnAllCanceledOrders() throws Exception {
         this.mockMvc.perform(get("/orders/canceled")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-canceled-order.json"), true))
@@ -60,7 +60,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     @Test
     @Sql(scripts = {"classpath:db/order/insert-order.sql"})
-    public void shouldReturnOrderById() throws Exception {
+    void shouldReturnOrderById() throws Exception {
         this.mockMvc.perform(get("/orders/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-order.json")))
@@ -69,7 +69,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     @Test
     @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
-    public void shouldReturnActivatedOrdersById() throws Exception {
+    void shouldReturnActivatedOrdersById() throws Exception {
         this.mockMvc.perform(get("/orders/clients/1/activated")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -81,7 +81,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
     @DisplayName("o acesso deve ser negado pois o id que foi passado não é o mesmo do client que esta no contexto ")
     @WithUser(authorities = {"CLIENT"})
-    public void shouldNotReturnActivatedOrdersById() {
+    void shouldNotReturnActivatedOrdersById() {
 
         Assertions.assertThrows(NestedServletException.class, () -> this.mockMvc.perform(get("/orders/clients/2/activated")
                 .contentType(MediaType.APPLICATION_JSON)).andReturn());
@@ -91,7 +91,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     @Test
     @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
     @DisplayName("acesso permitido pois apesar de os id passado nao ser o mesmo do cliente no contexto o usuario tem autoridade de admin ")
-    public void shouldReturnActivatedOrdersById2() throws Exception {
+    void shouldReturnActivatedOrdersById2() throws Exception {
 
         this.mockMvc.perform(get("/orders/clients/2/activated")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -101,7 +101,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     @Test()
     @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
-    public void shouldReturnDoneOrdersById() throws Exception {
+    void shouldReturnDoneOrdersById() throws Exception {
         this.mockMvc.perform(get("/orders/clients/1/finished")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-done-order.json"), true))
@@ -110,7 +110,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     @Test
     @Sql(scripts = {"classpath:db/order/insert-all-states-orders.sql"})
-    public void shouldReturnCanceledOrdersById() throws Exception {
+    void shouldReturnCanceledOrdersById() throws Exception {
         this.mockMvc.perform(get("/orders/clients/1/canceled")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(this.readFileAsString("files/output/order/return-canceled-order.json"), true))
@@ -118,7 +118,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    public void shouldCreateOrderAndDelivery() throws Exception {
+    void shouldCreateOrderAndDelivery() throws Exception {
         final String update = this.readFileAsString("files/input/order/insert-order.json");
 
         this.mockMvc.perform(post("/orders")
@@ -134,7 +134,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    public void shouldCreateMoreThanOneOrderToADelivery() throws Exception {
+    void shouldCreateMoreThanOneOrderToADelivery() throws Exception {
         final String insert = this.readFileAsString("files/input/order/insert-order.json");
 
         this.mockMvc.perform(post("/orders")
@@ -159,7 +159,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     @Test
     @Sql(scripts = {"classpath:db/order/insert-order.sql"})
-    public void shouldUpdateOrderById() throws Exception {
+    void shouldUpdateOrderById() throws Exception {
         final String update = this.readFileAsString("files/input/order/update-order.json");
 
         this.mockMvc.perform(put("/orders/1")
@@ -172,7 +172,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     @Sql(scripts = {"classpath:db/order/insert-order.sql"})
     @Test
-    public void shouldChangeStatusToInProgress() throws Exception {
+    void shouldChangeStatusToInProgress() throws Exception {
 
         this.mockMvc.perform(patch("/orders/1/in-progress")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -181,7 +181,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     @Sql(scripts = {"classpath:db/order/insert-order.sql"})
     @Test
-    public void shouldChangeStatusToCanceled() throws Exception {
+    void shouldChangeStatusToCanceled() throws Exception {
 
         this.mockMvc.perform(patch("/orders/1/canceled")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -190,7 +190,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     @Sql(scripts = {"classpath:db/order/insert-order.sql"})
     @Test
-    public void shouldNotChangeStatusToFinished() throws Exception {
+    void shouldNotChangeStatusToFinished() throws Exception {
 
         this.mockMvc.perform(patch("/orders/1/finished")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -198,7 +198,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    public void shouldFinalizeTheOrderAndStartTheDelivery() throws Exception {
+    void shouldFinalizeTheOrderAndStartTheDelivery() throws Exception {
         this.shouldCreateOrderAndDelivery();
         this.mockMvc.perform(patch("/orders/1/in-progress")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -216,14 +216,14 @@ public class OrderControllerTests extends AbstractTestsConfig {
 
     @Test
     @Sql(scripts = {"classpath:db/order/insert-order.sql"})
-    public void shouldRemoveOrderWithOneDelivery() throws Exception {
+    void shouldRemoveOrderWithOneDelivery() throws Exception {
         this.mockMvc.perform(delete("/orders/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    public void shouldRemoveOrderAndKeepDelivery() throws Exception {
+    void shouldRemoveOrderAndKeepDelivery() throws Exception {
 
         final String insert = this.readFileAsString("files/input/order/insert-order.json");
 
@@ -247,7 +247,7 @@ public class OrderControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    public void shouldRemoveOrdersAndDelivery() throws Exception {
+    void shouldRemoveOrdersAndDelivery() throws Exception {
 
         final String insert = this.readFileAsString("files/input/order/insert-order.json");
 

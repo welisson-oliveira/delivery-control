@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtil {
-    private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 50;
+    private static final long JWT_TOKEN_VALIDITY = 5L * 60L * 50L;
 
     @Value("${jwt.secret}")
     private String secret;

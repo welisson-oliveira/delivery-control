@@ -20,7 +20,4 @@ public class ClientDTO {
     private String password;
     private final List<String> authorities = new ArrayList<>();
 
-    public void addAuthorities(final List<String> authorities) {
-
-    }
 }

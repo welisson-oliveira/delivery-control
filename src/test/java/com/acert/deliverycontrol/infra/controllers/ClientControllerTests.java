@@ -12,10 +12,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WithUser
 @ClearContext
-public class ClientControllerTests extends AbstractTestsConfig {
+class ClientControllerTests extends AbstractTestsConfig {
 
     @Test
-    public void shouldReturnAllClients() throws Exception {
+    void shouldReturnAllClients() throws Exception {
         this.mockMvc.perform(get("/clients")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(this.readFileAsString("files/output/client/return-all.json")))
@@ -23,7 +23,7 @@ public class ClientControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    public void shouldReturnClientById() throws Exception {
+    void shouldReturnClientById() throws Exception {
 
         this.mockMvc.perform(get("/clients/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -32,7 +32,7 @@ public class ClientControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    public void shouldCreateClient() throws Exception {
+    void shouldCreateClient() throws Exception {
         final String insert = this.readFileAsString("files/input/client/insert-client.json");
 
         this.mockMvc.perform(post("/clients")
@@ -43,7 +43,7 @@ public class ClientControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    public void shouldUpdateClient() throws Exception {
+    void shouldUpdateClient() throws Exception {
         final String update = this.readFileAsString("files/input/client/update-client.json");
 
         this.mockMvc.perform(put("/clients/1")
@@ -54,7 +54,7 @@ public class ClientControllerTests extends AbstractTestsConfig {
     }
 
     @Test
-    public void shouldRemoveClient() throws Exception {
+    void shouldRemoveClient() throws Exception {
         this.mockMvc.perform(delete("/clients/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
