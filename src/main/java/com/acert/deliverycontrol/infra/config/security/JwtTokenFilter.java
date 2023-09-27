@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -48,8 +47,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 authentication = new UsernamePasswordAuthenticationToken(
                 userDetails, null,
                 userDetails == null ?
-                        Collections.emptyList() : userDetails.getAuthorities().stream().map(grantedAuthority -> new SimpleGrantedAuthority(grantedAuthority.getAuthority())).collect(Collectors.toList())
+                        Collections.emptyList() : userDetails.getAuthorities().stream().map(grantedAuthority -> new SimpleGrantedAuthority(grantedAuthority.getAuthority())).toList()
         );
+
 
         authentication.setDetails(
                 new WebAuthenticationDetailsSource().buildDetails(request)

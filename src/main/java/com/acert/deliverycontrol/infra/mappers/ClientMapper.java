@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class ClientMapper {
     }
 
     public List<ClientDTO> toDTOs(final List<Client> allClients) {
-        return allClients.stream().map(this::toDTO).collect(Collectors.toList());
+        return allClients.stream().map(this::toDTO).toList();
     }
 }
 

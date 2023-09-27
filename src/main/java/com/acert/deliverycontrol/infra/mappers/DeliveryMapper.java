@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -20,7 +19,7 @@ public class DeliveryMapper {
     }
 
     public List<DeliveryDTO> toDTOs(final List<Delivery> allDeliveries) {
-        return allDeliveries.stream().map(this::toDTO).collect(Collectors.toList());
+        return allDeliveries.stream().map(this::toDTO).toList();
     }
 }
 
