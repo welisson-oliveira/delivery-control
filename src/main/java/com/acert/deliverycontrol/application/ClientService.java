@@ -2,6 +2,7 @@ package com.acert.deliverycontrol.application;
 
 import com.acert.deliverycontrol.application.exceptions.DataNotFoundException;
 import com.acert.deliverycontrol.domain.client.Client;
+import com.acert.deliverycontrol.domain.client.Role;
 import com.acert.deliverycontrol.infra.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +29,6 @@ public class ClientService {
 
     @Transactional
     public Client createClient(final Client client) {
-
         return this.clientRepository.save(client);
     }
 
@@ -57,6 +57,10 @@ public class ClientService {
 
     public UserDetails getByEmail(final String email) {
         return this.clientRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("Client not found with Email: " + email));
+    }
+
+    public List<Role> getRolesByClientId(final Long id) {
+        return this.getClientById(id).getRoles();
     }
 }
 

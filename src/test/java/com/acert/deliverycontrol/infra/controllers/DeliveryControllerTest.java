@@ -3,6 +3,11 @@ package com.acert.deliverycontrol.infra.controllers;
 import com.acert.deliverycontrol.config.AbstractTestsConfig;
 import com.acert.deliverycontrol.config.ClearContext;
 import com.acert.deliverycontrol.config.mockauth.WithUser;
+import com.acert.deliverycontrol.domain.delivery.Delivery;
+import com.acert.deliverycontrol.domain.delivery.DeliveryStatus;
+import com.acert.deliverycontrol.domain.order.InvalidStatusException;
+import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
@@ -35,14 +40,47 @@ class DeliveryControllerTest extends AbstractTestsConfig {
 
     @Test
     void shouldFinalizeDelivery() throws Exception {
-        this.shouldCreateOrderAndDelivery();
+        this.shouldCreateAndFinalizeOrderAndDelivery();
         this.mockMvc.perform(patch("/deliveries/1/finished")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(this.readFileAsString("files/output/delivery/return-delivery-delivered.json")))
                 .andExpect(status().isOk());
     }
 
-    private void shouldCreateOrderAndDelivery() throws Exception {
+    @Test
+    void cantChangeDeliveryStatusFromCanceledToInProgress() {
+        final Delivery delivery = new Delivery(1L, "address", DeliveryStatus.CANCELED, null);
+        final InvalidStatusException exception = Assert.assertThrows(
+                InvalidStatusException.class,
+                delivery::start
+        );
+
+        Assertions.assertEquals("can't change from: CANCELED to: IN_PROGRESS", exception.getMessage());
+    }
+
+    @Test
+    void cantChangeDeliveryStatusFromCanceledToCanceled() {
+        final Delivery delivery = new Delivery(1L, "address", DeliveryStatus.CANCELED, null);
+        final InvalidStatusException exception = Assert.assertThrows(
+                InvalidStatusException.class,
+                delivery::cancel
+        );
+
+        Assertions.assertEquals("can't change from: CANCELED to: CANCELED", exception.getMessage());
+    }
+
+    @Test
+    void cantChangeDeliveryStatusFromCanceledToFinish() {
+        final Delivery delivery = new Delivery(1L, "address", DeliveryStatus.CANCELED, null);
+        final InvalidStatusException exception = Assert.assertThrows(
+                InvalidStatusException.class,
+                delivery::finish
+        );
+
+        Assertions.assertEquals("can't change from: CANCELED to: DELIVERED", exception.getMessage());
+    }
+
+    private void shouldCreateAndFinalizeOrderAndDelivery() throws Exception {
         final String create = this.readFileAsString("files/input/order/insert-order.json");
 
         this.mockMvc.perform(post("/orders")

@@ -65,7 +65,7 @@ public class JwtTokenUtil {
 
         final Map<String, Object> claims = new HashMap<>();
         claims.put("name", userDetails.getName());
-        claims.put("roles", userDetails.getRoles());
+        claims.put("roles", userDetails.getStringRoles());
         claims.put("authorities", userDetails.getAuthorities());
         claims.put("active", userDetails.isEnabled());
         return claims;

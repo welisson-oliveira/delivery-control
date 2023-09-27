@@ -2,6 +2,7 @@ package com.acert.deliverycontrol.infra.controllers;
 
 import com.acert.deliverycontrol.application.ClientService;
 import com.acert.deliverycontrol.domain.client.Client;
+import com.acert.deliverycontrol.domain.client.Role;
 import com.acert.deliverycontrol.infra.config.security.JwtTokenUtil;
 import com.acert.deliverycontrol.infra.dto.AuthRequest;
 import com.acert.deliverycontrol.infra.dto.client.ClientDTO;
@@ -144,6 +145,22 @@ public class ClientController {
         } catch (final BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @Operation(summary = "Obter roles do cliente", security = @SecurityRequirement(name = SECURITY_CONFIG_NAME))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Roles obtidas com sucesso",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ClientDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Não autorizado"),
+            @ApiResponse(responseCode = "403", description = "Acesso ao recurso é proibido"),
+            @ApiResponse(responseCode = "404", description = "O recurso que você estava tentando alcançar não foi encontrado"),
+            @ApiResponse(responseCode = "500", description = "Ocorreu um erro interno")
+    })
+    @GetMapping("/{id}/roles")
+    @PreAuthorize("hasAuthority('CLIENT')")
+    public List<Role> getRolesByClientId(@Parameter(description = "ID do cliente a ser pesquisado") @PathVariable final Long id) {
+        return this.clientService.getRolesByClientId(id);
     }
 
 }

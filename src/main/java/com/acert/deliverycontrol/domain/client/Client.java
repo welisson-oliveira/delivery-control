@@ -54,7 +54,7 @@ public class Client implements UserDetails {
         return this.roles;
     }
 
-    public List<String> getRoles() {
+    public List<String> getStringRoles() {
         final List<String> authorities = new ArrayList<>();
         for (final GrantedAuthority authority : this.roles) {
             authorities.add(authority.getAuthority());
