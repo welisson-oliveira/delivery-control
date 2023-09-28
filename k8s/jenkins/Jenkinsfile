@@ -54,7 +54,7 @@ pipeline {
                         // sh 'kubectl taint nodes k8s-worker3 motivo=manutencao:NoExecute'
                         sh 'kubectl apply -f ./k8s/delivery-control/redis'
                         sh 'kubectl apply -f ./k8s/delivery-control/postgres'
-                        sh 'kubectl apply -f ./k8s/delivery-control/api'
+                        sh 'kubectl apply -f ./k8s/delivery-control/api -R'
                     }
                 }
             }
