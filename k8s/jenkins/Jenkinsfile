@@ -44,13 +44,16 @@ pipeline {
                 script {
                     sh 'cat ./k8s/delivery-control/api/delivery-control-deployment.yml'
                     withKubeConfig(credentialsId: 'kube', serverUrl: 'https://172.20.0.2:6443') {
+                        sh 'kubectl apply -f ./k8s/ingress'
+                        sh 'kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml'
+                        sh 'kubectl apply -f ./k8s/delivery-control/metrics-server/metrics-server.yml'
+                        sh 'kubectl apply -f ./k8s/delivery-control/default-namespace-limitrange.yml'
+                        sh 'kubectl apply -f ./k8s/delivery-control/default-namespace-resourcequota.yml'
+                        sh 'kubectl label node k8s-worker database=redis'
                         sh 'kubectl apply -f ./k8s/delivery-control/postgres'
+                        sh 'kubectl apply -f ./k8s/delivery-control/redis'
+                        sh 'kubectl apply -f ./k8s/delivery-control/api'
                     }
-
-
-                    // kubernetesDeploy(configs: '**/k8s/delivery-control/postgres**', kubeconfigId: 'kube')
-                    // kubernetesDeploy(configs: '**/k8s/delivery-control/redis**', kubeconfigId: 'kube')
-                    // kubernetesDeploy(configs: '**/k8s/delivery-control/api**', kubeconfigId: 'kube')
                 }
             }
         }
