@@ -37,7 +37,7 @@ pipeline {
             steps {
                 script {
                     sh 'cat ./k8s/delivery-control/api/delivery-control-deployment.yml'
-                    withKubeConfig(credentialsId: 'kube', serverUrl: 'http://172.20.0.4:8080'){
+                    withKubeConfig(credentialsId: 'kube') {
                         sh 'kubectl apply -f ./k8s/delivery-control/postgres'
                     }
 
