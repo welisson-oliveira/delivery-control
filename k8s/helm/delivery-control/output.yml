@@ -658,8 +658,8 @@ spec:
   selector:
     app: delivery-control-api-deployment
   ports:
-  - port: 8080
-    targetPort: 8080
+  - port: 8081
+    targetPort: 8081
 ---
 # Source: delivery-control/templates/ingress-deploy.yaml
 apiVersion: v1
@@ -793,7 +793,7 @@ spec:
             memory: "2100Mi"
             cpu: "1000m"
         ports:
-        - containerPort: 8080
+        - containerPort: 8081
         envFrom:
           - configMapRef:
               name: delivery-control-api-configmap
@@ -809,7 +809,7 @@ spec:
         startupProbe:
           httpGet:
             path: /startup-check
-            port: 8080
+            port: 8081
             scheme: HTTP
           initialDelaySeconds: 3
           periodSeconds: 3
@@ -818,7 +818,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /readiness-check
-            port: 8080
+            port: 8081
             scheme: HTTP
           initialDelaySeconds: 3
           periodSeconds: 3
@@ -827,7 +827,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /health-check
-            port: 8080
+            port: 8081
             scheme: HTTP
           initialDelaySeconds: 3
           periodSeconds: 3
@@ -1315,7 +1315,7 @@ spec:
     service: 
       name: delivery-control-api-clusterip
       port: 
-        number: 8080
+        number: 8081
   rules:
   - host: 127.0.0.1.nip.io
     http:
@@ -1326,7 +1326,7 @@ spec:
           service:
             name: delivery-control-api-clusterip
             port: 
-              number: 8080
+              number: 8081
 ---
 # Source: delivery-control/templates/metrics-server.yml
 apiVersion: apiregistration.k8s.io/v1

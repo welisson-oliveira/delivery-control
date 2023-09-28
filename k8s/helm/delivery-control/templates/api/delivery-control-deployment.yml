@@ -30,7 +30,7 @@ spec:
             memory: "2100Mi"
             cpu: "1000m"
         ports:
-        - containerPort: 8080
+        - containerPort: 8081
         envFrom:
           - configMapRef:
               name: {{ .Release.Name }}-api-configmap
@@ -46,7 +46,7 @@ spec:
         startupProbe:
           httpGet:
             path: /startup-check
-            port: 8080
+            port: 8081
             scheme: HTTP
           initialDelaySeconds: 3
           periodSeconds: 3
@@ -55,7 +55,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /readiness-check
-            port: 8080
+            port: 8081
             scheme: HTTP
           initialDelaySeconds: 3
           periodSeconds: 3
@@ -64,7 +64,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /health-check
-            port: 8080
+            port: 8081
             scheme: HTTP
           initialDelaySeconds: 3
           periodSeconds: 3

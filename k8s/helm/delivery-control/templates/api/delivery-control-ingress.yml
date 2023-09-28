@@ -10,7 +10,7 @@ spec:
     service: 
       name: {{ .Release.Name }}-api-clusterip
       port: 
-        number: 8080
+        number: 8081
   rules:
   {{- range $host := .Values.api.ingress }}
   - host: 127.0.0.1.nip.io
@@ -22,5 +22,5 @@ spec:
           service:
             name: {{ $.Release.Name }}-api-clusterip
             port: 
-              number: 8080
+              number: 8081
   {{- end -}}

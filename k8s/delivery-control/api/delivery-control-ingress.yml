@@ -10,7 +10,7 @@ spec:
     service: 
       name: delivery-control-clusterip
       port: 
-        number: 8080
+        number: 8081
   rules:
   - host: 127.0.0.1.nip.io
     http:
@@ -21,4 +21,4 @@ spec:
           service:
             name: delivery-control-clusterip
             port: 
-              number: 8080
+              number: 8081

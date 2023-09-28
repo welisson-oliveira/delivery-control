@@ -8,7 +8,7 @@
     WORKDIR /app
     COPY target/delivery-control-0.0.1-SNAPSHOT.jar /app/app.jar
     CMD ["java", "-jar", "/app/app.jar"]
-    EXPOSE 8080
+    EXPOSE 8081
     ```
 
 2. Subir para o Docker Hub: ``` docker push welissonoliveira/delivery-control:v1```
@@ -28,7 +28,7 @@
           context: .
           dockerfile: Dockerfile
         ports:
-          - "8080:8080"
+          - "8081:8080"
         networks:
           - delivery-control-network
         environment:
@@ -504,7 +504,7 @@
                 memory: "2100Mi"
                 cpu: "1000m"
             ports:
-            - containerPort: 8080
+            - containerPort: 8081
             envFrom:
               - configMapRef:
                   name: delivery-control-configmap
@@ -520,7 +520,7 @@
             startupProbe:
               httpGet:
                 path: /startup-check
-                port: 8080
+                port: 8081
                 scheme: HTTP
               initialDelaySeconds: 3
               periodSeconds: 3
@@ -529,7 +529,7 @@
             readinessProbe:
               httpGet:
                 path: /readiness-check
-                port: 8080
+                port: 8081
                 scheme: HTTP
               initialDelaySeconds: 3
               periodSeconds: 3
@@ -538,7 +538,7 @@
             livenessProbe:
               httpGet:
                 path: /health-check
-                port: 8080
+                port: 8081
                 scheme: HTTP
               initialDelaySeconds: 3
               periodSeconds: 3
@@ -593,8 +593,8 @@
       selector:
         app: delivery-control-deployment
       ports:
-      - port: 8080
-        targetPort: 8080
+      - port: 8081
+        targetPort: 8081
     ```
     #### delivery-control-hpa.yml
     ```yml
@@ -631,7 +631,7 @@
         service: 
           name: delivery-control-clusterip
           port: 
-            number: 8080
+            number: 8081
       rules:
       - host: 127.0.0.1.nip.io
         http:
@@ -642,7 +642,7 @@
               service:
                 name: delivery-control-clusterip
                 port: 
-                  number: 8080
+                  number: 8081
     ```
 
 17. Criar a policy para o postgres: ```kubectl apply -f ./delivery-control/postgres/postgres-policy.yml```
