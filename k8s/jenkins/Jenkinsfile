@@ -37,9 +37,14 @@ pipeline {
             steps {
                 script {
                     sh 'cat ./k8s/delivery-control/api/delivery-control-deployment.yml'
-                    kubernetesDeploy(configs: '**/k8s/delivery-control/postgres**', kubeconfigId: 'kube')
-                    kubernetesDeploy(configs: '**/k8s/delivery-control/redis**', kubeconfigId: 'kube')
-                    kubernetesDeploy(configs: '**/k8s/delivery-control/api**', kubeconfigId: 'kube')
+                    withKubeConfig(credentialsId: 'kube', serverUrl: 'http://172.20.0.4:8080'){
+                        sh 'kubectl apply -f ./k8s/delivery-control/postgres'
+                    }
+
+
+                    // kubernetesDeploy(configs: '**/k8s/delivery-control/postgres**', kubeconfigId: 'kube')
+                    // kubernetesDeploy(configs: '**/k8s/delivery-control/redis**', kubeconfigId: 'kube')
+                    // kubernetesDeploy(configs: '**/k8s/delivery-control/api**', kubeconfigId: 'kube')
                 }
             }
         }
