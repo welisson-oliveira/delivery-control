@@ -29,6 +29,12 @@ pipeline {
             agent{
                 kubernetes {
                     cloud 'kind'
+                    containerTemplate {
+                        name 'kubectl-container'
+                        image 'lachlanevenson/k8s-kubectl:v1.18.8'
+                        ttyEnabled true
+                        command 'cat'
+                    }
                 }
             }
             environment {
