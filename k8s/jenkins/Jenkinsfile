@@ -48,7 +48,7 @@ pipeline {
                         sh 'kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml'
                         sh 'kubectl apply -f ./k8s/metrics-server/metrics-server.yml'
                         // sh 'kubectl apply -f ./k8s/delivery-control/default-namespace-limitrange.yml'
-                        sh 'kubectl apply -f ./k8s/delivery-control/default-namespace-resourcequota.yml'
+                        // sh 'kubectl apply -f ./k8s/delivery-control/default-namespace-resourcequota.yml'
                         sh 'kubectl label node k8s-worker database=redis'
                         sh 'kubectl label node k8s-worker2 database=redis'
                         sh 'kubectl taint nodes k8s-worker3 motivo=manutencao:NoExecute'
