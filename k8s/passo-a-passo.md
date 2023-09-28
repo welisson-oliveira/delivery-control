@@ -28,7 +28,7 @@
           context: .
           dockerfile: Dockerfile
         ports:
-          - "8081:8080"
+          - "8081:8081"
         networks:
           - delivery-control-network
         environment:
@@ -708,6 +708,8 @@
           - protocol: TCP
     ```
 
+
+URL de acesso: http://127.0.0.1.nip.io/swagger-ui/index.html
 ---
 
 
