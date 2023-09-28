@@ -36,7 +36,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'cat .k8s/delivery-control/api/delivery-control-deployment.yml'
+                    sh 'cat ../../k8s/delivery-control/api/delivery-control-deployment.yml'
                     kubernetesDeploy(configs: '**/k8s/delivery-control/postgres**', kubeconfigId: 'kube')
                     kubernetesDeploy(configs: '**/k8s/delivery-control/redis**', kubeconfigId: 'kube')
                     kubernetesDeploy(configs: '**/k8s/delivery-control/api**', kubeconfigId: 'kube')
