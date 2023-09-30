@@ -30,6 +30,17 @@ services:
       POSTGRES_USER: delivery_control
       POSTGRES_PASSWORD: delivery_control
       POSTGRES_DB: delivery_control
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    container_name: postgres-exporter-delivery-control
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:delivery-control@postgres-delivery-control:5432/delivery_control?sslmode=disable"
+    networks:
+      - delivery-control-network
+    depends_on:
+      - postgres
   redis:
     image: redis:5.0-rc
     container_name: redis-delivery-control
@@ -37,6 +48,18 @@ services:
       - "6379:6379"
     networks:
       - delivery-control-network
+  prometheus:
+    image: prom/prometheus:v2.45.1
+    container_name: prometheus-delivery-control
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - delivery-control
+    networks:
+      - delivery-control-network
+
 networks:
   delivery-control-network:
     name: delivery-control-network

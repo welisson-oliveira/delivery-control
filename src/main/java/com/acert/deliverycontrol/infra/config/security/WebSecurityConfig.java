@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests().antMatchers("/clients/login").permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/health-check", "/readiness-check", "/startup-check", "/post-start", "/pre-stop").permitAll()
+                .authorizeRequests().antMatchers("/actuator", "/health-check", "/readiness-check", "/startup-check", "/post-start", "/pre-stop").permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/v3/*").permitAll()
                 .and()
@@ -89,7 +89,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-resources/**",
                 "/swagger-ui.html",
                 "/v3/api-docs/**",
-                "/webjars/**"
+                "/webjars/**",
+                "/actuator/**"
         };
 
         web.ignoring().antMatchers(authWhiteList);
