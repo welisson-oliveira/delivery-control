@@ -3,16 +3,32 @@ kind: Deployment
 metadata:
   name: postgres-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: postgres-deployment
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9187"
       labels:
         app: postgres-deployment
     spec:
       containers:
+        - name: postgres-exporter-delivery-control
+          image: quay.io/prometheuscommunity/postgres-exporter
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 9187
+          envFrom:
+            - configMapRef:
+                name: delivery-control-configmap
+
         - name: postgres-deployment
           image: postgres
           resources:

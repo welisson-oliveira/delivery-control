@@ -8,6 +8,10 @@ spec:
       app: delivery-control-deployment
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: "8081"
       labels:
         app: delivery-control-deployment
     spec:

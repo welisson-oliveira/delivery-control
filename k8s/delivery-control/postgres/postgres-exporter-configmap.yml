@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-exporter-configmap
+data:
+  DATA_SOURCE_NAME: postgresql://postgres:delivery-control@localhost:5432/delivery_control?sslmode=disable
