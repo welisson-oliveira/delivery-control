@@ -3,6 +3,9 @@ global:
   scrape_timeout: 5s
   evaluation_interval: 15s
 
+rule_files:
+  - alerts.rules
+
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
@@ -34,3 +37,10 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: 172.17.0.1:9187
+
+alerting:
+  alertmanagers:
+    - scheme: http
+      static_configs:
+        - targets:
+            - 'alert-manager:9093'

@@ -1,0 +1,11 @@
+groups:
+  - name: DeliveryControl
+    rules:
+      - alert: DeliveryControlAlert
+        expr: rate(http_server_requests_seconds_count{uri="/startup-check", method="GET", instance="delivery-control:8081"}[10m]) > 0.15
+        for: 5s
+        labels:
+          team: delivery-control
+        annotations:
+          titulo: "Muitas Consultas"
+          descricao: "Esse recurso {{ $labels.instance }} está com muitas consultas ({{ $value }})"
