@@ -83,14 +83,14 @@ spec:
         #         - "curl"
         #         - "-X"
         #         - "GET"
-        #         - "https://jsonplaceholder.typicode.com/comments"
+        #         - "https://pruu.herokuapp.com/dump/delivey-control-post-start"
         #   preStop:
         #     exec:
         #       command:
         #         - "curl"
         #         - "-X"
         #         - "GET"
-        #         - "https://jsonplaceholder.typicode.com/photos"
+        #         - "https://pruu.herokuapp.com/dump/delivey-control-pre-stop"
       affinity:
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

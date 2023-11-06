@@ -1,0 +1,329 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-configmap
+data:
+  REDIS_HOST: localhost
+  REDIS_PORT: "6379"
+  REDIS_URI: localhost:6379
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+  storageClassName: redis
+  accessModes:
+    - ReadWriteOnce
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: redis
+  hostPath:
+    path: /volumes/redis
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+spec:
+  selector:
+    matchLabels:
+      app: redis-deployment
+  template:
+    metadata:
+      labels:
+        app: redis-deployment
+    spec:
+      containers:
+      - name: redis-deployment
+        image: redis:5.0-rc
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 6379
+        envFrom:
+          - configMapRef:
+              name: redis-configmap
+        volumeMounts:
+            - mountPath: /data/redis
+              name: redis-data
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: redis-pvc
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-clusterip
+spec:
+  selector:
+    app: redis-deployment
+  ports:
+  - port: 6379
+    targetPort: 6379
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+type: Opaque
+data:
+  POSTGRES_USER: ZGVsaXZlcnlfY29udHJvbA==
+  POSTGRES_PASSWORD: ZGVsaXZlcnlfY29udHJvbA==
+  POSTGRES_DB: ZGVsaXZlcnlfY29udHJvbA==
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+  storageClassName: postgres
+  accessModes:
+    - ReadWriteOnce
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: postgres
+  hostPath:
+    path: /var/lib/postgresql/data
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-deployment
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9187"
+      labels:
+        app: postgres-deployment
+    spec:
+      containers:
+        - name: postgres-exporter-delivery-control
+          image: quay.io/prometheuscommunity/postgres-exporter
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 9187
+          envFrom:
+            - configMapRef:
+                name: delivery-control-configmap
+        - name: postgres-deployment
+          image: postgres
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          volumeMounts:
+            - mountPath: /data/postgresql
+              name: postgres-data
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-exporter-configmap
+data:
+  DATA_SOURCE_NAME: postgresql://postgres:delivery-control@localhost:5432/delivery_control?sslmode=disable
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-clusterip
+spec:
+  selector:
+    app: postgres-deployment
+  ports:
+    - port: 5432
+      targetPort: 5432
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: delivery-control-configmap
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-clusterip:5432/delivery_control
+  REDIS_HOST: redis-clusterip
+  REDIS_URI: redis-clusterip:6379
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: delivery-control-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: delivery-control-deployment
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: "8081"
+      labels:
+        app: delivery-control-deployment
+    spec:
+      initContainers:
+        - name: init-pod-postgres
+          image: busybox:1.28
+          command: ["sh", "-c", "until nslookup postgres-clusterip.default.svc.cluster.local; do echo Aguardando o Postgres; sleep 2; done"]
+        - name: init-pod-redis
+          image: busybox:1.28
+          command: ["sh", "-c", "until nslookup redis-clusterip.default.svc.cluster.local; do echo Aguardando o Redis; sleep 2; done"]
+      containers:
+      - name: delivery-control-deployment
+        image: welissonoliveira/delivery-control:latest
+        resources:
+          requests:
+            memory: "700Mi"
+            cpu: "150m"
+          limits:
+            memory: "2100Mi"
+            cpu: "1000m"
+        ports:
+        - containerPort: 8081
+        envFrom:
+          - configMapRef:
+              name: delivery-control-configmap
+          - secretRef:
+              name: postgres-secret
+        env:
+          - name: REDIS_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: redis-configmap
+                key: REDIS_PORT
+        imagePullPolicy: Always
+
+---        
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: delivery-control-clusterip
+spec:
+  selector:
+    app: delivery-control-deployment
+  ports:
+  - port: 8081
+    targetPort: 8081
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: delivery-control-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: delivery-control-deployment
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: delivery-control-ingress
+  labels:
+    name: delivery-control-ingress
+spec:
+  ingressClassName: nginx # verificar o ingressclass disponivel - kubectl get ingressclass
+  defaultBackend:
+    service: 
+      name: delivery-control-clusterip
+      port: 
+        number: 8081
+  rules:
+  - host: 127.0.0.1.nip.io
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: delivery-control-clusterip
+            port: 
+              number: 8081

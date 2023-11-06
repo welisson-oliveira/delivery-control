@@ -48,6 +48,29 @@ services:
       - "6379:6379"
     networks:
       - delivery-control-network
+  grafana:
+    image: grafana/grafana
+    container_name: grafana-delivery-control
+    ports:
+      - "3000:3000"
+    networks:
+      - delivery-control-network
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter-delivery-control
+    ports:
+      - "9100:9100"
+    networks:
+      - delivery-control-network
+  exporter:
+    container_name: exporter-delivery-control
+    build:
+      context: ./k8s/prometheus/exporter-personalizado-go
+      dockerfile: Dockerfile
+    ports:
+      - "7788:7788"
+    networks:
+      - delivery-control-network
   prometheus:
     image: prom/prometheus:v2.45.1
     container_name: prometheus-delivery-control

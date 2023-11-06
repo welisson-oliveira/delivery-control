@@ -28,7 +28,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: delivery-control-configmap
-
         - name: postgres-deployment
           image: postgres
           resources:
