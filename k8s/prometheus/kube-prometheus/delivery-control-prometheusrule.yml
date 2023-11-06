@@ -1,0 +1,32 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: delivery-control-prometheus-rule
+  namespace: monitoring
+  labels: # Labels do recurso
+    prometheus: k8s # Label que indica que o PrometheusRule será utilizado pelo Prometheus do Kubernetes
+    role: alert-rules # Label que indica que o PrometheusRule contém regras de alerta
+    app.kubernetes.io/name: kube-prometheus # Label que indica que o PrometheusRule faz parte do kube-prometheus
+    app.kubernetes.io/part-of: kube-prometheus # Label que indica que o PrometheusRule faz parte do kube-prometheus
+spec:
+  groups: # Lista de grupos de regras
+  - name: delivery-control-prometheus-rule # Nome do grupo de regras
+    rules: # Lista de regras
+    - alert: DeliveryControlToManyRequests # Nome do alerta
+      expr: rate(http_server_requests_seconds_count{uri="/startup-check", method="GET", instance="delivery-control:8081"}[10m]) > 0.15 # Expressão que será utilizada para disparar o alerta
+      for: 5s
+      labels:
+        team: delivery-control
+        severity: warning
+      annotations: # Anotações do alerta
+        summary: "Muitas Consultas" # Título do alerta
+        description: "Esse recurso {{ $labels.instance }} está com muitas consultas ({{ $value }})" # Descrição do alerta
+    - alert: DeliveryControlDown # Nome do alerta
+      expr: up{container="delivery-control-deployment"} == 0 # Expressão que será utilizada para disparar o alerta
+      for: 5s # Tempo que a expressão deve ser verdadeira para que o alerta seja disparado
+      labels: # Labels do alerta
+        team: delivery-control
+        severity: critical # Label que indica a severidade do alerta
+      annotations: # Anotações do alerta
+        summary: "DeliveryControl is down" # Título do alerta
+        description: "DeliveryControl está fora do ar por mais de 5s. Nome do pod {{ $labels.pod }}" # Descrição do alerta
