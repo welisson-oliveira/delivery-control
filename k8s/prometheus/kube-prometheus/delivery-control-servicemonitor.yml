@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: delivery-control-servicemonitor
+  labels:
+    app: delivery-control
+spec:
+  selector: # seletor para identificar os pods que serão monitorados
+    matchLabels: # labels que identificam os pods que serão monitorados
+      app: delivery-control-deployment # label que identifica o app que será monitorado
+  endpoints: # endpoints que serão monitorados
+    - interval: 10s # intervalo de tempo entre as requisições
+      path: /actuator/prometheus # caminho para a requisição
+      targetPort: 8081 # porta do target
