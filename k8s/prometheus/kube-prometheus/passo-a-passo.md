@@ -11,3 +11,9 @@ Definitions) que são como extensões do Kubernetes:
 
 Aplica os manifestos necessários para a instalação do Prometheus e do Alertmanager
     kubectl apply -f manifests
+
+
+
+Testar tomanyrequests
+kubectl run -i --tty --image yauritux/busybox-curl curl-test --restart=Never --rm -- /bin/sh
+while true; do curl http://delivery-control-clusterip:8081/startup-check; sleep 1; done;

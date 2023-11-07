@@ -13,7 +13,7 @@ spec:
   - name: delivery-control-prometheus-rule # Nome do grupo de regras
     rules: # Lista de regras
     - alert: DeliveryControlToManyRequests # Nome do alerta
-      expr: rate(http_server_requests_seconds_count{uri="/startup-check", method="GET", instance="delivery-control:8081"}[10m]) > 0.15 # Expressão que será utilizada para disparar o alerta
+      expr: rate(http_server_requests_seconds_count{method="GET",uri="/startup-check"}[10m]) > 0.15 # Expressão que será utilizada para disparar o alerta
       for: 5s
       labels:
         team: delivery-control
