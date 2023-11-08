@@ -1,0 +1,25 @@
+server:
+  http_listen_port: 9080 # porta de acesso do promtail
+  grpc_listen_port: 0 #
+
+positions: # arquivo onde sera armazenado as posições de acesso aos arquivos de log (para que o promtail nao inicie do começo caso haja algum problema )
+  filename: /tmp/positions.yaml # arquivo de armazenamento da posição
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push # url do loki para o envio dos logs - pode ser enviado para mais de um loki
+
+scrape_configs: # locais onde a coleta de logs será feita
+  - job_name: system
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: varlogs
+          __path__: /var/log/*log
+  - job_name: delivery-control
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: delivery-control
+          __path__: /logs/api/*log #apontar para os logs da nossa aplicação
