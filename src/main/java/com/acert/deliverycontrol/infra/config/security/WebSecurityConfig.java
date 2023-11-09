@@ -53,6 +53,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/v3/*").permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/swagger-ui/*").permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/log/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(this.jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
@@ -90,7 +92,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-ui.html",
                 "/v3/api-docs/**",
                 "/webjars/**",
-                "/actuator/**"
+                "/actuator/**",
+                "/log/**"
         };
 
         web.ignoring().antMatchers(authWhiteList);

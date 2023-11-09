@@ -50,8 +50,6 @@ management:
   app:
     name: @project.name@
 
-
-
 # liquibase
 url: jdbc:postgresql://localhost:5432/delivery_control
 username: delivery_control

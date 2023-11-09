@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<Configuration status="WARN" monitorInterval="30">-->
+<Configuration status="DEBUG">
+    <Properties>
+        <Property name="LOG_PATTERN">%d{dd/MM/yyyy HH:mm:ss.SSS} ||| %5p ${hostName} --- [%15.15t] %-40.40c{1.} :
+            %m%n%ex
+        </Property>
+        <!--LOCAL-->
+        <!--        <Property name="FILE_NAME">src/main/resources/logs/files/app.log</Property>-->
+        <!--        <Property name="FILE_PATTERN">src/main/resources/logs/files/app-%d{yyyy-MM-dd}-%i.log</Property>-->
+        <!--DOCKER-->
+        <Property name="FILE_NAME">src/main/resources/logs/files/app.log
+        </Property> <!--Esse é sempre o arquivo mais recente-->
+        <Property name="FILE_PATTERN">src/main/resources/logs/files/app-%d{dd-MM-yyyy}-%i.log</Property>
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <!-- Rolling File Appender -->
+        <RollingFile name="FileAppender" fileName="${FILE_NAME}" filePattern="${FILE_PATTERN}">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <OnStartupTriggeringPolicy/> <!--aciona uma rolagem sempre que o aplicativo é iniciado-->
+
+                <!-- um novo arquivo de log será criado a cada minuto (<param name="interval">1</param>) e o parâmetro modulate é definido como true para permitir
+                que o intervalo seja modulado (ajustado) para coincidir com o início de um novo período -->
+                <!-- <TimeBasedTriggeringPolicy interval="1" modulate="true"/> -->
+
+                <SizeBasedTriggeringPolicy
+                        size="0.01MB"/> <!--uma rolagem deve ocorrer sempre que o arquivo de log atingir 10 KB-->
+            </Policies>
+            <DefaultRolloverStrategy max="10"/> <!--limitará a quantidade total de arquivos gerados em 10-->
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.acert.deliverycontrol" level="debug" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="FileAppender"/>
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="FileAppender"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
