@@ -14,3 +14,9 @@
             Initializing Servlet 'dispatcherServlet'
 09/11/2023 19:40:50.356 |||  INFO 81dddec3e394 --- [nio-8081-exec-1] o.s.w.s.DispatcherServlet                :
             Completed initialization in 1 ms
+09/11/2023 19:56:43.295 |||  INFO 81dddec3e394 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean :
+            Closing JPA EntityManagerFactory for persistence unit 'default'
+09/11/2023 19:56:43.412 |||  INFO 81dddec3e394 --- [ionShutdownHook] c.z.h.HikariDataSource                   :
+            HikariPool-1 - Shutdown initiated...
+09/11/2023 19:56:43.416 |||  INFO 81dddec3e394 --- [ionShutdownHook] c.z.h.HikariDataSource                   :
+            HikariPool-1 - Shutdown completed.

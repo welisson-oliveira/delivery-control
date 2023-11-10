@@ -5,7 +5,7 @@ COPY . /app
 RUN go build exporter.go
 
 FROM alpine:3.16
-LABEL maintainer Jeferson Fernando <jeferson@linuxtips.com.br>
+LABEL maintainer Welisson Oliveira <welisson.oliveiraa@gmail.com>
 LABEL description "Executando o nosso exporter"
 COPY --from=buildando /app/exporter /app/exporter
 EXPOSE 7788

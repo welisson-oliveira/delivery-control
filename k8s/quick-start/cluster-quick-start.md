@@ -4,5 +4,6 @@
     kubectl apply -f weavenet/weave-daemonset-k8s.yaml
     kubectl apply -f metrics-server/metrics-server.yml
     kubectl get nodes
+    sleep 1m
     kubectl apply -f quick-start/values.yml
 ```
