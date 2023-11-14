@@ -3,8 +3,8 @@ kind: Alertmanager
 metadata:
   annotations:
     kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"monitoring.coreos.com/v1","kind":"Alertmanager","metadata":{"annotations":{},"creationTimestamp":"2023-11-09T21:15:05Z","generation":1,"labels":{"app.kubernetes.io/component":"alert-router","app.kubernetes.io/instance":"main","app.kubernetes.io/name":"alertmanager","app.kubernetes.io/part-of":"kube-prometheus","app.kubernetes.io/version":"0.26.0"},"name":"main","namespace":"monitoring","resourceVersion":"4174","uid":"54d71165-a6d1-4346-9cd9-7bf0b5d45ad8"},"spec":{"image":"quay.io/prometheus/alertmanager:v0.26.0","nodeSelector":{"kubernetes.io/os":"linux"},"podMetadata":{"labels":{"app.kubernetes.io/component":"alert-router","app.kubernetes.io/instance":"main","app.kubernetes.io/name":"alertmanager","app.kubernetes.io/part-of":"kube-prometheus","app.kubernetes.io/version":"0.26.0"}},"portName":"web","replicas":3,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"4m","memory":"100Mi"}},"retention":"120h","secrets":[],"securityContext":{"fsGroup":2000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"alertmanager-main","version":"0.26.0"},"status":{"availableReplicas":3,"conditions":[{"lastTransitionTime":"2023-11-09T21:16:50Z","observedGeneration":1,"status":"True","type":"Available"},{"lastTransitionTime":"2023-11-09T21:16:23Z","observedGeneration":1,"status":"True","type":"Reconciled"}],"paused":false,"replicas":3,"unavailableReplicas":0,"updatedReplicas":3}}
-  creationTimestamp: "2023-11-09T21:15:05Z"
+      {"apiVersion":"monitoring.coreos.com/v1","kind":"Alertmanager","metadata":{"annotations":{},"labels":{"app.kubernetes.io/component":"alert-router","app.kubernetes.io/instance":"main","app.kubernetes.io/name":"alertmanager","app.kubernetes.io/part-of":"kube-prometheus","app.kubernetes.io/version":"0.26.0"},"name":"main","namespace":"monitoring"},"spec":{"image":"quay.io/prometheus/alertmanager:v0.26.0","nodeSelector":{"kubernetes.io/os":"linux"},"podMetadata":{"labels":{"app.kubernetes.io/component":"alert-router","app.kubernetes.io/instance":"main","app.kubernetes.io/name":"alertmanager","app.kubernetes.io/part-of":"kube-prometheus","app.kubernetes.io/version":"0.26.0"}},"replicas":3,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"4m","memory":"100Mi"}},"secrets":[],"securityContext":{"fsGroup":2000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"alertmanager-main","version":"0.26.0"}}
+  creationTimestamp: "2023-11-13T17:58:46Z"
   generation: 1
   labels:
     app.kubernetes.io/component: alert-router
@@ -14,12 +14,12 @@ metadata:
     app.kubernetes.io/version: 0.26.0
   name: main
   namespace: monitoring
-  resourceVersion: "69782"
-  uid: 54d71165-a6d1-4346-9cd9-7bf0b5d45ad8
+  resourceVersion: "2125"
+  uid: 7a8dfb5d-6441-4543-9880-dfe2ea0ef137
 spec:
   alertmanagerConfigSelector:
     matchLabels:
-      alertmanagerConfig: main
+        alertmanagerConfig: main # label do seu alertmanager config
   image: quay.io/prometheus/alertmanager:v0.26.0
   nodeSelector:
     kubernetes.io/os: linux
@@ -50,11 +50,11 @@ spec:
 status:
   availableReplicas: 3
   conditions:
-  - lastTransitionTime: "2023-11-09T21:16:50Z"
+  - lastTransitionTime: "2023-11-13T18:00:31Z"
     observedGeneration: 1
     status: "True"
     type: Available
-  - lastTransitionTime: "2023-11-09T21:16:23Z"
+  - lastTransitionTime: "2023-11-13T18:00:07Z"
     observedGeneration: 1
     status: "True"
     type: Reconciled

@@ -144,7 +144,7 @@ https://github.com/badtuxx/DescomplicandoPrometheus
             - url: 'https://pruu.herokuapp.com/dump/wpwebhook-delivery-control'
 
         ```
-
+    * URL onde o alerta é disparado: https://pruu.herokuapp.com/dump/wpwebhook-delivery-control
 
 ---
 
