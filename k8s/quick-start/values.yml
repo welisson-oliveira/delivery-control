@@ -309,6 +309,8 @@ metadata:
   name: delivery-control-ingress
   labels:
     name: delivery-control-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx # verificar o ingressclass disponivel - kubectl get ingressclass
   defaultBackend:
@@ -317,7 +319,7 @@ spec:
       port: 
         number: 8081
   rules:
-  - host: 127.0.0.1.nip.io
+  - host: delivery-control.127.0.0.1.nip.io
     http:
       paths:
       - pathType: Prefix
@@ -327,3 +329,160 @@ spec:
             name: delivery-control-clusterip
             port: 
               number: 8081
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: loki-ingress
+  namespace: loki
+  labels:
+    name: loki-ingress
+spec:
+  ingressClassName: nginx # verificar o ingressclass disponivel - kubectl get ingressclass
+  defaultBackend:
+    service: 
+      name: loki
+      port: 
+        number: 3100
+  rules:
+  - host: loki.127.0.0.1.nip.io
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/metrics"
+        backend:
+          service:
+            name: loki
+            port: 
+              number: 3100
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: promtail-clusterip
+  namespace: loki
+spec:
+  selector:
+    app.kubernetes.io/instance: loki
+    app.kubernetes.io/name: promtail
+  ports:
+  - port: 3101
+    protocol: TCP
+    targetPort: 3101
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: promtail-ingress
+  namespace: loki
+  labels:
+    name: promtail-ingress
+spec:
+  ingressClassName: nginx # verificar o ingressclass disponivel - kubectl get ingressclass
+  defaultBackend:
+    service: 
+      name: promtail-clusterip
+      port: 
+        number: 3101
+  rules:
+  - host: promtail.127.0.0.1.nip.io
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/targets"
+        backend:
+          service:
+            name: promtail-clusterip
+            port: 
+              number: 3101
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  namespace: loki
+  labels:
+    name: grafana-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx # verificar o ingressclass disponivel - kubectl get ingressclass
+  defaultBackend:
+    service: 
+      name: loki-grafana
+      port: 
+        number: 80
+  rules:
+  - host: grafana.127.0.0.1.nip.io
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: loki-grafana
+            port: 
+              number: 80
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-ingress
+  namespace: monitoring
+  labels:
+    name: prometheus-ingress
+spec:
+  ingressClassName: nginx # verificar o ingressclass disponivel - kubectl get ingressclass
+  defaultBackend:
+    service: 
+      name: kube-prometheus-prometheus
+      port: 
+        number: 9090
+  rules:
+  - host: prometheus.127.0.0.1.nip.io
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: kube-prometheus-prometheus
+            port: 
+              number: 9090
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alertmanager-ingress
+  namespace: monitoring
+  labels:
+    name: alertmanager-ingress
+spec:
+  ingressClassName: nginx # verificar o ingressclass disponivel - kubectl get ingressclass
+  defaultBackend:
+    service: 
+      name: kube-prometheus-alertmanager
+      port: 
+        number: 9093
+  rules:
+  - host: alertmanager.127.0.0.1.nip.io
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: kube-prometheus-alertmanager
+            port: 
+              number: 9093

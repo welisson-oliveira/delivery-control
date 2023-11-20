@@ -150,3 +150,16 @@ https://github.com/badtuxx/DescomplicandoPrometheus
 
 watch -n 1 ls -la src/main/resources/logs/files/
 while true; do curl http://localhost:8081/log; sleep 1; done;
+
+---
+1. Instalação via helm:
+
+    * Adicionando o repo
+        ```sh
+        helm repo add grafana https://grafana.github.io/helm-charts
+        helm repo update
+        ```
+    * Para personalizar a instalação: `helm show values bitnami/kube-prometheus > prometheus/kube-prometheus/kube-prometheus-values.yml`
+    
+    * Criar namespace *monitoring*: kubectl create namespace monitoring
+    * `helm upgrade --install kube-prometheus bitnami/kube-prometheus --namespace monitoring`

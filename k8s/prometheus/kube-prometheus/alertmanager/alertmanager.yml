@@ -2,63 +2,132 @@ apiVersion: monitoring.coreos.com/v1
 kind: Alertmanager
 metadata:
   annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"monitoring.coreos.com/v1","kind":"Alertmanager","metadata":{"annotations":{},"labels":{"app.kubernetes.io/component":"alert-router","app.kubernetes.io/instance":"main","app.kubernetes.io/name":"alertmanager","app.kubernetes.io/part-of":"kube-prometheus","app.kubernetes.io/version":"0.26.0"},"name":"main","namespace":"monitoring"},"spec":{"image":"quay.io/prometheus/alertmanager:v0.26.0","nodeSelector":{"kubernetes.io/os":"linux"},"podMetadata":{"labels":{"app.kubernetes.io/component":"alert-router","app.kubernetes.io/instance":"main","app.kubernetes.io/name":"alertmanager","app.kubernetes.io/part-of":"kube-prometheus","app.kubernetes.io/version":"0.26.0"}},"replicas":3,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"4m","memory":"100Mi"}},"secrets":[],"securityContext":{"fsGroup":2000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"alertmanager-main","version":"0.26.0"}}
-  creationTimestamp: "2023-11-13T17:58:46Z"
+    meta.helm.sh/release-name: kube-prometheus
+    meta.helm.sh/release-namespace: default
+  creationTimestamp: "2023-11-15T19:24:18Z"
   generation: 1
   labels:
-    app.kubernetes.io/component: alert-router
-    app.kubernetes.io/instance: main
-    app.kubernetes.io/name: alertmanager
-    app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 0.26.0
-  name: main
-  namespace: monitoring
-  resourceVersion: "2125"
-  uid: 7a8dfb5d-6441-4543-9880-dfe2ea0ef137
+    app.kubernetes.io/component: alertmanager
+    app.kubernetes.io/instance: kube-prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/version: 0.69.1
+    helm.sh/chart: kube-prometheus-8.22.4
+  name: kube-prometheus-alertmanager
+  namespace: default
+  resourceVersion: "3039"
+  uid: 56b45b7c-78b2-4fc3-ad97-666ea43acfb7
 spec:
   alertmanagerConfigSelector:
     matchLabels:
         alertmanagerConfig: main # label do seu alertmanager config
-  image: quay.io/prometheus/alertmanager:v0.26.0
-  nodeSelector:
-    kubernetes.io/os: linux
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: alertmanager
+              app.kubernetes.io/instance: kube-prometheus
+              app.kubernetes.io/name: kube-prometheus
+          topologyKey: kubernetes.io/hostname
+        weight: 1
+  containers:
+  - livenessProbe:
+      failureThreshold: 120
+      httpGet:
+        path: /-/healthy
+        port: web
+        scheme: HTTP
+      initialDelaySeconds: 0
+      periodSeconds: 5
+      successThreshold: 1
+      timeoutSeconds: 3
+    name: alertmanager
+    readinessProbe:
+      failureThreshold: 120
+      httpGet:
+        path: /-/ready
+        port: web
+        scheme: HTTP
+      initialDelaySeconds: 0
+      periodSeconds: 5
+      successThreshold: 1
+      timeoutSeconds: 3
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      privileged: false
+      readOnlyRootFilesystem: false
+      runAsNonRoot: true
+      runAsUser: 1001
+      seccompProfile:
+        type: RuntimeDefault
+  - livenessProbe:
+      failureThreshold: 6
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      tcpSocket:
+        port: reloader-web
+      timeoutSeconds: 5
+    name: config-reloader
+    readinessProbe:
+      failureThreshold: 6
+      initialDelaySeconds: 15
+      periodSeconds: 20
+      successThreshold: 1
+      tcpSocket:
+        port: reloader-web
+      timeoutSeconds: 5
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      privileged: false
+      readOnlyRootFilesystem: false
+      runAsNonRoot: true
+      runAsUser: 1001
+      seccompProfile:
+        type: RuntimeDefault
+  externalUrl: http://kube-prometheus-alertmanager.default:9093/
+  image: docker.io/bitnami/alertmanager:0.26.0-debian-11-r44
+  listenLocal: false
+  logFormat: logfmt
+  logLevel: info
+  paused: false
   podMetadata:
     labels:
-      app.kubernetes.io/component: alert-router
-      app.kubernetes.io/instance: main
+      alertmanager: kube-prometheus-alertmanager
+      app.kubernetes.io/component: alertmanager
       app.kubernetes.io/name: alertmanager
-      app.kubernetes.io/part-of: kube-prometheus
-      app.kubernetes.io/version: 0.26.0
   portName: web
-  replicas: 3
-  resources:
-    limits:
-      cpu: 100m
-      memory: 100Mi
-    requests:
-      cpu: 4m
-      memory: 100Mi
+  replicas: 1
+  resources: {}
   retention: 120h
-  secrets: []
+  routePrefix: /
   securityContext:
-    fsGroup: 2000
-    runAsNonRoot: true
-    runAsUser: 1000
-  serviceAccountName: alertmanager-main
-  version: 0.26.0
+    fsGroup: 1001
+  serviceAccountName: kube-prometheus-alertmanager
 status:
-  availableReplicas: 3
+  availableReplicas: 1
   conditions:
-  - lastTransitionTime: "2023-11-13T18:00:31Z"
+  - lastTransitionTime: "2023-11-15T19:25:40Z"
+    message: ""
     observedGeneration: 1
+    reason: ""
     status: "True"
     type: Available
-  - lastTransitionTime: "2023-11-13T18:00:07Z"
+  - lastTransitionTime: "2023-11-15T19:24:39Z"
+    message: ""
     observedGeneration: 1
+    reason: ""
     status: "True"
     type: Reconciled
   paused: false
-  replicas: 3
+  replicas: 1
   unavailableReplicas: 0
-  updatedReplicas: 3
+  updatedReplicas: 1
