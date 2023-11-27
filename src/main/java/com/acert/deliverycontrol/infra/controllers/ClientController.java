@@ -3,6 +3,7 @@ package com.acert.deliverycontrol.infra.controllers;
 import com.acert.deliverycontrol.application.ClientService;
 import com.acert.deliverycontrol.domain.client.Client;
 import com.acert.deliverycontrol.domain.client.Role;
+import com.acert.deliverycontrol.infra.config.micrometer.MetricsConfiguration;
 import com.acert.deliverycontrol.infra.config.security.JwtTokenUtil;
 import com.acert.deliverycontrol.infra.dto.AuthRequest;
 import com.acert.deliverycontrol.infra.dto.client.ClientDTO;
@@ -16,6 +17,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,12 +36,14 @@ import static com.acert.deliverycontrol.infra.config.redis.OpenApiConfig.SECURIT
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/clients")
+@Log4j2
 public class ClientController {
 
     private final ClientService clientService;
     private final ClientMapper mapper;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
+    private final MetricsConfiguration metrics;
 
     @Operation(summary = "Obter todos os clientes", security = @SecurityRequirement(name = SECURITY_CONFIG_NAME))
     @ApiResponses(value = {
@@ -120,6 +125,7 @@ public class ClientController {
         this.clientService.deleteClient(id);
     }
 
+    @SneakyThrows
     @Operation(summary = "Autenticar um cliente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente autenticado com sucesso",
@@ -139,10 +145,16 @@ public class ClientController {
             final Client client = (Client) authenticate.getPrincipal();
 
             final String token = this.jwtTokenUtil.generateToken(client);
+            metrics.authUserSuccessIncrement();
+            log.info("Authentication successful!");
             return ResponseEntity.ok()
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .body(this.mapper.toDTO(client));
+
         } catch (final BadCredentialsException ex) {
+            metrics.authUserErrorsIncrement();
+            log.error("Authentication failure!");
+            Thread.sleep(10000L);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }

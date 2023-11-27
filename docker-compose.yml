@@ -60,7 +60,7 @@ services:
   exporter:
     container_name: exporter-delivery-control
     build:
-      context: ./k8s/prometheus/exporter-personalizado-go
+      context: ./k8s/prometheus/kube-prometheus/exporter-personalizado-go
       dockerfile: Dockerfile
     ports:
       - "7788:7788"
@@ -93,6 +93,8 @@ services:
   grafana:
     image: grafana/grafana
     container_name: grafana-delivery-control
+    volumes:
+      - ./grafana_data:/var/lib/grafana # é preciso dar permissão: sudo chmod 777 -R ./grafana_data
     ports:
       - "3000:3000"
     networks:
@@ -103,6 +105,9 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - ./alerts.rules.yml:/etc/prometheus/alerts.rules
+      - ./prometheus_data:/prometheus # é preciso dar permissão: sudo chmod 777 -R ./prometheus_data
+#    command:
+#      - '--storage.tsdb.path=/prometheus'
     ports:
       - "9090:9090"
     depends_on:

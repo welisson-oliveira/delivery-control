@@ -5,7 +5,8 @@ target/
 !**/src/test/**/target/
 
 ##LOG##
-*.log
+/src/main/resources/logs/files/*.log
+/src/main/resources/logs/files/
 tmp/positions.yaml
 
 ### STS ###
@@ -35,3 +36,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+/grafana_data/
+/prometheus_data/

@@ -39,16 +39,40 @@ spring:
 jwt:
   secret: usersecret
 
+# actuator
+info:
+  app:
+    version: @project.version@
+    name: @project.name@
 management:
+  info:
+    env:
+      enabled: true
   endpoint:
     health:
-      show-details: always
+      show-details: always # exibe todos os detalhes
   endpoints:
     web:
       exposure:
-        include: '*'
+#        include: '*' # exibe todas as informações da JVM e da aplicação (não é muito interessante)
+        include: health,info,metrics,prometheus # HEALTH - disponibiliza um endpoint de health-check, INFO - informações da aplicação, METRICS - , PROMETHEUS - expõe metricas para o prometheus
   app:
     name: @project.name@
+  # prometheus
+  metrics:
+    enable:
+      jvm: true # habilita metricas da JVM
+    export:
+      prometheus:
+        enabled: true # habilita o export das metricas para o prometheus
+    distribution:
+      slo:
+        http:
+          server:
+            requests: 50ms,100ms,200ms,300ms,500ms,1s # metrica expecifica à SLO Obs: SLA esta deprecated
+    tags:
+      application: @project.name@ # configuração de taguiamento, para identificar a aplicação
+
 
 # liquibase
 url: jdbc:postgresql://localhost:5432/delivery_control

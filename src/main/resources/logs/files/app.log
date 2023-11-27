@@ -1,22 +1,40 @@
-09/11/2023 19:40:48.669 |||  INFO 81dddec3e394 --- [           main] o.s.b.a.e.w.EndpointLinksResolver        :
-            Exposing 16 endpoint(s) beneath base path '/actuator'
-09/11/2023 19:40:48.712 |||  INFO 81dddec3e394 --- [           main] o.a.c.h.Http11NioProtocol                :
+27/11/2023 16:02:48.844 |||  INFO 372778ed6c47 --- [           main] o.s.s.w.DefaultSecurityFilterChain       :
+            Will not secure Ant [pattern='/webjars/**']
+27/11/2023 16:02:48.889 |||  WARN 372778ed6c47 --- [           main] o.s.s.c.a.w.b.WebSecurity                :
+            You are asking Spring Security to ignore Ant [pattern='/actuator/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+27/11/2023 16:02:48.889 |||  INFO 372778ed6c47 --- [           main] o.s.s.w.DefaultSecurityFilterChain       :
+            Will not secure Ant [pattern='/actuator/**']
+27/11/2023 16:02:48.889 |||  WARN 372778ed6c47 --- [           main] o.s.s.c.a.w.b.WebSecurity                :
+            You are asking Spring Security to ignore Ant [pattern='/log/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+27/11/2023 16:02:48.889 |||  INFO 372778ed6c47 --- [           main] o.s.s.w.DefaultSecurityFilterChain       :
+            Will not secure Ant [pattern='/log/**']
+27/11/2023 16:02:48.899 |||  WARN 372778ed6c47 --- [           main] o.s.s.c.a.w.b.WebSecurity                :
+            You are asking Spring Security to ignore Ant [pattern='/error/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+27/11/2023 16:02:48.899 |||  INFO 372778ed6c47 --- [           main] o.s.s.w.DefaultSecurityFilterChain       :
+            Will not secure Ant [pattern='/error/**']
+27/11/2023 16:02:48.900 |||  WARN 372778ed6c47 --- [           main] o.s.s.c.a.w.b.WebSecurity                :
+            You are asking Spring Security to ignore Ant [pattern='/stress/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+27/11/2023 16:02:48.900 |||  INFO 372778ed6c47 --- [           main] o.s.s.w.DefaultSecurityFilterChain       :
+            Will not secure Ant [pattern='/stress/**']
+27/11/2023 16:02:48.900 |||  WARN 372778ed6c47 --- [           main] o.s.s.c.a.w.b.WebSecurity                :
+            You are asking Spring Security to ignore Ant [pattern='/latency/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+27/11/2023 16:02:48.900 |||  INFO 372778ed6c47 --- [           main] o.s.s.w.DefaultSecurityFilterChain       :
+            Will not secure Ant [pattern='/latency/**']
+27/11/2023 16:02:48.959 |||  INFO 372778ed6c47 --- [           main] o.s.s.w.DefaultSecurityFilterChain       :
+            Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@374c3975, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@43c39321, org.springframework.security.web.context.SecurityContextPersistenceFilter@7345f97d, org.springframework.security.web.header.HeaderWriterFilter@7772d266, org.springframework.web.filter.CorsFilter@7841bd30, org.springframework.security.web.authentication.logout.LogoutFilter@13e00016, com.acert.deliverycontrol.infra.config.security.JwtTokenFilter@5a2ae1ab, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@66020d69, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@150d6eaf, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@52aa7742, org.springframework.security.web.session.SessionManagementFilter@759a678a, org.springframework.security.web.access.ExceptionTranslationFilter@733f1395, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@5618fc1f]
+27/11/2023 16:02:52.625 |||  INFO 372778ed6c47 --- [           main] o.s.b.a.e.w.EndpointLinksResolver        :
+            Exposing 4 endpoint(s) beneath base path '/actuator'
+27/11/2023 16:02:52.666 |||  INFO 372778ed6c47 --- [           main] o.a.c.h.Http11NioProtocol                :
             Starting ProtocolHandler ["http-nio-8081"]
-09/11/2023 19:40:48.725 |||  INFO 81dddec3e394 --- [           main] o.s.b.w.e.t.TomcatWebServer              :
+27/11/2023 16:02:52.687 |||  INFO 372778ed6c47 --- [           main] o.s.b.w.e.t.TomcatWebServer              :
             Tomcat started on port(s): 8081 (http) with context path ''
-09/11/2023 19:40:48.865 |||  INFO 81dddec3e394 --- [           main] s.a.ScheduledAnnotationBeanPostProcessor :
+27/11/2023 16:02:52.773 |||  INFO 372778ed6c47 --- [           main] s.a.ScheduledAnnotationBeanPostProcessor :
             No TaskScheduler/ScheduledExecutorService bean found for scheduled processing
-09/11/2023 19:40:48.873 |||  INFO 81dddec3e394 --- [           main] c.a.d.DeliveryControlApplication         :
-            Started DeliveryControlApplication in 8.603 seconds (JVM running for 9.549)
-09/11/2023 19:40:50.354 |||  INFO 81dddec3e394 --- [nio-8081-exec-1] o.a.c.c.C.[.[.[/]                        :
+27/11/2023 16:02:52.782 |||  INFO 372778ed6c47 --- [           main] c.a.d.DeliveryControlApplication         :
+            Started DeliveryControlApplication in 15.768 seconds (JVM running for 17.017)
+27/11/2023 16:02:54.362 |||  INFO 372778ed6c47 --- [nio-8081-exec-1] o.a.c.c.C.[.[.[/]                        :
             Initializing Spring DispatcherServlet 'dispatcherServlet'
-09/11/2023 19:40:50.354 |||  INFO 81dddec3e394 --- [nio-8081-exec-1] o.s.w.s.DispatcherServlet                :
+27/11/2023 16:02:54.362 |||  INFO 372778ed6c47 --- [nio-8081-exec-1] o.s.w.s.DispatcherServlet                :
             Initializing Servlet 'dispatcherServlet'
-09/11/2023 19:40:50.356 |||  INFO 81dddec3e394 --- [nio-8081-exec-1] o.s.w.s.DispatcherServlet                :
+27/11/2023 16:02:54.363 |||  INFO 372778ed6c47 --- [nio-8081-exec-1] o.s.w.s.DispatcherServlet                :
             Completed initialization in 1 ms
-09/11/2023 19:56:43.295 |||  INFO 81dddec3e394 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean :
-            Closing JPA EntityManagerFactory for persistence unit 'default'
-09/11/2023 19:56:43.412 |||  INFO 81dddec3e394 --- [ionShutdownHook] c.z.h.HikariDataSource                   :
-            HikariPool-1 - Shutdown initiated...
-09/11/2023 19:56:43.416 |||  INFO 81dddec3e394 --- [ionShutdownHook] c.z.h.HikariDataSource                   :
-            HikariPool-1 - Shutdown completed.

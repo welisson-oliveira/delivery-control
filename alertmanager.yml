@@ -1,15 +1,23 @@
 global:
-route:
-  receiver: Default
-  group_by: [ 'alertname' ]
-  group_wait: 15s
-  group_interval: 15s
-  repeat_interval: 1m
+  slack_api_url: 'https://hooks.slack.com/services/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'
 
-  routes:
-    - receiver: AlertaDeliveryControl
+templates: #templates default que o alertmanager pode utilizar
+  - '/etc/alertmanager/template/*.tmpl'
+
+route:
+  group_by: [ app, group, env, team ] # agrupa os alertas de acordo com as labels que são definidas no prometheus.yml, para envio de um alerta só
+  receiver: Default # pra quem o alerta é roteado
+  group_wait: 15s # tempo de espera do grupo
+  group_interval: 15s # intervalo entre uma espera e outra
+  repeat_interval: 1m # tempo de espera caso nao consiga fazer o envio no  intervalo a cima
+
+  routes: #  Define as rotas de notificação, especificando diferentes receptores (receiver) para os quais os alertas devem ser enviados.
+    - receiver: AlertaDeliveryControl # Especifica que, se um alerta corresponder a esta rota, ele será enviado ao receptor chamado "AlertaDeliveryControl".
+      match: # Define as condições para que um alerta corresponda a esta rota.
+        team: delivery-control # A condição aqui é que o valor da label "team" no alerta seja "delivery-control".
+    - receiver: delivery-control-slack
       match:
-        team: delivery-control
+        team: delivery-control-slack
 
 receivers:
   - name: Default
@@ -18,3 +26,32 @@ receivers:
   - name: AlertaDeliveryControl
     webhook_configs: # pode ser webhook, email, slack, teams
       - url: 'https://pruu.herokuapp.com/dump/wpwebhook-delivery-control'
+  - name: delivery-control-slack
+    slack_configs: # configurações do slack
+      - channel: #alertas
+        send_resolved: true # sinal enviado ao slack dizendo que o alerta foi resolvido
+        icon_url: https://avatars3.githubusercontent.com/u/3380462 # icone do prometheus
+        title: |-
+          [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }} for {{ .CommonLabels.app }}
+          {{- if gt (len .CommonLabels) (len .GroupLabels) -}}
+            {{" "}}(
+            {{- with .CommonLabels.Remove .GroupLabels.Names }}
+              {{- range $index, $label := .SortedPairs -}}
+                {{ if $index }}, {{ end }}
+                {{- $label.Name }}="{{ $label.Value -}}"
+              {{- end }}
+            {{- end -}}
+            )
+          {{- end }}
+        text: >-
+          {{ range .Alerts -}}
+          *Alert:* {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+
+          *Summary:* {{ .Annotations.summary }}
+
+          *Description:* {{ .Annotations.description }}
+
+          *Details:*
+            {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+            {{ end }}
+          {{ end }}

@@ -1,0 +1,95 @@
+1. Criar um novo datasource do Prometheus
+    - va em connections/Data sources
+    - add new data source
+    - informe a URL do prometheus
+    - save & test
+2. Criar pasta para o dashboard
+    - va para dashboards
+    - new/new folder
+3. Criar dashboard
+    - em dashboards clique em: + create dashboard/dashboard settings
+    - de um nome para o dashboard e salve
+    - salve com as tags
+4. Configurando as variaveis:
+    - Variavel application
+        - va em dashboard settings/variables/add variable
+        - de um nome para a variavel
+        - variavel do tipo QUERY (será consultada em um endpoint de metricas, onde a configuração ja esta estabelecida)
+        - o endpoint deve ser o Prometheus para esse caso
+        - informe a query
+            - Query type: label values
+            - Label *: application
+        - verifique o preview of values
+        - aplique
+    - Variavel instance:
+        - va em dashboard settings/variables/add variable
+        - de um nome para a variavel
+        - variavel do tipo QUERY (será consultada em um endpoint de metricas, onde a configuração ja esta estabelecida)
+        - o endpoint deve ser o Prometheus para esse caso
+        - informe a query
+            - Query type: label values
+            - Label *: instance
+            - Metric: jvm_classes_loaded_classes
+            - Label filters: application = $application
+        - verifique o preview of values
+        - aplique
+    - Variavel pool:
+        - va em dashboard settings/variables/add variable
+        - de um nome para a variavel
+        - variavel do tipo QUERY (será consultada em um endpoint de metricas, onde a configuração ja esta estabelecida)
+        - o endpoint deve ser o Prometheus para esse caso
+        - informe a query
+            - Query type: label values
+            - Label *: pool
+            - Metric: hikaricp_connections
+            - Label filters: application = $application / instance = $instance
+        - verifique o preview of values
+        - aplique
+    - Salve o dashboard
+5. Criando os paineis
+    - crie uma nova linha no dashboard
+        - dashboard/delivery-control/dashboard-delivery-control/add/row
+        - em configurações da row de um nome
+        - va para add/visualization
+    - Painel UPTIME:
+        - Visualização: Stat
+        - process_uptime_seconds {application="$application", instance="$instance", job="delivery-control"}
+        - Title: UPTIME
+        - Description: API Uptime
+        - Stat styles/Graph mode: None
+        - Standard options/Unit: Time/duration (hh:mm:ss)
+        - Threshholds: remove o trashold1 e muda o base para azul
+        - Salve
+    - Painel START TIME: (momento que o processo foi startado, pode mudar caso a applicação seja reiniciada)
+        - Visualização: Stat
+        - process_start_time_seconds{application="$application", instance="$instance", job="delivery-control"} * 1000
+        - Title: START TIME
+        - Description: Hora da inicialização da api
+        - Stat styles/Graph mode: None
+        - Standard options/Unit: Date & time/Datetime local (No date if today)
+        - Threshholds: remove o trashold1 e muda o base para azul
+        - Salve
+    - Painel WARN & ERROR LOG: 
+        - Visualização: Time series
+        - log4j2_events_total {application="$application", instance="$instance", job="delivery-control", level=~"warn|error"}
+        - Options/legend: {{level}}
+        - mudar warning para amarelo e error para vermelho
+        - Title: WARN & ERROR LOG
+        - Description: Warnings e Errors logados nos últimos 5 minutos
+        - Legend/Visibility/mode: table
+        - Legend/values: min, max, mean, last, total
+        - Graph Styles/fill opacity: 10
+        - Graph Styles/gradient mode: opacity
+        - Standard options/unit: short
+        - Stat styles/Graph mode: None
+        - Standard options/Unit: Misc/short
+        - Standard options/decimals: 0
+        - Threshholds: remove o trashold1 e muda o base para azul
+        - Salve
+    - Painel JDBC POOL: 
+        - Visualização: Time series
+        - hikaricp_connections{application="$application", instance="$instance",job="delivery-control", pool="$pool"}
+        - Stat styles/graph mode: None
+        - Standard options/unit: Misc/short
+        - - Threshholds: normal é verde v:10 e o Base é vermelho
+        - Salve

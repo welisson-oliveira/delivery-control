@@ -4,7 +4,14 @@ global: # Configurações globais do Prometheus, ou seja, configurações que se
   evaluation_interval: 15s # Intervalo para o Prometheus avaliar as regras de alerta, o padrão é 1 minuto.
 
 rule_files: # Inicio da definição das regras de alerta
-  - alerts.rules
+  - alerts.rules # path do arquivo alert.rules
+
+alerting: # para onde os alertas são enviados
+  alertmanagers:
+    - scheme: http
+      static_configs:
+        - targets:
+            - 'alert-manager:9093'
 
 scrape_configs: # Inicio da definição das configurações de coleta, ou seja, como o Prometheus vai coletar as métricas e onde ele vai encontrar essas métricas.
   - job_name: 'prometheus' # Nome do job, ou seja, o nome do serviço que o Prometheus vai monitorar.
@@ -47,10 +54,3 @@ scrape_configs: # Inicio da definição das configurações de coleta, ou seja, 
         target_label: instance
       - target_label: __address__
         replacement: 172.17.0.1:9187
-
-alerting:
-  alertmanagers:
-    - scheme: http
-      static_configs:
-        - targets:
-            - 'alert-manager:9093'

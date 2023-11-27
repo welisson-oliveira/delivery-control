@@ -8,7 +8,7 @@ public class ProbesController {
 
     @GetMapping("/health-check")
     public String healthCheck() {
-        return "Is hHealthy!\n";
+        return "Is Healthy!\n";
     }
 
     @GetMapping("/readiness-check")

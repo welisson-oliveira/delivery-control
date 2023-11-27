@@ -23,6 +23,10 @@ http://localhost:8080/swagger-ui/index.html#/
 * ADMIN - POSSUI AS CREDENCIAIS DE ADMIN E CLIENT
     - user: ADMIN@EMAIL.COM
     - password: admin
+    - {
+      "username": "ADMIN@EMAIL.COM",
+      "password": "admin"
+      }
 
 * CLIENT - POSSUI APENAS A CREDENCIAL CLIENT
     - user: CLIENT@EMAIL.COM
