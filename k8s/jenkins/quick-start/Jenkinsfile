@@ -1,0 +1,77 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Source') {
+            steps {
+                git credentialsId: 'github-ssh', url: 'git@github.com:welisson-oliveira/delivery-control.git', branch: 'main'
+            }
+        }
+        stage('Build Image') {
+            steps {
+                script {
+                    sh 'mvn clean package -DskipTests'
+                    dockerapp = docker.build("welissonoliveira/delivery-control:${env.BUILD_ID}", '.')
+                }
+            }
+        }
+        // stage('Push image to Dockerhub'){
+        //     steps {
+        //         script {
+        //             docker.withRegistry('https://registry.hub.docker.com/', 'dockerhub') {
+        //                 dockerapp.push('latest')
+        //                 dockerapp.push("${env.BUILD_ID}")
+        //             }
+        //         }
+        //     }
+        // }
+        stage('Deploy to Kubernetes') {
+            agent{
+                kubernetes {
+                    cloud 'kind'
+                    containerTemplate {
+                        name 'kubectl-container'
+                        image 'lachlanevenson/k8s-kubectl:v1.18.8'
+                        ttyEnabled true
+                        command 'cat'
+                    }
+                }
+            }
+            environment {
+                tag_version = "${env.BUILD_ID}"
+            }
+            steps {
+                script {
+                    sh 'cat ./k8s/quick-start/values.yml'
+                    withKubeConfig(credentialsId: 'kube') {
+                        sh 'kubectl apply -f ./k8s/ingress'
+                        sh 'kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml'
+                        sh 'kubectl apply -f ./k8s/metrics-server/metrics-server.yml'
+                        // sh 'kubectl apply -f ./k8s/delivery-control/default-namespace-limitrange.yml'
+                        // sh 'kubectl apply -f ./k8s/delivery-control/default-namespace-resourcequota.yml'
+                        // sh 'kubectl label node k8s-worker database=redis'
+                        // sh 'kubectl label node k8s-worker2 database=redis'
+                        // sh 'kubectl taint nodes k8s-worker3 motivo=manutencao:NoExecute'
+                        sh 'kubectl apply -f ./k8s/delivery-control/redis'
+                        sh 'kubectl apply -f ./k8s/delivery-control/postgres'
+                        sh 'kubectl apply -f ./k8s/delivery-control/api -R'
+
+                        kind create cluster --name k8s --config=./cluster-config.yml
+                        kubectl apply -f ingress/deploy.yaml
+                        kubectl apply -f weavenet/weave-daemonset-k8s.yaml
+                        kubectl apply -f metrics-server/metrics-server.yml
+                        kubectl get nodes
+                        sleep 2m
+                        kubectl get nodes
+
+                        kubectl create namespace loki
+                        helm upgrade --install loki grafana/loki-stack --namespace loki
+                        helm list -n loki
+
+                        kubectl apply -f quick-start/values.yml
+                    }
+                }
+            }
+        }
+    }
+}

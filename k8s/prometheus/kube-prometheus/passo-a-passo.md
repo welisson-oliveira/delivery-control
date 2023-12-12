@@ -2,9 +2,9 @@ https://github.com/badtuxx/DescomplicandoPrometheus
 
 1. Instalação
     * Clone o repositório do kube-prometheus:
-        - `sh git clone https://github.com/prometheus-operator/kube-prometheus `
+        - `git clone https://github.com/prometheus-operator/kube-prometheus `
 
-        - `cd kube-prometheus/kube-prometheus`
+        - `cd ~/kube-prometheus/kube-prometheus`
 
     * Aplica os manifestos necessários para a instalação do kube-prometheus, Basicamente o que fizemos foi a instalação de alguns CRDs (Custom Resource Definitions) que são como extensões do Kubernetes:
         - ` kubectl create -f manifests/setup `
@@ -84,6 +84,7 @@ https://github.com/badtuxx/DescomplicandoPrometheus
             labels:
                 team: delivery-control
                 severity: warning
+                namespace: default
             annotations: # Anotações do alerta
                 summary: "Muitas Consultas" # Título do alerta
                 description: "Esse recurso {{ $labels.instance }} está com muitas consultas ({{ $value }})" # Descrição do alerta
@@ -104,7 +105,7 @@ https://github.com/badtuxx/DescomplicandoPrometheus
         while true; do curl http://delivery-control-clusterip:8081/startup-check; sleep 1; done;
         ```
     
-    * Baixe o manifesto do alertmanager: ` kubectl get alertmanager -n monitoring main -o yaml > prometheus/kube-prometheus/alertmanager/alertmanager.yml `
+    * Baixe o manifesto do alertmanager: ` kubectl get alertmanager -n monitoring kube-prometheus-alertmanager -o yaml > prometheus/kube-prometheus/alertmanager/alertmanager.yml `
     * Adicione ao spec:
         ```yml
         ...
@@ -152,14 +153,3 @@ watch -n 1 ls -la src/main/resources/logs/files/
 while true; do curl http://localhost:8081/log; sleep 1; done;
 
 ---
-1. Instalação via helm:
-
-    * Adicionando o repo
-        ```sh
-        helm repo add grafana https://grafana.github.io/helm-charts
-        helm repo update
-        ```
-    * Para personalizar a instalação: `helm show values bitnami/kube-prometheus > prometheus/kube-prometheus/kube-prometheus-values.yml`
-    
-    * Criar namespace *monitoring*: kubectl create namespace monitoring
-    * `helm upgrade --install kube-prometheus bitnami/kube-prometheus --namespace monitoring`

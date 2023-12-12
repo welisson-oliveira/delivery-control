@@ -222,7 +222,7 @@ kind: Deployment
 metadata:
   name: delivery-control-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: delivery-control-deployment
@@ -332,6 +332,92 @@ spec:
 
 ---
 
+apiVersion: v1
+data:
+  auth: d2VsaXNzb246JGFwcjEkQ2lEYnZxWHQkMzRPMjJaWTZMdXByOElBYVVyamxzLgo=
+kind: Secret
+metadata:
+  name: basic-auth
+  namespace: monitoring
+type: Opaque
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+  name: grafana
+  namespace: monitoring
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: grafana.127.0.0.1.nip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: grafana
+            port:
+              name: http
+        path: /
+        pathType: Prefix
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+  name: prometheus-k8s
+  namespace: monitoring
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: prometheus.127.0.0.1.nip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: prometheus-k8s
+            port:
+              name: web
+        path: /
+        pathType: Prefix
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+  name: alertmanager-main
+  namespace: monitoring
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: alertmanager.127.0.0.1.nip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: alertmanager-main
+            port:
+              name: web
+        path: /
+        pathType: Prefix
+
+---
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -403,86 +489,4 @@ spec:
               number: 3101
 ---
 
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: grafana-ingress
-  namespace: loki
-  labels:
-    name: grafana-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-spec:
-  ingressClassName: nginx # verificar o ingressclass disponivel - kubectl get ingressclass
-  defaultBackend:
-    service: 
-      name: loki-grafana
-      port: 
-        number: 80
-  rules:
-  - host: grafana.127.0.0.1.nip.io
-    http:
-      paths:
-      - pathType: Prefix
-        path: "/"
-        backend:
-          service:
-            name: loki-grafana
-            port: 
-              number: 80
 
----
-
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: prometheus-ingress
-  namespace: monitoring
-  labels:
-    name: prometheus-ingress
-spec:
-  ingressClassName: nginx # verificar o ingressclass disponivel - kubectl get ingressclass
-  defaultBackend:
-    service: 
-      name: kube-prometheus-prometheus
-      port: 
-        number: 9090
-  rules:
-  - host: prometheus.127.0.0.1.nip.io
-    http:
-      paths:
-      - pathType: Prefix
-        path: /
-        backend:
-          service:
-            name: kube-prometheus-prometheus
-            port: 
-              number: 9090
-
----
-
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: alertmanager-ingress
-  namespace: monitoring
-  labels:
-    name: alertmanager-ingress
-spec:
-  ingressClassName: nginx # verificar o ingressclass disponivel - kubectl get ingressclass
-  defaultBackend:
-    service: 
-      name: kube-prometheus-alertmanager
-      port: 
-        number: 9093
-  rules:
-  - host: alertmanager.127.0.0.1.nip.io
-    http:
-      paths:
-      - pathType: Prefix
-        path: /
-        backend:
-          service:
-            name: kube-prometheus-alertmanager
-            port: 
-              number: 9093

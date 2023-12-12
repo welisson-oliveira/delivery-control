@@ -1,4 +1,47 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": [],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "8.3.5"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -24,7 +67,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 3,
+  "id": null,
+  "iteration": 1701293747843,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -57,7 +101,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "API uptime",
       "fieldConfig": {
@@ -100,19 +144,17 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "8.3.5",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "process_uptime_seconds{application=\"$application\", instance=\"$instance\", job=\"$job\"}",
           "interval": "",
           "legendFormat": "",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -122,7 +164,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Usuários logados no último minuto",
       "fieldConfig": {
@@ -166,19 +208,17 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "8.3.5",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
-          "expr": "increase(auth_user_success_total{instance=\"$instance\", job=\"delivery-control\"}[1m])",
+          "expr": "increase(auth_user_success_total{instance=\"$instance\", job=\"$job\"}[1m])",
           "interval": "",
           "legendFormat": "",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -188,7 +228,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Pool de conexões JDBC",
       "fieldConfig": {
@@ -235,19 +275,17 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "8.3.5",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "hikaricp_connections{application=\"$application\", instance=\"$instance\", job=\"$job\", pool=\"$pool\"}",
           "interval": "",
           "legendFormat": "",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -257,7 +295,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Estado das conexões com o database",
       "fieldConfig": {
@@ -266,9 +304,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -280,7 +315,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -338,42 +372,36 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "hikaricp_connections_active{application=\"$application\", instance=\"$instance\", job=\"$job\", pool=\"$pool\"}",
           "interval": "",
           "legendFormat": "active",
-          "range": true,
           "refId": "A"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "hikaricp_connections_idle{application=\"$application\", instance=\"$instance\", job=\"$job\", pool=\"$pool\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "idle",
-          "range": true,
           "refId": "B"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "hikaricp_connections_pending{application=\"$application\", instance=\"$instance\", job=\"$job\", pool=\"$pool\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "pending",
-          "range": true,
           "refId": "C"
         }
       ],
@@ -383,7 +411,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Hora da inicialização da API",
       "fieldConfig": {
@@ -426,19 +454,17 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "8.3.5",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "process_start_time_seconds{application=\"$application\", instance=\"$instance\", job=\"$job\"} * 1000",
           "interval": "",
           "legendFormat": "",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -448,7 +474,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Erros de autenticação no último minuto",
       "fieldConfig": {
@@ -500,19 +526,17 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "8.3.5",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "increase(auth_user_error_total{application=\"$application\", instance=\"$instance\", job=\"$job\"}[1m])",
           "interval": "",
           "legendFormat": "",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -522,7 +546,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Conexões com o database em timeout",
       "fieldConfig": {
@@ -570,19 +594,17 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "8.3.5",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "increase(hikaricp_connections_timeout_total{application=\"$application\", instance=\"$instance\", job=\"$job\", pool=\"$pool\"}[1m])",
           "interval": "",
           "legendFormat": "",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -592,7 +614,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Warnings e erros logados nos últimos 5 minutos",
       "fieldConfig": {
@@ -601,9 +623,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -615,7 +634,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -710,28 +728,24 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "sum(increase(log4j2_events_total{application=\"$application\", instance=\"$instance\", job=\"$job\", level=\"warn\"}[5m]))",
           "interval": "",
           "legendFormat": "warn",
-          "range": true,
           "refId": "A"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "sum(increase(log4j2_events_total{application=\"$application\", instance=\"$instance\", job=\"$job\", level=\"error\"}[5m]))",
           "hide": false,
           "interval": "",
           "legendFormat": "error",
-          "range": true,
           "refId": "B"
         }
       ],
@@ -739,7 +753,7 @@
       "type": "timeseries"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "datasource": {
         "type": "datasource",
         "uid": "grafana"
@@ -751,496 +765,7 @@
         "y": 12
       },
       "id": 46,
-      "panels": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
-          },
-          "description": "Memória heap utilizada",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "max": 100,
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-green"
-                  },
-                  {
-                    "color": "dark-orange",
-                    "value": 50
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "percent"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 5,
-            "x": 0,
-            "y": 2
-          },
-          "id": 38,
-          "options": {
-            "minVizHeight": 75,
-            "minVizWidth": 75,
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          },
-          "pluginVersion": "10.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PybU_5x7k"
-              },
-              "editorMode": "code",
-              "exemplar": true,
-              "expr": "sum(jvm_memory_used_bytes{application=\"$application\", instance=\"$instance\", job=\"$job\", area=\"heap\"})* 100 / sum(jvm_memory_max_bytes{application=\"$application\", instance=\"$instance\", job=\"$job\", area=\"heap\"})",
-              "interval": "",
-              "legendFormat": "",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "HEAP USED",
-          "type": "gauge"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
-          },
-          "description": "Porcentagem de utilização de CPU",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "opacity",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 10,
-            "x": 5,
-            "y": 2
-          },
-          "id": 42,
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "max",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "right",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PybU_5x7k"
-              },
-              "editorMode": "code",
-              "exemplar": true,
-              "expr": "system_cpu_usage{application=\"$application\", instance=\"$instance\", job=\"$job\"}",
-              "interval": "",
-              "legendFormat": "System CPU usage",
-              "range": true,
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PybU_5x7k"
-              },
-              "editorMode": "code",
-              "exemplar": true,
-              "expr": "process_cpu_usage{application=\"$application\", instance=\"$instance\", job=\"$job\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Process CPU usage",
-              "range": true,
-              "refId": "B"
-            }
-          ],
-          "title": "CPU UTILIZATION %",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
-          },
-          "description": "Informações sobre os estados das Threads existentes.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 15,
-                "gradientMode": "opacity",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-green"
-                  },
-                  {
-                    "color": "dark-yellow",
-                    "value": 10
-                  },
-                  {
-                    "color": "dark-orange",
-                    "value": 20
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 50
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 9,
-            "x": 15,
-            "y": 2
-          },
-          "id": 47,
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "max",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "right",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "10.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
-              },
-              "editorMode": "code",
-              "expr": "sum(increase(jvm_threads_states_threads{application=\"$application\", instance=\"$instance\", job=\"$job\"}[1m])) by (state)",
-              "instant": false,
-              "legendFormat": "__auto",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "Thread States [1m]",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
-          },
-          "description": "Memória non-heap utilizada ",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "max": 100,
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-green"
-                  },
-                  {
-                    "color": "dark-orange",
-                    "value": 50
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "percent"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 5,
-            "x": 0,
-            "y": 6
-          },
-          "id": 40,
-          "options": {
-            "minVizHeight": 75,
-            "minVizWidth": 75,
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          },
-          "pluginVersion": "10.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PybU_5x7k"
-              },
-              "editorMode": "code",
-              "exemplar": true,
-              "expr": "sum(jvm_memory_used_bytes{application=\"$application\", instance=\"$instance\", job=\"$job\", area=\"nonheap\"})* 100 / sum(jvm_memory_max_bytes{application=\"$application\", instance=\"$instance\", job=\"$job\", area=\"nonheap\"})",
-              "interval": "",
-              "legendFormat": "",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "NON-HEAP USED",
-          "type": "gauge"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
-          },
-          "description": "Média de uso de CPU",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "opacity",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 10,
-            "x": 5,
-            "y": 6
-          },
-          "id": 44,
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "max",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "right",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PybU_5x7k"
-              },
-              "editorMode": "code",
-              "exemplar": true,
-              "expr": "system_load_average_1m{instance=\"$instance\", application=\"$application\", job=\"$job\"}",
-              "interval": "",
-              "legendFormat": "Load average [1m]",
-              "range": true,
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PybU_5x7k"
-              },
-              "editorMode": "code",
-              "exemplar": true,
-              "expr": "system_cpu_count{application=\"$application\", instance=\"$instance\", job=\"$job\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "CPU core size",
-              "range": true,
-              "refId": "B"
-            }
-          ],
-          "title": "CPU AVERAGE [1m]",
-          "type": "timeseries"
-        }
-      ],
+      "panels": [],
       "targets": [
         {
           "datasource": {
@@ -1254,6 +779,474 @@
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Memória heap utilizada",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "dark-orange",
+                "value": 50
+              },
+              {
+                "color": "dark-red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 0,
+        "y": 13
+      },
+      "id": 38,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "8.3.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "exemplar": true,
+          "expr": "sum(jvm_memory_used_bytes{application=\"$application\", instance=\"$instance\", job=\"$job\", area=\"heap\"})* 100 / sum(jvm_memory_max_bytes{application=\"$application\", instance=\"$instance\", job=\"$job\", area=\"heap\"})",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "HEAP USED",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Porcentagem de utilização de CPU",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 10,
+        "x": 5,
+        "y": 13
+      },
+      "id": 42,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "exemplar": true,
+          "expr": "system_cpu_usage{application=\"$application\", instance=\"$instance\", job=\"$job\"}",
+          "interval": "",
+          "legendFormat": "System CPU usage",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "exemplar": true,
+          "expr": "process_cpu_usage{application=\"$application\", instance=\"$instance\", job=\"$job\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Process CPU usage",
+          "refId": "B"
+        }
+      ],
+      "title": "CPU UTILIZATION %",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Informações sobre os estados das Threads existentes.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "dark-yellow",
+                "value": 10
+              },
+              {
+                "color": "dark-orange",
+                "value": 20
+              },
+              {
+                "color": "dark-red",
+                "value": 50
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 9,
+        "x": 15,
+        "y": 13
+      },
+      "id": 47,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "exemplar": true,
+          "expr": "sum(increase(jvm_threads_states_threads{application=\"$application\", instance=\"$instance\", job=\"$job\"}[1m])) by (state)",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Thread States [1m]",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Memória non-heap utilizada ",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "dark-orange",
+                "value": 50
+              },
+              {
+                "color": "dark-red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 0,
+        "y": 17
+      },
+      "id": 40,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "8.3.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "exemplar": true,
+          "expr": "sum(jvm_memory_used_bytes{application=\"$application\", instance=\"$instance\", job=\"$job\", area=\"nonheap\"})* 100 / sum(jvm_memory_max_bytes{application=\"$application\", instance=\"$instance\", job=\"$job\", area=\"nonheap\"})",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "NON-HEAP USED",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Média de uso de CPU",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 10,
+        "x": 5,
+        "y": 17
+      },
+      "id": 44,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "exemplar": true,
+          "expr": "system_load_average_1m{instance=\"$instance\", application=\"$application\", job=\"$job\"}",
+          "interval": "",
+          "legendFormat": "Load average [1m]",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "exemplar": true,
+          "expr": "system_cpu_count{application=\"$application\", instance=\"$instance\", job=\"$job\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "CPU core size",
+          "refId": "B"
+        }
+      ],
+      "title": "CPU AVERAGE [1m]",
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "datasource": {
         "type": "datasource",
@@ -1263,7 +1256,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 21
       },
       "id": 20,
       "panels": [],
@@ -1282,7 +1275,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Total de requisições no último minuto",
       "fieldConfig": {
@@ -1317,7 +1310,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 14
+        "y": 22
       },
       "id": 22,
       "options": {
@@ -1334,19 +1327,17 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "8.3.5",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "sum(increase(http_server_requests_seconds_count{application=\"$application\", instance=\"$instance\"}[1m]))",
           "interval": "",
           "legendFormat": "",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -1356,7 +1347,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Número de erros 500 no último minuto",
       "fieldConfig": {
@@ -1391,7 +1382,7 @@
         "h": 4,
         "w": 4,
         "x": 4,
-        "y": 14
+        "y": 22
       },
       "id": 26,
       "options": {
@@ -1408,19 +1399,17 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "8.3.5",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "sum(increase(http_server_requests_seconds_count{application=\"$application\", instance=\"$instance\", job=\"$job\", status=~\"5..\"}[1m]))",
           "interval": "",
           "legendFormat": "",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -1430,7 +1419,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Latência média por minuto",
       "fieldConfig": {
@@ -1439,9 +1428,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1453,7 +1439,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1492,7 +1477,7 @@
         "h": 7,
         "w": 9,
         "x": 8,
-        "y": 14
+        "y": 22
       },
       "id": 30,
       "options": {
@@ -1514,70 +1499,60 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket{application=\"$application\", instance=\"$instance\", job=\"$job\", uri!=\"/actuator/prometheus\"}[1m])) by (le))",
           "interval": "",
           "legendFormat": "p99",
-          "range": true,
           "refId": "A"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "histogram_quantile(0.90, sum(rate(http_server_requests_seconds_bucket{application=\"$application\", instance=\"$instance\", job=\"$job\", uri!=\"/actuator/prometheus\"}[1m])) by (le))",
           "hide": false,
           "interval": "",
           "legendFormat": "p90",
-          "range": true,
           "refId": "B"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "histogram_quantile(0.75, sum(rate(http_server_requests_seconds_bucket{application=\"$application\", instance=\"$instance\", job=\"$job\", uri!=\"/actuator/prometheus\"}[1m])) by (le))",
           "hide": false,
           "interval": "",
           "legendFormat": "p75",
-          "range": true,
           "refId": "C"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "histogram_quantile(0.50, sum(rate(http_server_requests_seconds_bucket{application=\"$application\", instance=\"$instance\", job=\"$job\", uri!=\"/actuator/prometheus\"}[1m])) by (le))",
           "hide": false,
           "interval": "",
           "legendFormat": "p50",
-          "range": true,
           "refId": "D"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "histogram_quantile(0.25, sum(rate(http_server_requests_seconds_bucket{application=\"$application\", instance=\"$instance\", job=\"$job\", uri!=\"/actuator/prometheus\"}[1m])) by (le))",
           "hide": false,
           "interval": "",
           "legendFormat": "p25",
-          "range": true,
           "refId": "E"
         }
       ],
@@ -1587,7 +1562,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Exibe os 10 endpoints que mais retornam erro 500.",
       "fieldConfig": {
@@ -1596,9 +1571,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1610,7 +1582,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1650,7 +1621,7 @@
         "h": 7,
         "w": 7,
         "x": 17,
-        "y": 14
+        "y": 22
       },
       "id": 48,
       "options": {
@@ -1671,13 +1642,12 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
+          "exemplar": true,
           "expr": "topk(10, sum(rate(http_server_requests_seconds_count{status=~\"5..\"}[5m])) by (uri) / sum(rate(http_server_requests_seconds_count[5m])) by (uri) )",
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
+          "interval": "",
+          "legendFormat": "",
           "refId": "A"
         }
       ],
@@ -1687,7 +1657,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Taxa de erros nos últimos 5 minutos",
       "fieldConfig": {
@@ -1696,9 +1666,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1710,7 +1677,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1795,7 +1761,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 18
+        "y": 26
       },
       "id": 28,
       "options": {
@@ -1820,28 +1786,24 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "sum(rate(http_server_requests_seconds_count{application=\"$application\", instance=\"$instance\", job=\"$job\", status=~\"5..\", uri!=\"/actuator/prometheus\"}[5m])) / sum(rate(http_server_requests_seconds_count{application=\"$application\", instance=\"$instance\", job=\"$job\", uri!=\"/actuator/prometheus\"}[5m]))",
           "interval": "",
-          "legendFormat": "500",
-          "range": true,
+          "legendFormat": "5XX",
           "refId": "A"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "sum(rate(http_server_requests_seconds_count{application=\"$application\", instance=\"$instance\", job=\"$job\",  status=~\"4..\", uri!=\"/actuator/prometheus\"}[5m])) / sum(rate(http_server_requests_seconds_count{application=\"$application\", instance=\"$instance\", job=\"$job\", uri!=\"/actuator/prometheus\"}[5m]))",
           "hide": false,
           "interval": "",
-          "legendFormat": "400",
-          "range": true,
+          "legendFormat": "4XX",
           "refId": "B"
         }
       ],
@@ -1851,7 +1813,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Tempo de resposta da API no último minuto",
       "fieldConfig": {
@@ -1860,9 +1822,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1874,7 +1833,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1913,7 +1871,7 @@
         "h": 7,
         "w": 9,
         "x": 8,
-        "y": 21
+        "y": 29
       },
       "id": 24,
       "options": {
@@ -1934,14 +1892,12 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "rate(http_server_requests_seconds_sum{instance=\"$instance\", application=\"$application\", uri!=\"/actuator/prometheus\"}[1m]) / rate(http_server_requests_seconds_count{instance=\"$instance\", application=\"$application\", uri!=\"/actuator/prometheus\"}[1m])",
           "interval": "",
           "legendFormat": "{{uri}} {{method}} {{status}}",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -1951,7 +1907,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Os 10 endpoints mais lentos da aplicação.",
       "fieldConfig": {
@@ -1960,9 +1916,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1974,7 +1927,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2013,7 +1965,7 @@
         "h": 7,
         "w": 7,
         "x": 17,
-        "y": 21
+        "y": 29
       },
       "id": 49,
       "options": {
@@ -2034,13 +1986,12 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
-          "expr": "topk(10, histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket[5m])) by (le, uri)))\r\n",
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
+          "exemplar": true,
+          "expr": "topk(10, histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket[5m])) by (le, uri)))",
+          "interval": "",
+          "legendFormat": "",
           "refId": "A"
         }
       ],
@@ -2050,7 +2001,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Número de requisições por endpoint no último minuto",
       "fieldConfig": {
@@ -2059,9 +2010,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -2073,7 +2021,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2112,7 +2059,7 @@
         "h": 9,
         "w": 8,
         "x": 0,
-        "y": 24
+        "y": 32
       },
       "id": 32,
       "options": {
@@ -2136,14 +2083,12 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "sum(increase(http_server_requests_seconds_count{application=\"$application\", instance=\"$instance\", job=\"$job\", uri!=\"/actuator/prometheus\"}[1m])) by (uri)",
           "interval": "",
           "legendFormat": "{{uri}}",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -2153,7 +2098,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Duração média de requisições no último minuto",
       "fieldConfig": {
@@ -2162,9 +2107,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -2176,7 +2118,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2215,7 +2156,7 @@
         "h": 9,
         "w": 8,
         "x": 8,
-        "y": 28
+        "y": 36
       },
       "id": 34,
       "options": {
@@ -2239,14 +2180,12 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "rate(http_server_requests_seconds_sum{application=\"$application\", instance=\"$instance\", job=\"$job\", status=\"200\"}[1m]) / rate(http_server_requests_seconds_count{application=\"$application\", instance=\"$instance\", job=\"$job\", status=\"200\"}[1m])",
           "interval": "",
           "legendFormat": "{{uri}} {{method}} {{status}}",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -2256,7 +2195,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Duração máxima de uma requisição",
       "fieldConfig": {
@@ -2265,9 +2204,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -2279,7 +2215,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2318,7 +2253,7 @@
         "h": 9,
         "w": 8,
         "x": 16,
-        "y": 28
+        "y": 36
       },
       "id": 36,
       "options": {
@@ -2342,14 +2277,12 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PybU_5x7k"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
           "exemplar": true,
           "expr": "http_server_requests_seconds_max{application=\"$application\", instance=\"$instance\", job=\"$job\", status=\"200\", uri!=\"/actuator/prometheus\"}",
           "interval": "",
           "legendFormat": "{{uri}} {{method}} {{status}}",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -2358,19 +2291,16 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 38,
+  "schemaVersion": 34,
+  "style": "dark",
   "tags": [],
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "Delivery Control",
-          "value": "Delivery Control"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(application)",
         "hide": 0,
@@ -2380,9 +2310,8 @@
         "name": "application",
         "options": [],
         "query": {
-          "qryType": 1,
           "query": "label_values(application)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+          "refId": "StandardVariableQuery"
         },
         "refresh": 1,
         "regex": "",
@@ -2391,14 +2320,10 @@
         "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "172.17.0.1:8081",
-          "value": "172.17.0.1:8081"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(jvm_classes_loaded_classes{application=\"$application\"},instance)",
         "hide": 0,
@@ -2408,9 +2333,8 @@
         "name": "instance",
         "options": [],
         "query": {
-          "qryType": 1,
           "query": "label_values(jvm_classes_loaded_classes{application=\"$application\"},instance)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+          "refId": "StandardVariableQuery"
         },
         "refresh": 1,
         "regex": "",
@@ -2419,14 +2343,10 @@
         "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "HikariPool-1",
-          "value": "HikariPool-1"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(hikaricp_connections{application=\"$application\", instance=\"$instance\"},pool)",
         "hide": 0,
@@ -2436,9 +2356,8 @@
         "name": "pool",
         "options": [],
         "query": {
-          "qryType": 1,
           "query": "label_values(hikaricp_connections{application=\"$application\", instance=\"$instance\"},pool)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+          "refId": "StandardVariableQuery"
         },
         "refresh": 1,
         "regex": "",
@@ -2447,14 +2366,10 @@
         "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "delivery-control",
-          "value": "delivery-control"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "ff4e3075-5924-48b1-98ae-a1470f4b6518"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values({instance=\"$instance\", application=\"$application\"},job)",
         "hide": 0,
@@ -2464,9 +2379,8 @@
         "name": "job",
         "options": [],
         "query": {
-          "qryType": 1,
           "query": "label_values({instance=\"$instance\", application=\"$application\"},job)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+          "refId": "StandardVariableQuery"
         },
         "refresh": 1,
         "regex": "",
@@ -2484,6 +2398,6 @@
   "timezone": "",
   "title": "dash-delivery-control",
   "uid": "8tnUJQbnz",
-  "version": 2,
+  "version": 13,
   "weekStart": ""
 }

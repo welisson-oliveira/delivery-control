@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: delivery-control-prometheus-rule
-  namespace: monitoring
+  # namespace: monitoring
   labels: # Labels do recurso
     prometheus: k8s # Label que indica que o PrometheusRule será utilizado pelo Prometheus do Kubernetes
     role: alert-rules # Label que indica que o PrometheusRule contém regras de alerta
@@ -10,23 +10,155 @@ metadata:
     app.kubernetes.io/part-of: kube-prometheus # Label que indica que o PrometheusRule faz parte do kube-prometheus
 spec:
   groups: # Lista de grupos de regras
-  - name: delivery-control-prometheus-rule # Nome do grupo de regras
-    rules: # Lista de regras
-    - alert: DeliveryControlToManyRequests # Nome do alerta
-      expr: rate(http_server_requests_seconds_count{method="GET",uri="/startup-check"}[10m]) > 0.02 # Expressão que será utilizada para disparar o alerta
-      for: 5s
-      labels:
-        team: delivery-control
-        severity: warning
-      annotations: # Anotações do alerta
-        summary: "Muitas Consultas" # Título do alerta
-        description: "Esse recurso {{ $labels.instance }} está com muitas consultas ({{ $value }})" # Descrição do alerta
-    - alert: DeliveryControlDown # Nome do alerta
-      expr: up{container="delivery-control-deployment"} == 0 # Expressão que será utilizada para disparar o alerta
-      for: 5s # Tempo que a expressão deve ser verdadeira para que o alerta seja disparado
-      labels: # Labels do alerta
-        team: delivery-control
-        severity: critical # Label que indica a severidade do alerta
-      annotations: # Anotações do alerta
-        summary: "DeliveryControl is down" # Título do alerta
-        description: "DeliveryControl está fora do ar por mais de 5s. Nome do pod {{ $labels.pod }}" # Descrição do alerta
+    - name: delivery-control-prometheus-rule # Nome do grupo de regras
+      rules: # Lista de regras
+        - alert: DeliveryControlToManyRequests # Nome do alerta
+          expr: rate(http_server_requests_seconds_count{method="GET",uri="/startup-check"}[1m]) > 0.02 # Expressão que será utilizada para disparar o alerta
+          for: 5s
+          labels:
+            team: deliveryControl
+            namespace: monitoring
+            app: "delivery-control"
+            severity: "critical"
+            group: "delivery-control-slack"
+            env: "production"
+          annotations: # Anotações do alerta
+            summary: "Muitas Consultas" # Título do alerta
+            description: "Esse recurso {{ $labels.instance }} está com muitas consultas ({{ $value }})" # Descrição do alerta
+        - alert: DeliveryControlDown # Nome do alerta
+          expr: up{container="delivery-control-deployment"} == 0 # Expressão que será utilizada para disparar o alerta
+          for: 5s # Tempo que a expressão deve ser verdadeira para que o alerta seja disparado
+          labels: # Labels do alerta
+            team: deliveryControl
+            severity: critical # Label que indica a severidade do alerta
+          annotations: # Anotações do alerta
+            summary: "DeliveryControl is down" # Título do alerta
+            description: "DeliveryControl está fora do ar por mais de 5s. Nome do pod {{ $labels.pod }}" # Descrição do alerta
+
+    # LATENCY
+    - name: delivery-control-slack
+      rules:
+        - alert: "QUEBRA DE SLO"
+          # a expressão verifica se, nos últimos 1 minuto, pelo menos 50% das requisições HTTP da aplicação "delivery-control" (excluindo "/actuator/prometheus") estão abaixo do quantil 90 do tempo de resposta.
+          expr: (histogram_quantile(0.90, sum(rate(http_server_requests_seconds_bucket{job="default/delivery-control-podmonitor",uri!="/actuator/prometheus"}[1m])) by (le))) >= 0.5
+          for: 1m # tempo que a métrica deve permanecer como verdadeira para disparar o alerta
+          labels: # labels utilizados pelo alertmanager
+            app: "delivery-control"
+            severity: "critical"
+            namespace: monitoring
+            group: "delivery-control-slack"
+            env: "production"
+            team: "delivery-control-slack"
+          annotations: # anotações recebidas pelo alertmanager e passadas para o target que nesse exmplo é o slack
+            title: "QUEBRA DE SLO"
+            summary: "90% das requisições estão sendo atendidas a 500ms ou mais."
+            description: "API DeliveryControl esta quebrando o SLO, 90% das requisições estão sendo atendidas em 500ms ou mais no último minuto."
+        - alert: "REQUISIÇÕES ACIMA DE 5s"
+          expr:
+            rate(http_server_requests_seconds_sum{application="Delivery Control", uri!="/actuator/prometheus"}[1m])
+            / rate(http_server_requests_seconds_count{application="Delivery Control", uri!="/actuator/prometheus"}[1m]) >= 5
+          for: 1m # tempo que a métrica deve permanecer como verdadeira para disparar o alerta
+          labels: # labels utilizados pelo alertmanager
+            app: "delivery-control"
+            severity: "critical"
+            namespace: monitoring
+            group: "delivery-control-slack"
+            env: "production"
+            team: "delivery-control-slack"
+          annotations: # anotações recebidas pelo alertmanager e passadas para o target que nesse exmplo é o slack
+            title: "REQUISIÇÕES ACIMA DE 5s"
+            summary: "Algumas requisições estão demorando mais de 5 segundos para responder."
+            description: "Algumas requisições da applicação {{ $labels.instance }} estão demorando mais de 5 segundos para responder no ultimo minuto. Endpoint: {{$labels.uri}} | Tempo: {{ $value }}s"
+
+        # ERRORS
+        - alert: "ERRO 500"
+          expr: 
+            (sum(rate(http_server_requests_seconds_count{job="default/delivery-control-podmonitor",status="500",uri!="/actuator/prometheus"}[1m])) 
+            / sum(rate(http_server_requests_seconds_count{job="default/delivery-control-podmonitor",uri!="/actuator/prometheus"}[1m]))) >= 0.01
+          for: 1m
+          labels:
+            app: "delivery-control"
+            severity: "critical"
+            namespace: monitoring
+            group: "delivery-control-slack"
+            env: "production"
+            team: "delivery-control-slack"
+          annotations:
+            title: "ERRO 500"
+            summary: "Erro 500 acima de 1% no último minuto."
+            description: "API forum esta com taxa de erros 500 acima de 1% no último minuto"
+        #  THREADS
+        - alert: TO MANY THREADS [WARNING]
+          expr: sum(increase(jvm_threads_states_threads{application="Delivery Control", job="default/delivery-control-podmonitor", state="runnable"}[1m])) by (state) >= 20
+          for: 1m
+          labels:
+            app: delivery-control
+            severity: warning
+            namespace: monitoring
+            group: delivery-control-slack
+            env: production
+            team: delivery-control-slack
+          annotations: # anotações recebidas pelo alertmanager e passadas para o target que nesse exmplo é o slack
+            title: "TO MANY THREADS WARNING"
+            summary: "Mais de 20 Threads sendo executadas"
+            description: "Mais de 20 Threads sendo executadas no ultimo minuto."
+        - alert: TO MANY THREADS [FIRING]
+          expr: sum(increase(jvm_threads_states_threads{application="Delivery Control", job="default/delivery-control-podmonitor", state="runnable"}[1m])) by (state) >= 100
+          for: 1m
+          labels:
+            app: delivery-control
+            severity: critical
+            namespace: monitoring
+            group: delivery-control-slack
+            env: production
+            team: delivery-control-slack
+          annotations: # anotações recebidas pelo alertmanager e passadas para o target que nesse exmplo é o slack
+            title: "TO MANY THREADS CRITICAL"
+            summary: "Mais de 100 Threads sendo executadas"
+            description: "Mais de 100 Threads sendo executadas no ultimo minuto."
+        # CPU
+        - alert: CPU UTILIZATION >= 90%
+          expr: process_cpu_usage{application="Delivery Control", job="default/delivery-control-podmonitor"} >= 0.9
+          for: 1m
+          labels:
+            app: delivery-control
+            severity: critical
+            namespace: monitoring
+            group: delivery-control-slack
+            env: production
+            team: delivery-control-slack
+          annotations: # anotações recebidas pelo alertmanager e passadas para o target que nesse exmplo é o slack
+            title: "CPU USAGE >= 90%"
+            summary: "JVM >= 90% de CPU"
+            description: "A  JVM da aplicação {{ $labels.instance }} está utilizando mais de 90% da CPU no ultimo minuto. Valor: {{ $value }}"
+        - alert: CPU AVERAGE
+          expr: system_load_average_1m{application="Delivery Control", job="default/delivery-control-podmonitor"} > system_cpu_count{application="Delivery Control", job="default/delivery-control-podmonitor"}
+          for: 1m
+          labels:
+            app: delivery-control
+            severity: critical
+            namespace: monitoring
+            group: delivery-control-slack
+            env: production
+            team: delivery-control-slack
+          annotations: # anotações recebidas pelo alertmanager e passadas para o target que nesse exmplo é o slack
+            title: "CPU AVERAGE"
+            summary: "A utilização de CPU esta acima do limite"
+            description: "A utilização de CPU da aplicação {{ $labels.instance }} está acima do limite. Valor: {{ $value }}"
+        # HEAP USED
+        - alert: HEAP USED >= 80%
+          expr: 
+            sum(jvm_memory_used_bytes{application="Delivery Control", job="default/delivery-control-podmonitor", area="heap"})* 100 
+            / sum(jvm_memory_max_bytes{application="Delivery Control", job="default/delivery-control-podmonitor", area="heap"}) > 80.0
+          for: 1m
+          labels:
+            app: delivery-control
+            severity: critical
+            namespace: monitoring
+            group: delivery-control-slack
+            env: production
+            team: delivery-control-slack
+          annotations: # anotações recebidas pelo alertmanager e passadas para o target que nesse exmplo é o slack
+            title: "HEAP USED >= 80%"
+            summary: "Memória heap acima de 80%"
+            description: "A aplicação {{ $labels.instance }} está utilizando mais de 80% da memória heap no ultimo minuto. Valor: {{ $value }}"
