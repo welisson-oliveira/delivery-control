@@ -54,7 +54,7 @@ management:
   endpoints:
     web:
       exposure:
-#        include: '*' # exibe todas as informações da JVM e da aplicação (não é muito interessante)
+        #        include: '*' # exibe todas as informações da JVM e da aplicação (não é muito interessante)
         include: health,info,metrics,prometheus # HEALTH - disponibiliza um endpoint de health-check, INFO - informações da aplicação, METRICS - , PROMETHEUS - expõe metricas para o prometheus
   app:
     name: @project.name@
@@ -80,6 +80,6 @@ username: delivery_control
 password: delivery_control
 driver: org.postgresql.Driver
 referenceUrl: hibernate:spring:br.com.acert.deliverycontrol.domain?dialect=org.hibernate.dialect.PostgreSQLDialect
-#changeLogFile: src/main/resources/db/changelog/changelog-master.yaml
+changeLogFile: src/main/resources/db/changelog/changelog-master.yaml
 outputChangeLogFile: src/main/resources/db/changelog/new-changelog-master.yaml
 diffChangeLogFile: src/main/resources/db/changelog/liquibase-diff-changeLog.yaml

@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,7 @@ import static com.acert.deliverycontrol.infra.config.redis.OpenApiConfig.SECURIT
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/clients")
-@Log4j2
+@Slf4j
 public class ClientController {
 
     private final ClientService clientService;
@@ -145,15 +145,15 @@ public class ClientController {
             final Client client = (Client) authenticate.getPrincipal();
 
             final String token = this.jwtTokenUtil.generateToken(client);
-            metrics.authUserSuccessIncrement();
-            log.info("Authentication successful!");
+            this.metrics.authUserSuccessIncrement();
+            ClientController.log.info("Cliente '" + client.getName() + "' logado com sucesso!");
             return ResponseEntity.ok()
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .body(this.mapper.toDTO(client));
 
         } catch (final BadCredentialsException ex) {
-            metrics.authUserErrorsIncrement();
-            log.error("Authentication failure!");
+            this.metrics.authUserErrorsIncrement();
+            ClientController.log.error("Authentication failure!");
             Thread.sleep(10000L);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

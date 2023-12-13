@@ -7,9 +7,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,6 +20,7 @@ import java.util.Set;
 @Table(name = "delivery")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
+@Slf4j
 public class Delivery {
 
     @Id
@@ -46,31 +49,38 @@ public class Delivery {
     }
 
     public void start() {
-        if (this.status.nextStatus().stream().anyMatch(s -> s.equals(DeliveryStatus.IN_PROGRESS)) && this.canStart()) {
-            this.status = DeliveryStatus.IN_PROGRESS;
-        } else {
-            throw new InvalidStatusException(this.status.name(), DeliveryStatus.IN_PROGRESS.name());
+        if (this.canStart()) {
+            if (this.status.nextStatus().stream().anyMatch(s -> s.equals(DeliveryStatus.IN_PROGRESS))) {
+                this.status = DeliveryStatus.IN_PROGRESS;
+                Delivery.log.info("Entrega '" + this.getId() + " do cliente: '" + this.getClientName() + "' mudou o status para: '" + this.getStatus() + "'");
+            } else {
+                throw new InvalidStatusException(this.status.name(), DeliveryStatus.IN_PROGRESS.name());
+            }
         }
     }
 
     public void cancel() {
-        if (this.status.nextStatus().stream().anyMatch(s -> s.equals(DeliveryStatus.CANCELED)) && this.canCancel()) {
-            this.status = DeliveryStatus.CANCELED;
-        } else {
-            throw new InvalidStatusException(this.status.name(), DeliveryStatus.CANCELED.name());
+        if (this.canCancel()) {
+            if (this.status.nextStatus().stream().anyMatch(s -> s.equals(DeliveryStatus.CANCELED))) {
+                this.status = DeliveryStatus.CANCELED;
+                Delivery.log.info("Entrega '" + this.getId() + " do cliente: '" + this.getClientName() + "' mudou o status para: '" + this.getStatus() + "'");
+            } else {
+                throw new InvalidStatusException(this.status.name(), DeliveryStatus.CANCELED.name());
+            }
         }
     }
 
     public void finish() {
         if (this.status.nextStatus().stream().anyMatch(s -> s.equals(DeliveryStatus.DELIVERED)) && this.canFinalize()) {
             this.status = DeliveryStatus.DELIVERED;
+            Delivery.log.info("Entrega '" + this.getId() + " do cliente: '" + this.getClientName() + "' mudou o status para: '" + this.getStatus() + "'");
         } else {
             throw new InvalidStatusException(this.status.name(), DeliveryStatus.DELIVERED.name());
         }
     }
 
     private boolean allDone() {
-        return this.orders.stream().allMatch(Order::isFinished);
+        return this.orders.stream().allMatch(Order::isFinishedOrCanceled);
     }
 
     private boolean canStart() {
@@ -92,6 +102,13 @@ public class Delivery {
 
     public boolean canDelete() {
         return this.orders.isEmpty();
+    }
+
+    public String getClientName() {
+        if (!Objects.isNull(this.client)) {
+            return this.client.getName();
+        }
+        return "";
     }
 }
 

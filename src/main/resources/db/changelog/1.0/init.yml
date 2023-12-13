@@ -178,7 +178,7 @@ databaseChangeLog:
                   name: client_id
             indexName: RDB$FOREIGN141
             tableName: delivery
-            unique: true
+            unique: false
   - changeSet:
       id: 1692552535694-14
       author: welisson (generated)

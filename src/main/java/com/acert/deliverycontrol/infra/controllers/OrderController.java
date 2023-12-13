@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import static com.acert.deliverycontrol.infra.config.redis.OpenApiConfig.SECURIT
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
+@Slf4j
 public class OrderController {
 
     private final OrderService orderService;
@@ -174,6 +176,7 @@ public class OrderController {
     public OrderDTO createOrder(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Pedido a ser criado", required = true)
             @RequestBody final CreateUpdateOrderDTO order) {
+        OrderController.log.info("Criando a pedido: '" + order.getDescription() + "'");
         return this.mapper.toDTO(this.orderService.createOrder(order.getDescription()));
     }
 

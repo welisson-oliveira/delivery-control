@@ -1,0 +1,44 @@
+<configuration>
+    <property name="LOG_PATH" value="src/main/resources/logs/files/app.log"/>
+    <property name="LOG_PATTERN"
+              value="%d{HH:mm:ss.SSS dd/MM/yyyy} [%thread] %-5level %logger{0}.%M - %msg %rEx{short} %n"/>
+    <contextName>prod</contextName>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>10KB</maxFileSize><!-- tamanho maximo do arquivo -->
+            <totalSizeCap>100KB</totalSizeCap><!-- tamanho total de capacidade de armazenamento -->
+            <maxHistory>12</maxHistory><!-- quantidade em mêses de retenção dos logs -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <!-- <logger name="com.acert.deliverycontrol" level="info" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger> -->
+
+    <!--    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">-->
+    <!--        <encoder>-->
+    <!--            <pattern>${LOG_PATTERN}</pattern>-->
+    <!--        </encoder>-->
+    <!--    </appender>-->
+    <appender name="json-stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+            <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                <prettyPrint>true</prettyPrint>
+            </jsonFormatter>
+            <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
+        </layout>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="FILE"/>
+        <!--        <appender-ref ref="STDOUT"/>-->
+        <appender-ref ref="json-stdout"/>
+    </root>
+
+</configuration>

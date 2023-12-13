@@ -10,6 +10,7 @@ import com.acert.deliverycontrol.infra.events.DeleteOrderEvent;
 import com.acert.deliverycontrol.infra.events.FinishedOrderEvent;
 import com.acert.deliverycontrol.infra.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     public static final String ORDER_NOT_FOUND_WITH_ID = "Order not found with ID:";
@@ -41,8 +43,8 @@ public class OrderService {
         final Order order = new Order(description, loggedClient);
 
         final Order savedOrder = this.orderRepository.save(order);
+        OrderService.log.info("o Pedido '" + order.getDescription() + "' foi criado com Sucesso para o cliente '" + order.getClient().getName() + "'. Data: '" + order.getOrderDate() + "'");
         this.publisher.publishEvent(new CreateOrderEvent(order));
-
         return savedOrder;
     }
 

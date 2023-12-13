@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "customer_order")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
+@Slf4j
 public class Order {
 
     @Id
@@ -46,14 +48,15 @@ public class Order {
     public void nextStatus(final OrderStatus orderStatus) {
         if (this.status.nextStatus().stream().anyMatch(s -> s.equals(orderStatus))) {
             this.status = orderStatus;
+            Order.log.info("O status do pedido '" + this.getDescription() + "' foi alterado para: '" + this.getStatus() + "'");
         } else {
             throw new InvalidStatusException(this.status.name(), orderStatus.name());
         }
 
     }
 
-    public boolean isFinished() {
-        return OrderStatus.DONE.equals(this.status);
+    public boolean isFinishedOrCanceled() {
+        return OrderStatus.DONE.equals(this.status) || this.isCanceled();
     }
 
     public boolean isCanceled() {

@@ -1,7 +1,7 @@
 package com.acert.deliverycontrol.infra.config.security;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Service
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
 public class RedisService {
 

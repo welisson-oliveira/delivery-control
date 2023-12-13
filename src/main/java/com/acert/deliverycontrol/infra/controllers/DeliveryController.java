@@ -59,6 +59,7 @@ public class DeliveryController {
         return this.mapper.toDTO(this.deliveryService.getDeliveryById(id));
     }
 
+    @Operation(summary = "Finaliza a entrega", security = @SecurityRequirement(name = SECURITY_CONFIG_NAME))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Entrega finalizada com sucesso",
                     content = @Content(schema = @Schema(implementation = DeliveryDTO.class))),

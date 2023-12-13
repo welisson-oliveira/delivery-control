@@ -4,12 +4,14 @@ import com.acert.deliverycontrol.application.exceptions.DataNotFoundException;
 import com.acert.deliverycontrol.domain.client.Client;
 import com.acert.deliverycontrol.domain.delivery.Delivery;
 import com.acert.deliverycontrol.domain.delivery.DeliveryStatus;
+import com.acert.deliverycontrol.domain.order.Order;
 import com.acert.deliverycontrol.infra.events.CanceledOrderEvent;
 import com.acert.deliverycontrol.infra.events.CreateOrderEvent;
 import com.acert.deliverycontrol.infra.events.DeleteOrderEvent;
 import com.acert.deliverycontrol.infra.events.FinishedOrderEvent;
 import com.acert.deliverycontrol.infra.repository.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
@@ -46,12 +49,15 @@ public class DeliveryService {
         final Optional<Delivery> activeByClientId = this.deliveryRepository.findActiveByClientId(loggedClient.getId());
 
         final Delivery delivery = activeByClientId.orElseGet(() -> new Delivery(null, loggedClient.getAddress(), DeliveryStatus.WAITING, loggedClient));
-        delivery.addOrder(createOrderEvent.getSource());
+        final Order order = createOrderEvent.getSource();
+        delivery.addOrder(order);
         this.createDelivery(delivery);
+        DeliveryService.log.info("Entrega '" + delivery.getId() + "' foi criada para o pedido: '" + order.getDescription() + "' do cliente: '" + delivery.getClientName() + "'");
     }
 
     @EventListener
     public void startDelivery(final FinishedOrderEvent finishedOrderEvent) {
+
         final Long orderId = finishedOrderEvent.getSource();
         this.deliveryRepository.findDeliveryByOrderId(orderId).ifPresent(delivery -> {
             delivery.start();
@@ -64,6 +70,7 @@ public class DeliveryService {
         final Long orderId = canceledOrderEvent.getSource();
         this.deliveryRepository.findDeliveryByOrderId(orderId).ifPresent(delivery -> {
             delivery.cancel();
+            delivery.start();
             this.deliveryRepository.save(delivery);
         });
     }
@@ -75,8 +82,10 @@ public class DeliveryService {
             delivery.removeOrderById(orderId);
             if (delivery.canDelete()) {
                 this.deliveryRepository.delete(delivery);
+                DeliveryService.log.info("Removeu o pedido com id: '" + orderId + "' da entrega: '" + delivery.getId() + "' para o cliente '" + delivery.getClientName() + "'");
             } else {
                 this.deliveryRepository.save(delivery);
+                DeliveryService.log.info("Excluiu a entrega: '" + delivery.getId() + "'");
             }
         });
     }
