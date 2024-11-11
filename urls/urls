@@ -1,0 +1,14 @@
+KUBERNETES
+http://delivery-control.127.0.0.1.nip.io/swagger-ui/index.html
+http://grafana.127.0.0.1.nip.io/login
+http://prometheus.127.0.0.1.nip.io/alerts?search=
+http://alertmanager.127.0.0.1.nip.io/#/alerts
+http://promtail.127.0.0.1.nip.io/targets
+http://loki.127.0.0.1.nip.io/metrics
+DOCKER
+http://localhost:8081/swagger-ui/index.html#/
+http://localhost:3000/d/8tnUJQbnz/dash-delivery-control?orgId=1&refresh=5s
+http://localhost:9090/alerts?search=
+http://localhost:9093/#/alerts
+http://localhost:3100/metrics
+http://localhost:9080/targets

@@ -1,6 +1,24 @@
 databaseChangeLog:
 - changeSet:
-    id: 1692552535694-1
+    id: 1718918476383-1
+    author: welisson (generated)
+    changes:
+    - createSequence:
+        sequenceName: client_seq
+- changeSet:
+    id: 1718918476383-2
+    author: welisson (generated)
+    changes:
+    - createSequence:
+        sequenceName: delivery_seq
+- changeSet:
+    id: 1718918476383-3
+    author: welisson (generated)
+    changes:
+    - createSequence:
+        sequenceName: order_seq
+- changeSet:
+    id: 1718918476383-4
     author: welisson (generated)
     changes:
     - createTable:
@@ -27,7 +45,7 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: client
 - changeSet:
-    id: 1692552535694-2
+    id: 1718918476383-5
     author: welisson (generated)
     changes:
     - createTable:
@@ -44,7 +62,7 @@ databaseChangeLog:
             type: BIGINT
         tableName: client_role
 - changeSet:
-    id: 1692552535694-3
+    id: 1718918476383-6
     author: welisson (generated)
     changes:
     - createTable:
@@ -68,7 +86,7 @@ databaseChangeLog:
             type: BIGINT
         tableName: customer_order
 - changeSet:
-    id: 1692552535694-4
+    id: 1718918476383-7
     author: welisson (generated)
     changes:
     - createTable:
@@ -89,7 +107,7 @@ databaseChangeLog:
             type: BIGINT
         tableName: delivery
 - changeSet:
-    id: 1692552535694-5
+    id: 1718918476383-8
     author: welisson (generated)
     changes:
     - createTable:
@@ -106,7 +124,7 @@ databaseChangeLog:
             type: BIGINT
         tableName: delivery_orders
 - changeSet:
-    id: 1692552535694-6
+    id: 1718918476383-9
     author: welisson (generated)
     changes:
     - createTable:
@@ -121,7 +139,7 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: role
 - changeSet:
-    id: 1692552535694-7
+    id: 1718918476383-10
     author: welisson (generated)
     changes:
     - addPrimaryKey:
@@ -129,7 +147,7 @@ databaseChangeLog:
         constraintName: integ_379333
         tableName: client
 - changeSet:
-    id: 1692552535694-8
+    id: 1718918476383-11
     author: welisson (generated)
     changes:
     - addPrimaryKey:
@@ -137,7 +155,7 @@ databaseChangeLog:
         constraintName: integ_381333
         tableName: customer_order
 - changeSet:
-    id: 1692552535694-9
+    id: 1718918476383-12
     author: welisson (generated)
     changes:
     - addPrimaryKey:
@@ -145,7 +163,7 @@ databaseChangeLog:
         constraintName: integ_384333
         tableName: delivery
 - changeSet:
-    id: 1692552535694-10
+    id: 1718918476383-13
     author: welisson (generated)
     changes:
     - addPrimaryKey:
@@ -153,7 +171,7 @@ databaseChangeLog:
         constraintName: integ_388333
         tableName: delivery_orders
 - changeSet:
-    id: 1692552535694-11
+    id: 1718918476383-14
     author: welisson (generated)
     changes:
     - addPrimaryKey:
@@ -161,7 +179,7 @@ databaseChangeLog:
         constraintName: integ_391333
         tableName: client_role
 - changeSet:
-    id: 1692552535694-12
+    id: 1718918476383-15
     author: welisson (generated)
     changes:
     - addPrimaryKey:
@@ -169,7 +187,7 @@ databaseChangeLog:
         constraintName: integ_396333
         tableName: role
 - changeSet:
-    id: 1692552535694-13
+    id: 1718918476383-16
     author: welisson (generated)
     changes:
     - createIndex:
@@ -178,9 +196,8 @@ databaseChangeLog:
             name: client_id
         indexName: RDB$FOREIGN141
         tableName: delivery
-        unique: true
 - changeSet:
-    id: 1692552535694-14
+    id: 1718918476383-17
     author: welisson (generated)
     changes:
     - createIndex:
@@ -190,7 +207,7 @@ databaseChangeLog:
         indexName: RDB$FOREIGN142
         tableName: customer_order
 - changeSet:
-    id: 1692552535694-15
+    id: 1718918476383-18
     author: welisson (generated)
     changes:
     - createIndex:
@@ -200,7 +217,7 @@ databaseChangeLog:
         indexName: RDB$FOREIGN143
         tableName: delivery_orders
 - changeSet:
-    id: 1692552535694-16
+    id: 1718918476383-19
     author: welisson (generated)
     changes:
     - createIndex:
@@ -210,7 +227,7 @@ databaseChangeLog:
         indexName: RDB$FOREIGN144
         tableName: delivery_orders
 - changeSet:
-    id: 1692552535694-17
+    id: 1718918476383-20
     author: welisson (generated)
     changes:
     - createIndex:
@@ -220,7 +237,7 @@ databaseChangeLog:
         indexName: RDB$FOREIGN145
         tableName: client_role
 - changeSet:
-    id: 1692552535694-18
+    id: 1718918476383-21
     author: welisson (generated)
     changes:
     - createIndex:
@@ -230,7 +247,7 @@ databaseChangeLog:
         indexName: RDB$FOREIGN146
         tableName: client_role
 - changeSet:
-    id: 1692552535694-19
+    id: 1718918476383-22
     author: welisson (generated)
     changes:
     - addForeignKeyConstraint:
@@ -244,7 +261,7 @@ databaseChangeLog:
         referencedColumnNames: id
         referencedTableName: client
 - changeSet:
-    id: 1692552535694-20
+    id: 1718918476383-23
     author: welisson (generated)
     changes:
     - addForeignKeyConstraint:
@@ -258,7 +275,7 @@ databaseChangeLog:
         referencedColumnNames: id
         referencedTableName: client
 - changeSet:
-    id: 1692552535694-21
+    id: 1718918476383-24
     author: welisson (generated)
     changes:
     - addForeignKeyConstraint:
@@ -272,7 +289,7 @@ databaseChangeLog:
         referencedColumnNames: id
         referencedTableName: delivery
 - changeSet:
-    id: 1692552535694-22
+    id: 1718918476383-25
     author: welisson (generated)
     changes:
     - addForeignKeyConstraint:
@@ -286,7 +303,7 @@ databaseChangeLog:
         referencedColumnNames: id
         referencedTableName: customer_order
 - changeSet:
-    id: 1692552535694-23
+    id: 1718918476383-26
     author: welisson (generated)
     changes:
     - addForeignKeyConstraint:
@@ -300,7 +317,7 @@ databaseChangeLog:
         referencedColumnNames: id
         referencedTableName: client
 - changeSet:
-    id: 1692552535694-24
+    id: 1718918476383-27
     author: welisson (generated)
     changes:
     - addForeignKeyConstraint:
